@@ -1,0 +1,72 @@
+# Query: https://pratheeshclement-cmd.github.io/
+# ContextLines: 1
+
+17 results - 3 files
+
+index.html:
+    11      <meta name="robots" content="index, follow" />
+    12:     <link rel="canonical" href="https://pratheeshclement-cmd.github.io/" />
+    13      <!-- Favicon -->
+
+    21      <meta property="og:description" content="Digital marketing specialist & frontend developer building high-performance websites, search visibility and growth-focused ad campaigns." />
+    22:     <meta property="og:url" content="https://pratheeshclement-cmd.github.io/" />
+    23      <meta property="og:site_name" content="Pratheesh Clement" />
+    24:     <meta property="og:image" content="https://pratheeshclement-cmd.github.io/asset/logo.svg" />
+    25      <meta property="og:image:alt" content="Pratheesh Clement portfolio logo" />
+    26      <meta name="twitter:card" content="summary_large_image" />
+    27:     <meta name="twitter:image" content="https://pratheeshclement-cmd.github.io/asset/logo.svg" />
+    28      <meta name="twitter:image:alt" content="Pratheesh Clement portfolio logo" />
+
+    40            "jobTitle": ["Digital Marketing Specialist", "SEO Specialist", "Frontend Developer", "UI Designer"],
+    41:           "url": "https://pratheeshclement-cmd.github.io/",
+    42            "description": "Digital marketing specialist and frontend developer crafting performance-driven websites, SEO campaigns, paid media strategies and analytics insights.",
+
+    51            "@id": "#website",
+    52:           "url": "https://pratheeshclement-cmd.github.io/",
+    53            "name": "Pratheesh Clement Portfolio",
+
+    56              "@type": "SearchAction",
+    57:             "target": "https://pratheeshclement-cmd.github.io/?s={search_term_string}",
+    58              "query-input": "required name=search_term_string"
+
+    63            "@id": "#webpage",
+    64:           "url": "https://pratheeshclement-cmd.github.io/",
+    65            "name": "Pratheesh Clement | Portfolio",
+
+   251                  </a>
+   252:                 <a href="https://pratheeshclement-cmd.github.io/" target="_blank" rel="noopener noreferrer"
+   253                      class="btn btn-icon-only" aria-label="Live portfolio"><i class="fas fa-globe"></i></a>
+
+   447                          </a>
+   448:                         <a href="https://pratheeshclement-cmd.github.io/" target="_blank" rel="noopener noreferrer"
+   449                              class="btn btn-outline">
+
+   563                              responsive, animated websites. Developed and deployed a live portfolio at <a
+   564:                                 href="https://pratheeshclement-cmd.github.io/" target="_blank" rel="noopener noreferrer"
+   565                                  class="inline-link">https://pratheeshclement-cmd.github.io</a> using HTML, CSS &amp; JavaScript —
+
+   825                          <div class="pc-overlay">
+   826:                             <a href="https://pratheeshclement-cmd.github.io/" target="_blank" rel="noopener noreferrer"
+   827                                  class="pc-btn">
+
+   847                              JavaScript with responsive design, smooth animations and a clean UI.</p>
+   848:                         <a href="https://pratheeshclement-cmd.github.io/" target="_blank" rel="noopener noreferrer" class="pc-cta">
+   849                              View Live <i class="fas fa-arrow-right"></i>
+
+   969                          </a>
+   970:                         <a href="https://pratheeshclement-cmd.github.io/" target="_blank" rel="noopener noreferrer" class="cl-item">
+   971                              <div class="cl-ic cl-website"><i class="fas fa-globe"></i></div>
+
+  1128                              class="fab fa-github"></i></a>
+  1129:                     <a href="https://pratheeshclement-cmd.github.io/" target="_blank" rel="noopener noreferrer" aria-label="Portfolio Website">
+  1130      <i class="fas fa-globe"></i>
+
+robots.txt:
+  2  Allow: /
+  3: Sitemap: https://pratheeshclement-cmd.github.io/sitemap.xml
+  4  
+
+sitemap.xml:
+  3    <url>
+  4:     <loc>https://pratheeshclement-cmd.github.io/</loc>
+  5      <changefreq>weekly</changefreq>
