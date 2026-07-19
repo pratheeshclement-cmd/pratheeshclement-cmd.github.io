@@ -2,11 +2,20 @@
   "name": "Pratheesh Clement Portfolio",
   "short_name": "Pratheesh",
   "description": "Portfolio of Pratheesh Clement, digital marketing specialist and frontend developer.",
+  "id": "https://pratheeshclement-cmd.github.io/",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "background_color": "#050816",
   "theme_color": "#050816",
+  "orientation": "portrait-primary",
+  "dir": "ltr",
+  "lang": "en-US",
+  "categories": [
+    "business",
+    "portfolio",
+    "development"
+  ],
   "icons": [
     {
       "src": "./android-chrome-192x192.png",
@@ -17,6 +26,22 @@
       "src": "./android-chrome-512x512.png",
       "sizes": "512x512",
       "type": "image/png"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "./asset/screenshot-desktop.jpg",
+      "sizes": "1024x1024",
+      "type": "image/jpeg",
+      "form_factor": "wide",
+      "label": "Desktop View of Pratheesh Clement Portfolio"
+    },
+    {
+      "src": "./asset/screenshot-mobile.jpg",
+      "sizes": "1024x1024",
+      "type": "image/jpeg",
+      "form_factor": "narrow",
+      "label": "Mobile View of Pratheesh Clement Portfolio"
     }
   ]
 }

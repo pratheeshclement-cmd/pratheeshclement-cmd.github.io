@@ -1304,3 +1304,41 @@ body.cinematic-ready main#main-content {
 .shake {
     animation: shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) !important;
 }
+
+/* --------------------------------------------------------------------------
+   25. ACCESSIBILITY FOCUS STATES & GPU PERFORMANCE HINTS
+   -------------------------------------------------------------------------- */
+
+/* Visible focus indicators for keyboard navigation */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+[tabindex="0"]:focus-visible {
+    outline: 2px solid var(--primary) !important;
+    outline-offset: 4px !important;
+    box-shadow: 0 0 15px var(--primary-glow) !important;
+}
+
+/* Suppress outline for mouse users to maintain premium aesthetics */
+a:focus:not(:focus-visible),
+button:focus:not(:focus-visible),
+input:focus:not(:focus-visible),
+textarea:focus:not(:focus-visible) {
+    outline: none !important;
+}
+
+/* GPU promotion layer hints to guarantee smooth 60fps animations */
+.service-card,
+.project-card,
+.skill-tag,
+.timeline-item,
+.testimonial-card,
+.metric-card,
+.about-visual,
+.about-body,
+.eco-card,
+.sh-row,
+.nav {
+    will-change: transform, opacity;
+}
