@@ -37,12 +37,8 @@
         initIntersectionReveal();
         initScrollEngine();
         initNavActiveTracker();
-        initHeroScrollDepth();
         if (!IS_TOUCH && !REDUCED_MOTION) {
-            initAvatarTilt();
             initCardSpotlight();
-            initMagneticElements();
-            initImageParallax();
         }
         initRippleEffect();
         initHeroEntrance();
@@ -402,15 +398,8 @@
        ───────────────────────────────────────────────────────────────────── */
     function initImageParallax() {
         const PARALLAX_FACTOR = 0.12;
-
-        const images = [
-            { el: document.querySelector('.avatar-img'), factor: PARALLAX_FACTOR },
-            ...Array.from(document.querySelectorAll('.proj-thumb-img')).map(el => ({
-                el, factor: PARALLAX_FACTOR * 0.7
-            }))
-        ].filter(item => item.el);
-
-        if (!images.length) return;
+        const avatar = document.querySelector('.avatar-img');
+        if (!avatar) return;
 
         let ticking = false;
         window.addEventListener('scroll', () => {
@@ -418,15 +407,10 @@
             ticking = true;
             requestAnimationFrame(() => {
                 const vh = window.innerHeight;
-                const scrollY = window.scrollY;
-
-                images.forEach(({ el, factor }) => {
-                    const rect = el.getBoundingClientRect();
-                    const centerY = rect.top + rect.height / 2 - vh / 2;
-                    const parallaxY = centerY * factor;
-                    el.style.transform = `translateY(${parallaxY.toFixed(2)}px)`;
-                });
-
+                const rect = avatar.getBoundingClientRect();
+                const centerY = rect.top + rect.height / 2 - vh / 2;
+                const parallaxY = centerY * PARALLAX_FACTOR;
+                avatar.style.transform = `translateY(${parallaxY.toFixed(2)}px)`;
                 ticking = false;
             });
         }, { passive: true });

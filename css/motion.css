@@ -1,1442 +1,380 @@
 /* ==========================================================================
-   PRATHEESH CLEMENT — ULTIMATE MOTION DESIGN ARCHITECTURE  |  css/motion.css
-
-   12-LAYER INDEPENDENT MOTION SYSTEM
-   Every layer moves independently. Every element has its own animation.
-   Built for 60 FPS. GPU-only properties only.
-
-   LAYER STACK:
-   L1  Background motion    — gradient drift, mesh shift, aurora breath
-   L2  Gradient motion      — hue morph, position shift, radial pulse
-   L3  Particles motion     — float, drift, blink, burst
-   L4  Glass motion         — shimmer, depth, blur pulse
-   L5  Typography motion    — reveal, wave, float, morph
-   L6  Images motion        — parallax, tilt, zoom, mask
-   L7  Cards motion         — pop, float, depth, rotate, stack
-   L8  Buttons motion       — magnetic, ripple, glow, gradient
-   L9  Icons motion         — spin, bounce, pulse, float
-   L10 Interactive motion   — cursor, hover, focus, active
-   L11 Scroll motion        — parallax, depth, opacity, scale
-   L12 Transition motion    — entry, exit, curtain, morph, wipe
+   PRATHEESH CLEMENT — SMART PREMIUM TRANSITION SYSTEM  |  css/motion.css
+   
+   TRANSITION-FIRST MOTION DESIGN SYSTEM (Awwwards / Apple Style)
+   
+   Rules:
+   - NO looping infinite floating animations.
+   - NO constant background drifts or heavy loops.
+   - ALL motion is triggered strictly by:
+     1. Page Load / Loader Completion (Website Assembly)
+     2. Viewport Intersection (IntersectionObserver .is-in-view reveals)
+     3. Active Scroll Position (Parallax, translation, morphing)
+     4. Direct User Interaction (Hover tilts, expand scaling, spotglows)
+   - GPU-accelerated properties (transform, opacity, filter, clip-path) to preserve 60 FPS.
    ========================================================================== */
 
 /* ==========================================================================
-   SECTION 0: MOTION FOUNDATION — CSS Custom Properties
+   0. ROOT CONFIGURATION & EASING TOKENS
    ========================================================================== */
-
 :root {
-    /* Float durations — unique per layer */
-    --float-slow:    8s;
-    --float-med:     6s;
-    --float-fast:    4s;
-    --float-xfast:   2.5s;
-
-    /* Easing tokens */
-    --ease-spring:   cubic-bezier(0.16, 1, 0.3, 1);
-    --ease-smooth:   cubic-bezier(0.4, 0, 0.2, 1);
-    --ease-bounce:   cubic-bezier(0.34, 1.56, 0.64, 1);
+    --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+    --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --ease-expo: cubic-bezier(0.19, 1, 0.22, 1);
     --ease-cinematic: cubic-bezier(0.77, 0, 0.175, 1);
-    --ease-expo:     cubic-bezier(0.19, 1, 0.22, 1);
 
-    /* Motion scale */
-    --motion-xxs:    2px;
-    --motion-xs:     4px;
-    --motion-sm:     8px;
-    --motion-md:     14px;
-    --motion-lg:     22px;
-    --motion-xl:     36px;
+    --scroll-velocity: 0;
+    --bg-morph: rgba(5, 8, 22, 1);
 }
 
-/* ==========================================================================
-   SECTION 1: L1 — BACKGROUND MOTION
-   Aurora orbs, mesh drift, gradient morph, noise texture shift
-   ========================================================================== */
-
-/* AURORA ORB SYSTEM — 3 orbs, independent motion paths */
-.orb-primary {
-    animation:
-        orbPath1   28s ease-in-out infinite alternate,
-        orbBreath   8s ease-in-out infinite,
-        orbHue     40s linear       infinite !important;
-}
-
-.orb-secondary {
-    animation:
-        orbPath2   35s ease-in-out infinite alternate,
-        orbBreath  10s ease-in-out infinite -3s,
-        orbHue     50s linear       infinite -8s !important;
-}
-
-.orb-accent {
-    animation:
-        orbPath3   22s ease-in-out infinite alternate,
-        orbBreath   6s ease-in-out infinite -1.5s,
-        orbHue     30s linear       infinite -4s !important;
-}
-
-@keyframes orbPath1 {
-    0%   { transform: translate(0,    0)    scale(1);    }
-    25%  { transform: translate(8vw,  6vh)  scale(1.15); }
-    50%  { transform: translate(-5vw, 12vh) scale(0.9);  }
-    75%  { transform: translate(12vw, -4vh) scale(1.2);  }
-    100% { transform: translate(-8vw, 8vh)  scale(1.05); }
-}
-
-@keyframes orbPath2 {
-    0%   { transform: translate(0,    0)    scale(1);    }
-    33%  { transform: translate(-10vw, 8vh)  scale(1.1);  }
-    66%  { transform: translate(6vw,  -10vh) scale(0.85); }
-    100% { transform: translate(10vw,  4vh)  scale(1.2);  }
-}
-
-@keyframes orbPath3 {
-    0%   { transform: translate(0, 0)      scale(1);    }
-    50%  { transform: translate(-8vw, 6vh) scale(1.25); }
-    100% { transform: translate(6vw,  -8vh) scale(0.9);  }
-}
-
-@keyframes orbHue {
-    0%   { filter: blur(80px) hue-rotate(0deg);   }
-    100% { filter: blur(80px) hue-rotate(360deg); }
-}
-
-/* Grid mesh — subtle drift */
-.grid-mesh {
-    animation: meshDrift 60s linear infinite;
-}
-
-@keyframes meshDrift {
-    0%   { background-position: 0 0; }
-    100% { background-position: 80px 80px; }
-}
-
-/* Global background hue micro-morph tied to scroll (set via JS) */
-body {
-    transition: background-color 1.2s var(--ease-smooth);
-}
-
-/* ==========================================================================
-   SECTION 2: L2 — GRADIENT MOTION
-   Per-section gradient overlays that pulse and shift
-   ========================================================================== */
-
-/* Every section has a unique ambient gradient glow */
-[data-scene]::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 1s var(--ease-smooth);
-    z-index: 0;
-}
-
-[data-scene].is-active::before {
-    opacity: 1;
-}
-
-#home::before {
-    background: radial-gradient(ellipse 70% 50% at 30% 40%,
-        rgba(0, 240, 255, 0.03) 0%, transparent 70%);
-    animation: sectionGradientPulse 8s ease-in-out infinite;
-}
-
-#about::before {
-    background: radial-gradient(ellipse 60% 40% at 70% 50%,
-        rgba(112, 0, 255, 0.04) 0%, transparent 70%);
-    animation: sectionGradientPulse 10s ease-in-out infinite -2s;
-}
-
-#services::before {
-    background: radial-gradient(ellipse 80% 50% at 50% 30%,
-        rgba(0, 240, 255, 0.025) 0%, transparent 70%);
-    animation: sectionGradientPulse 7s ease-in-out infinite -1s;
-}
-
-#projects::before {
-    background: radial-gradient(ellipse 70% 60% at 20% 60%,
-        rgba(255, 0, 127, 0.035) 0%, transparent 70%);
-    animation: sectionGradientPulse 9s ease-in-out infinite -3s;
-}
-
-#ecosystem::before {
-    background: radial-gradient(ellipse 90% 70% at 50% 50%,
-        rgba(0, 240, 255, 0.04) 0%, rgba(112, 0, 255, 0.02) 50%, transparent 70%);
-    animation: sectionGradientPulse 12s ease-in-out infinite;
-}
-
-#skills::before {
-    background: radial-gradient(ellipse 70% 50% at 80% 40%,
-        rgba(112, 0, 255, 0.03) 0%, transparent 70%);
-    animation: sectionGradientPulse 8s ease-in-out infinite -4s;
-}
-
-#contact::before {
-    background: radial-gradient(ellipse 80% 60% at 50% 70%,
-        rgba(0, 240, 255, 0.04) 0%, rgba(255, 0, 127, 0.02) 50%, transparent 70%);
-    animation: sectionGradientPulse 11s ease-in-out infinite -2s;
-}
-
-@keyframes sectionGradientPulse {
-    0%, 100% { opacity: 1;    transform: scale(1);    }
-    50%      { opacity: 0.6;  transform: scale(1.12); }
-}
-
-/* ==========================================================================
-   SECTION 3: L3 — PARTICLES MOTION
-   CSS particle dots, float drifts, blink system
-   ========================================================================== */
-
-/* Decorative CSS particle system — 20 micro-dots per section (injected by JS) */
-.m-particle {
-    position: absolute;
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 0;
+/* Base styles for GPU compositing promotion */
+.gpu-anim {
     will-change: transform, opacity;
-    animation: particleDrift var(--pd, 10s) ease-in-out infinite;
-    animation-delay: var(--pdelay, 0s);
-    background: var(--pc, rgba(0, 240, 255, 0.3));
-    width: var(--ps, 2px);
-    height: var(--ps, 2px);
-    top: var(--py, 50%);
-    left: var(--px, 50%);
-    opacity: var(--po, 0.3);
-}
-
-@keyframes particleDrift {
-    0%   { transform: translateY(0)          translateX(0)          scale(1);    }
-    25%  { transform: translateY(-20px)       translateX(10px)       scale(1.1);  }
-    50%  { transform: translateY(-35px)       translateX(-8px)       scale(0.9);  }
-    75%  { transform: translateY(-15px)       translateX(15px)       scale(1.05); }
-    100% { transform: translateY(0)          translateX(0)          scale(1);    }
-}
-
-/* Particle blink system */
-.m-particle.blink {
-    animation:
-        particleDrift var(--pd, 10s) ease-in-out infinite,
-        particleBlink var(--pb, 3s) ease-in-out infinite var(--pdelay, 0s);
-}
-
-@keyframes particleBlink {
-    0%, 100% { opacity: var(--po, 0.3); }
-    50%      { opacity: calc(var(--po, 0.3) * 0.2); }
+    backface-visibility: hidden;
+    perspective: 1000px;
 }
 
 /* ==========================================================================
-   SECTION 4: L4 — GLASS MOTION
-   Shimmer sweeps, depth blur, inner glow pulses
+   1. LAUNCH & LOAD SYSTEM — Page transitions & Website Assembly
    ========================================================================== */
 
-/* Universal glass shimmer — pseudo-element sweep on all glass cards */
-.glass-card {
-    position: relative;
-    overflow: hidden;
-}
-
-.glass-card::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 50%;
-    height: 100%;
-    background: linear-gradient(
-        105deg,
-        transparent 30%,
-        rgba(255, 255, 255, 0.06) 50%,
-        transparent 70%
-    );
-    pointer-events: none;
-    z-index: 1;
-    transition: left 0.8s var(--ease-expo);
-}
-
-.glass-card:hover::after {
-    left: 150%;
-}
-
-/* Glass border pulse */
-.glass-card {
-    animation: glassBorderPulse var(--float-slow) ease-in-out infinite;
-    animation-delay: var(--sd, 0s);
-}
-
-@keyframes glassBorderPulse {
-    0%, 100% { border-color: rgba(255, 255, 255, 0.06); }
-    50%      { border-color: rgba(255, 255, 255, 0.10); }
-}
-
-/* Glass depth shadow breathe */
-.glass-card:not(:hover) {
-    animation: glassBorderPulse var(--float-slow) ease-in-out infinite,
-               glassDepthBreath var(--float-med) ease-in-out infinite;
-}
-
-@keyframes glassDepthBreath {
-    0%, 100% { box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255,255,255,0.05); }
-    50%      { box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255,255,255,0.08); }
-}
-
-/* ==========================================================================
-   SECTION 5: L5 — TYPOGRAPHY MOTION
-   Every text element has motion: float, wave, reveal, morph
-   ========================================================================== */
-
-/* Section numbers — float + glow */
-.sh-num {
-    animation: monoFloat var(--float-slow) ease-in-out infinite;
-    display: inline-block;
-}
-
-@keyframes monoFloat {
-    0%, 100% { transform: translateY(0) translateX(0);  opacity: 0.5; }
-    50%      { transform: translateY(-4px) translateX(1px); opacity: 0.8; }
-}
-
-/* Section subtitle lines — fade float */
-.sh-sub {
-    animation: subFloat 7s ease-in-out infinite -2s;
-}
-
-@keyframes subFloat {
-    0%, 100% { transform: translateY(0); opacity: 0.7; }
-    50%      { transform: translateY(-3px); opacity: 0.9; }
-}
-
-/* Section divider lines — draw + breathe */
-.sh-line {
-    animation: lineDraw 1.2s var(--ease-expo) forwards, linePulse 4s ease-in-out infinite 1.2s;
-    transform-origin: left;
-}
-
-@keyframes lineDraw {
-    from { transform: scaleX(0); opacity: 0; }
-    to   { transform: scaleX(1); opacity: 1; }
-}
-
-@keyframes linePulse {
-    0%, 100% { opacity: 0.4; }
-    50%      { opacity: 0.9; }
-}
-
-/* Highlight spans — gradient shimmer */
-.highlight {
-    background-clip: text;
-    -webkit-background-clip: text;
-    animation: highlightShimmer 6s ease-in-out infinite;
-}
-
-@keyframes highlightShimmer {
-    0%, 100% { background-position: 0% 50%; }
-    50%      { background-position: 100% 50%; }
-}
-
-/* Hero rotating text box — glow pulse */
-.rotating-box {
-    animation: roleCycleGlow 3s ease-in-out infinite;
-}
-
-@keyframes roleCycleGlow {
-    0%, 100% { box-shadow: 0 0 0 1px rgba(0, 240, 255, 0.15), 0 4px 20px rgba(0, 0, 0, 0.3); }
-    50%      { box-shadow: 0 0 0 1px rgba(0, 240, 255, 0.35), 0 8px 30px rgba(0, 240, 255, 0.1); }
-}
-
-/* Hero tag availability chip — combined float + pulse */
-.hero-tag {
-    animation: heroTagFloat 5s ease-in-out infinite;
-}
-
-@keyframes heroTagFloat {
-    0%, 100% { transform: translateY(0) scale(1); }
-    50%      { transform: translateY(-4px) scale(1.01); }
-}
-
-/* Hero tech chips — wave float */
-.hero-chips {
-    animation: chipsWave 6s ease-in-out infinite;
-}
-
-.hero-chip {
-    animation: chipFloat var(--float-med) ease-in-out infinite;
-    animation-delay: var(--sd, 0ms);
-}
-
-@keyframes chipFloat {
-    0%, 100% { transform: translateY(0); }
-    50%      { transform: translateY(-5px); }
-}
-
-@keyframes chipsWave {
-    0%, 100% { transform: translateX(0); }
-    50%      { transform: translateX(2px); }
-}
-
-/* ==========================================================================
-   SECTION 6: L6 — IMAGES MOTION
-   Profile, project thumbs, avatar
-   ========================================================================== */
-
-/* Profile image — glow pulse + micro-float */
-.hero-profile-img {
-    animation: profileImgGlow 4s ease-in-out infinite;
-    will-change: filter, transform;
-}
-
-@keyframes profileImgGlow {
-    0%, 100% {
-        filter: brightness(1) saturate(1);
-        transform: scale(1);
-    }
-    50% {
-        filter: brightness(1.05) saturate(1.1);
-        transform: scale(1.01);
-    }
-}
-
-/* Profile glow aura — breathe expand */
-.hero-profile-glow {
-    animation: profileGlowBreath 4s ease-in-out infinite;
-}
-
-@keyframes profileGlowBreath {
-    0%, 100% { transform: scale(1); opacity: 0.6; }
-    50%      { transform: scale(1.18); opacity: 0.9; }
-}
-
-/* Project thumbnail — zoom-in breathe on hover, overlay reveal */
-.proj-thumb {
-    overflow: hidden;
-}
-
-.proj-thumb::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(180deg, transparent 40%, rgba(0, 0, 0, 0.7) 100%);
-    opacity: 0.6;
-    transition: opacity 0.5s var(--ease-smooth);
-    z-index: 1;
-}
-
-.project-card:hover .proj-thumb::before {
-    opacity: 0.9;
-}
-
-/* ==========================================================================
-   SECTION 7: L7 — CARDS MOTION
-   Service, Project, Testimonial, Timeline, Eco cards
-   ========================================================================== */
-
-/* SERVICE CARDS — 5 float variants for organic motion */
-.service-card:nth-child(1)  { animation: cardFloat1 7s ease-in-out infinite; }
-.service-card:nth-child(2)  { animation: cardFloat2 8s ease-in-out infinite -1s; }
-.service-card:nth-child(3)  { animation: cardFloat3 6s ease-in-out infinite -2s; }
-.service-card:nth-child(4)  { animation: cardFloat1 9s ease-in-out infinite -3s; }
-.service-card:nth-child(5)  { animation: cardFloat2 7s ease-in-out infinite -0.5s; }
-.service-card:nth-child(6)  { animation: cardFloat3 8s ease-in-out infinite -4s; }
-.service-card:nth-child(7)  { animation: cardFloat1 6s ease-in-out infinite -1.5s; }
-.service-card:nth-child(8)  { animation: cardFloat2 9s ease-in-out infinite -2.5s; }
-.service-card:nth-child(9)  { animation: cardFloat3 7s ease-in-out infinite -3.5s; }
-
-@keyframes cardFloat1 {
-    0%, 100% { transform: translateY(0) translateX(0); }
-    33%      { transform: translateY(-8px) translateX(2px); }
-    66%      { transform: translateY(-4px) translateX(-2px); }
-}
-
-@keyframes cardFloat2 {
-    0%, 100% { transform: translateY(0) translateX(0); }
-    33%      { transform: translateY(-6px) translateX(-2px); }
-    66%      { transform: translateY(-10px) translateX(1px); }
-}
-
-@keyframes cardFloat3 {
-    0%, 100% { transform: translateY(0) rotate(0deg); }
-    50%      { transform: translateY(-7px) rotate(0.3deg); }
-}
-
-/* Stop float on hover — replace with lift */
-.service-card:hover {
-    animation: none !important;
-    transform: translateY(-10px) scale(1.02) !important;
-}
-
-/* TESTIMONIAL CARDS — depth float */
-.testimonial-card {
-    animation: testCardFloat 8s ease-in-out infinite;
-    animation-delay: var(--sd, 0ms);
-}
-
-@keyframes testCardFloat {
-    0%, 100% { transform: translateY(0); }
-    50%      { transform: translateY(-6px); }
-}
-
-.testimonial-card:hover {
-    animation: none !important;
-}
-
-/* HERO FLOATING CARDS — unique paths */
-.h-float-card.fc1 {
-    animation: fc1Float 7s ease-in-out infinite;
-}
-
-.h-float-card.fc2 {
-    animation: fc2Float 5s ease-in-out infinite -2s;
-}
-
-.h-float-card.fc3 {
-    animation: fc3Float 9s ease-in-out infinite -4s;
-}
-
-@keyframes fc1Float {
-    0%, 100% { transform: translateY(0) translateX(0) rotate(0deg); }
-    25%      { transform: translateY(-14px) translateX(4px) rotate(1deg); }
-    75%      { transform: translateY(-7px) translateX(-3px) rotate(-0.5deg); }
-}
-
-@keyframes fc2Float {
-    0%, 100% { transform: translateY(0) translateX(0); }
-    40%      { transform: translateY(-18px) translateX(5px); }
-    70%      { transform: translateY(-8px) translateX(-4px); }
-}
-
-@keyframes fc3Float {
-    0%, 100% { transform: translateY(0) rotate(0deg); }
-    33%      { transform: translateY(-10px) rotate(-0.8deg); }
-    66%      { transform: translateY(-16px) rotate(0.5deg); }
-}
-
-/* PROFILE CARD — premium 3D float */
-.hero-profile-card {
-    animation: profileCardFloat 9s ease-in-out infinite;
-}
-
-@keyframes profileCardFloat {
-    0%, 100% { transform: translateY(0) rotateY(0deg) rotateX(0deg); }
-    25%      { transform: translateY(-12px) rotateY(1deg) rotateX(-0.5deg); }
-    50%      { transform: translateY(-6px) rotateY(-0.5deg) rotateX(0.5deg); }
-    75%      { transform: translateY(-16px) rotateY(1.5deg) rotateX(-1deg); }
-}
-
-.hero-profile-card:hover {
-    animation: none !important;
-}
-
-/* ==========================================================================
-   SECTION 8: L8 — BUTTONS MOTION
-   Glow pulse, gradient shift, float, shine
-   ========================================================================== */
-
-/* All buttons — idle float */
-.btn {
-    animation: btnFloat var(--float-med) ease-in-out infinite;
-    animation-delay: var(--sd, 0ms);
-}
-
-@keyframes btnFloat {
-    0%, 100% { transform: translateY(0); }
-    50%      { transform: translateY(-3px); }
-}
-
-/* Primary button — gradient shift + glow */
-.btn-primary {
-    animation: btnFloat var(--float-med) ease-in-out infinite,
-               btnPrimaryGlow 3s ease-in-out infinite;
-}
-
-@keyframes btnPrimaryGlow {
-    0%, 100% { box-shadow: 0 4px 20px rgba(0, 240, 255, 0.25); }
-    50%      { box-shadow: 0 8px 35px rgba(0, 240, 255, 0.45), 0 0 0 1px rgba(0, 240, 255, 0.2); }
-}
-
-/* Outline button — border trace */
-.btn-outline {
-    animation: btnFloat var(--float-med) ease-in-out infinite -1s,
-               btnOutlineTrace 4s ease-in-out infinite;
-}
-
-@keyframes btnOutlineTrace {
-    0%, 100% { border-color: rgba(255, 255, 255, 0.12); }
-    50%      { border-color: rgba(0, 240, 255, 0.25); }
-}
-
-/* Buttons stop float on hover */
-.btn:hover {
-    animation: none !important;
-}
-
-/* ==========================================================================
-   SECTION 9: L9 — ICONS MOTION
-   Service icons, nav icons, social icons, eco nodes
-   ========================================================================== */
-
-/* Service card icons — each has unique float */
-.service-card:nth-child(1) .s-card-icon { animation: iconFloat1 5s ease-in-out infinite; }
-.service-card:nth-child(2) .s-card-icon { animation: iconFloat2 6s ease-in-out infinite -1s; }
-.service-card:nth-child(3) .s-card-icon { animation: iconFloat1 4s ease-in-out infinite -2s; }
-.service-card:nth-child(4) .s-card-icon { animation: iconFloat3 7s ease-in-out infinite -0.5s; }
-.service-card:nth-child(5) .s-card-icon { animation: iconFloat2 5s ease-in-out infinite -3s; }
-.service-card:nth-child(6) .s-card-icon { animation: iconFloat1 6s ease-in-out infinite -1.5s; }
-.service-card:nth-child(7) .s-card-icon { animation: iconFloat3 4s ease-in-out infinite -2.5s; }
-.service-card:nth-child(8) .s-card-icon { animation: iconFloat2 7s ease-in-out infinite -3.5s; }
-.service-card:nth-child(9) .s-card-icon { animation: iconFloat1 5s ease-in-out infinite -4s; }
-
-@keyframes iconFloat1 {
-    0%, 100% { transform: translateY(0) rotate(0deg) scale(1); }
-    50%      { transform: translateY(-6px) rotate(5deg) scale(1.05); }
-}
-
-@keyframes iconFloat2 {
-    0%, 100% { transform: translateY(0) rotate(0deg); }
-    33%      { transform: translateY(-8px) rotate(-5deg); }
-    66%      { transform: translateY(-3px) rotate(3deg); }
-}
-
-@keyframes iconFloat3 {
-    0%, 100% { transform: scale(1) rotate(0deg); }
-    50%      { transform: scale(1.1) rotate(8deg); }
-}
-
-/* Nav icons — subtle bounce on link hover */
-.nav-link:hover i {
-    animation: navIconBounce 0.4s var(--ease-bounce);
-}
-
-@keyframes navIconBounce {
-    0%   { transform: translateY(0) scale(1); }
-    40%  { transform: translateY(-4px) scale(1.15); }
-    100% { transform: translateY(0) scale(1); }
-}
-
-/* Eco center icon — spin pulse */
-.eco-center i {
-    animation: ecoCenterSpin 12s linear infinite;
-}
-
-@keyframes ecoCenterSpin {
-    0%   { transform: rotate(0deg) scale(1); }
-    25%  { transform: rotate(90deg) scale(1.08); }
-    50%  { transform: rotate(180deg) scale(1); }
-    75%  { transform: rotate(270deg) scale(1.08); }
-    100% { transform: rotate(360deg) scale(1); }
-}
-
-/* ECO NODES — each orbiting node floats independently */
-.eco-node { animation: ecoNodePulse 3s ease-in-out infinite; }
-.eco-node.n1 { animation-delay: 0s; }
-.eco-node.n2 { animation-delay: -0.5s; }
-.eco-node.n3 { animation-delay: -1s; }
-.eco-node.n4 { animation-delay: -1.5s; }
-.eco-node.n5 { animation-delay: -2s; }
-.eco-node.n6 { animation-delay: -2.5s; }
-.eco-node.n7 { animation-delay: -3s; }
-.eco-node.n8 { animation-delay: -3.5s; }
-
-@keyframes ecoNodePulse {
-    0%, 100% { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 10px rgba(0, 240, 255, 0.2); }
-    50%      { transform: translate(-50%, -50%) scale(1.12); box-shadow: 0 0 20px rgba(0, 240, 255, 0.5); }
-}
-
-/* Social icons — hover burst */
-.social-pill i {
-    transition: transform 0.3s var(--ease-bounce);
-}
-
-.social-pill:hover i {
-    animation: iconBurst 0.5s var(--ease-bounce);
-}
-
-@keyframes iconBurst {
-    0%   { transform: scale(1) rotate(0deg); }
-    40%  { transform: scale(1.4) rotate(-8deg); }
-    100% { transform: scale(1) rotate(0deg); }
-}
-
-/* ==========================================================================
-   SECTION 10: L10 — INTERACTIVE MOTION
-   Focus, hover states, active states
-   ========================================================================== */
-
-/* Form inputs — glow focus animation */
-.form-input:focus,
-.form-textarea:focus,
-.form-select:focus {
-    animation: inputFocusGlow 0.4s var(--ease-spring) forwards;
-}
-
-@keyframes inputFocusGlow {
-    0%   { box-shadow: none; }
-    100% { box-shadow: 0 0 0 2px rgba(0, 240, 255, 0.25), 0 4px 20px rgba(0, 0, 0, 0.3); }
-}
-
-/* Checkbox hover */
-.form-checkbox-item input[type="checkbox"] {
-    transition: transform 0.2s var(--ease-bounce), border-color 0.2s ease;
-}
-
-.form-checkbox-item:hover input[type="checkbox"] {
-    transform: scale(1.1);
-}
-
-/* Timeline dot — pulse hover */
-.timeline-item:hover .timeline-dot {
-    animation: dotPulseHover 0.6s ease-in-out;
-}
-
-@keyframes dotPulseHover {
-    0%   { transform: translateX(-7px) scale(1); }
-    50%  { transform: translateX(-7px) scale(1.5); box-shadow: 0 0 0 6px rgba(0, 240, 255, 0.1); }
-    100% { transform: translateX(-7px) scale(1); }
-}
-
-/* Back-to-top — float */
-#backToTop {
-    animation: bttPulse 3s ease-in-out infinite;
-}
-
-@keyframes bttPulse {
-    0%, 100% { transform: translateY(0) scale(1); box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); }
-    50%      { transform: translateY(-5px) scale(1.05); box-shadow: 0 10px 30px rgba(0, 240, 255, 0.2); }
-}
-
-/* ==========================================================================
-   SECTION 11: L11 — SCROLL MOTION
-   These are driven by CSS custom properties set by JS scroll engine
-   ========================================================================== */
-
-/* Parallax container depth — each section label drifts at own speed */
-[data-scene] .section-header {
-    transform: translateY(calc(var(--scroll-center-pos, 0) * -20px));
-    will-change: transform;
-}
-
-/* About visual parallax — slower than content */
-.about-visual {
-    transform: translateY(calc(var(--scroll-center-pos, 0) * -30px)) translateX(-40px);
-}
-
-.about-visual.is-in-view {
-    transform: translateY(calc(var(--scroll-center-pos, 0) * -30px)) translateX(0);
-}
-
-/* ==========================================================================
-   SECTION 12: L12 — TRANSITION MOTION
-   Section-level cinematic entry/exit system
-   ========================================================================== */
-
-/* SECTION ENTRY — each section enters with scale fade */
-[data-scene] {
-    transition:
-        opacity 0.8s var(--ease-smooth),
-        transform 0.8s var(--ease-spring);
-}
-
-/* When NOT active, sections subtly recede (scale down very slightly) */
-[data-scene]:not(.is-active):not(#home) {
-    opacity: 0.95;
-    /* Removed scale to avoid layout shift — use filter instead */
-}
-
-/* Cinematic depth effect — active section has full contrast */
-[data-scene].is-active {
-    opacity: 1;
-}
-
-/* CURTAIN REVEAL — applied to section headers */
-.section-header {
-    overflow: visible;
-}
-
-/* Section number marker — draw-in animation */
-.sh-num {
-    position: relative;
-}
-
-.sh-num::after {
-    content: '';
-    position: absolute;
-    bottom: -2px;
-    left: 0;
-    width: 0;
-    height: 1px;
-    background: var(--primary);
-    transition: width 0.6s var(--ease-expo) 0.3s;
-}
-
-.section-header.is-in-view .sh-num::after {
-    width: 100%;
-}
-
-/* ==========================================================================
-   HOME SECTION — 30+ MOTION EFFECTS
-   ========================================================================== */
-
-/* H1: Background — dynamic radial gradient animation */
-.hero-grid-bg {
-    animation: gridBgPulse 10s ease-in-out infinite;
-}
-
-@keyframes gridBgPulse {
-    0%, 100% { opacity: 0.4; background-size: 40px 40px; }
-    50%      { opacity: 0.6; background-size: 42px 42px; }
-}
-
-/* H2: Hero tag dot — triple ring pulse */
-.hero-tag .dot {
-    position: relative;
-}
-
-.hero-tag .dot::before,
-.hero-tag .dot::after {
-    content: '';
-    position: absolute;
-    inset: -4px;
-    border-radius: 50%;
-    border: 1px solid rgba(0, 240, 255, 0.3);
-    animation: dotRingExpand 2.5s ease-out infinite;
-}
-
-.hero-tag .dot::after {
-    animation-delay: 1.25s;
-}
-
-@keyframes dotRingExpand {
-    0%   { transform: scale(1); opacity: 1; }
-    100% { transform: scale(2.5); opacity: 0; }
-}
-
-/* H3: Hero stack title — scan-line effect */
-.hero-stack-title {
-    position: relative;
-    overflow: hidden;
-}
-
-.hero-stack-title::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 60%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.08), transparent);
-    animation: scanLine 4s ease-in-out infinite 2s;
-}
-
-@keyframes scanLine {
-    0%   { left: -60%; }
-    100% { left: 160%; }
-}
-
-/* H4: Hero profile wrapper glow ring */
-.hero-profile-wrapper::before {
-    content: '';
-    position: absolute;
-    inset: -20px;
-    border-radius: 50%;
-    background: conic-gradient(
-        from 0deg,
-        rgba(0, 240, 255, 0) 0deg,
-        rgba(0, 240, 255, 0.3) 120deg,
-        rgba(112, 0, 255, 0.3) 240deg,
-        rgba(0, 240, 255, 0) 360deg
-    );
-    animation: profileRingRotate 8s linear infinite;
-    opacity: 0.5;
-    filter: blur(4px);
-    pointer-events: none;
-    z-index: -1;
-}
-
-@keyframes profileRingRotate {
-    to { transform: rotate(360deg); }
-}
-
-/* H5: Rotating prefix — fade blink */
-.rotating-prefix {
-    animation: prefixBlink 3s ease-in-out infinite;
-}
-
-@keyframes prefixBlink {
-    0%, 80%, 100% { opacity: 0.7; }
-    90%            { opacity: 0.3; }
-}
-
-/* H6: Hero desc — word float (applied via CSS using animation) */
-.hero-desc {
-    animation: descFloat 8s ease-in-out infinite 1s;
-}
-
-@keyframes descFloat {
-    0%, 100% { transform: translateY(0); }
-    50%      { transform: translateY(-3px); }
-}
-
-/* ==========================================================================
-   ABOUT SECTION — 20+ MOTION EFFECTS
-   ========================================================================== */
-
-/* About section content blocks — subtle depth float */
-.about-body > * {
-    animation: contentDepthFloat 9s ease-in-out infinite;
-}
-
-.about-body > *:nth-child(2) { animation-delay: -2s; }
-.about-body > *:nth-child(3) { animation-delay: -4s; }
-.about-body > *:nth-child(4) { animation-delay: -6s; }
-
-@keyframes contentDepthFloat {
-    0%, 100% { transform: translateY(0); }
-    50%      { transform: translateY(-4px); }
-}
-
-/* Metric cards — individual float with glow */
-.metric-card:nth-child(1) { animation: metricFloat1 6s ease-in-out infinite; }
-.metric-card:nth-child(2) { animation: metricFloat1 7s ease-in-out infinite -2s; }
-.metric-card:nth-child(3) { animation: metricFloat1 5s ease-in-out infinite -1s; }
-.metric-card:nth-child(4) { animation: metricFloat1 8s ease-in-out infinite -3s; }
-
-@keyframes metricFloat1 {
-    0%, 100% { transform: translateY(0); }
-    50%      { transform: translateY(-6px); }
-}
-
-/* Stat numbers — count complete shine */
-.stat-num {
-    animation: statShine 5s ease-in-out infinite;
-}
-
-@keyframes statShine {
-    0%, 80%, 100% { text-shadow: none; }
-    90%           { text-shadow: 0 0 20px rgba(0, 240, 255, 0.5); }
-}
-
-/* Avatar aura ring — conic gradient rotation */
-.avatar-box::after {
-    content: '';
-    position: absolute;
-    inset: -3px;
-    border-radius: inherit;
-    background: conic-gradient(
-        from 0deg,
-        transparent 70%,
-        rgba(0, 240, 255, 0.4) 90%,
-        transparent 100%
-    );
-    animation: avatarAuraRotate 6s linear infinite;
-    pointer-events: none;
-    z-index: -1;
-    border-radius: 20px;
-}
-
-@keyframes avatarAuraRotate {
-    to { transform: rotate(360deg); }
-}
-
-/* ==========================================================================
-   SERVICES SECTION — 25+ MOTION EFFECTS
-   ========================================================================== */
-
-/* Service features check icons — pulse */
-.service-feature i {
-    animation: checkPulse 4s ease-in-out infinite;
-    animation-delay: var(--sd, 0ms);
-}
-
-@keyframes checkPulse {
-    0%, 100% { transform: scale(1); color: var(--primary); }
-    50%      { transform: scale(1.2); color: rgba(0, 240, 255, 0.9); filter: drop-shadow(0 0 4px rgba(0, 240, 255, 0.4)); }
-}
-
-/* Services grid — perspective tilt (via JS mouse tracking) */
-.services-grid {
-    perspective: 1200px;
-}
-
-/* Service card number — floating badge */
-.service-card::before {
-    content: attr(data-num);
-    position: absolute;
-    top: 12px;
-    right: 14px;
-    font-size: 0.65rem;
-    font-family: 'JetBrains Mono', monospace;
-    color: rgba(0, 240, 255, 0.25);
-    letter-spacing: 0.05em;
-    transition: color 0.3s ease, opacity 0.3s ease;
-    pointer-events: none;
-    z-index: 1;
-}
-
-.service-card:hover::before {
-    color: rgba(0, 240, 255, 0.6);
-}
-
-/* ==========================================================================
-   PROJECTS SECTION — 40+ MOTION EFFECTS
-   ========================================================================== */
-
-/* Projects grid — staggered card entries already in cinematic.css */
-/* Additional: project number badge float */
-.proj-num {
-    animation: projNumFloat 6s ease-in-out infinite;
-    display: inline-block;
-}
-
-@keyframes projNumFloat {
-    0%, 100% { transform: translateX(0) skewX(0deg); color: rgba(0, 240, 255, 0.25); }
-    50%      { transform: translateX(2px) skewX(-2deg); color: rgba(0, 240, 255, 0.5); }
-}
-
-/* Project links — underline draw on hover */
-.proj-links a {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4em;
-}
-
-.proj-links a::after {
-    content: '';
-    position: absolute;
-    bottom: -2px;
-    left: 0;
-    width: 0;
-    height: 1px;
-    background: var(--primary);
-    transition: width 0.3s var(--ease-expo);
-}
-
-.proj-links a:hover::after {
-    width: 100%;
-}
-
-/* Project card stagger override — alternate directions */
-.project-card:nth-child(3n+1) { animation-delay: 0ms; }
-.project-card:nth-child(3n+2) { animation-delay: 100ms; }
-.project-card:nth-child(3n+3) { animation-delay: 200ms; }
-
-/* Project thumbnail image scale */
-.proj-thumb img,
-.proj-thumb video {
-    transition: transform 0.8s var(--ease-expo);
-    will-change: transform;
-}
-
-.project-card:hover .proj-thumb img,
-.project-card:hover .proj-thumb video {
-    transform: scale(1.06);
-}
-
-/* Project overlay — icon spin on card hover */
-.proj-thumb-overlay {
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(4px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: absolute;
-    inset: 0;
-    opacity: 0;
-    transition: opacity 0.5s var(--ease-smooth);
-    z-index: 2;
-}
-
-.project-card:hover .proj-thumb-overlay {
-    opacity: 1;
-}
-
-/* ==========================================================================
-   SKILLS SECTION — 25+ MOTION EFFECTS
-   ========================================================================== */
-
-/* Skills cloud — overall container float */
-.skills-cloud-container {
-    animation: cloudContainerFloat 12s ease-in-out infinite;
-}
-
-@keyframes cloudContainerFloat {
-    0%, 100% { transform: translateY(0); }
-    50%      { transform: translateY(-8px); }
-}
-
-/* Skill tag — glow pulse on hover */
-.skill-tag:hover {
-    animation: none !important;
-    box-shadow: 0 0 0 1px rgba(0, 240, 255, 0.4),
-                0 8px 20px rgba(0, 240, 255, 0.15) !important;
-}
-
-/* Github callout — breathe */
-.github-callout {
-    animation: calloutBreath 6s ease-in-out infinite;
-}
-
-@keyframes calloutBreath {
-    0%, 100% { border-color: rgba(0, 240, 255, 0.08); }
-    50%      { border-color: rgba(0, 240, 255, 0.2); box-shadow: 0 0 30px rgba(0, 240, 255, 0.05); }
-}
-
-/* ==========================================================================
-   EXPERIENCE SECTION
-   ========================================================================== */
-
-/* Timeline line — glowing particle travels down */
-.timeline-line::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 2px;
-    height: 20%;
-    background: linear-gradient(180deg, var(--primary), transparent);
-    animation: timelineParticle 4s ease-in-out infinite;
-}
-
-@keyframes timelineParticle {
-    0%   { top: -20%; opacity: 1; }
-    100% { top: 100%; opacity: 0; }
-}
-
-/* Timeline tags — hover pop */
-.timeline-tag {
-    transition: transform 0.3s var(--ease-bounce),
-                border-color 0.3s ease, color 0.3s ease;
-}
-
-.timeline-tag:hover {
-    transform: scale(1.08) translateY(-2px);
-    border-color: rgba(0, 240, 255, 0.3);
-    color: var(--primary);
-}
-
-/* ==========================================================================
-   TESTIMONIALS SECTION
-   ========================================================================== */
-
-/* Testimonials container — gentle side drift */
-.testimonials-grid {
-    animation: testimonialGridDrift 14s ease-in-out infinite;
-}
-
-@keyframes testimonialGridDrift {
-    0%, 100% { transform: translateX(0); }
-    50%      { transform: translateX(4px); }
-}
-
-/* Quote mark float */
-.test-quote-icon {
-    animation: quoteFloat 6s ease-in-out infinite;
-    display: block;
-}
-
-@keyframes quoteFloat {
-    0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.15; }
-    50%      { transform: translateY(-6px) rotate(5deg); opacity: 0.3; }
-}
-
-/* ==========================================================================
-   CONTACT SECTION — 20+ MOTION EFFECTS
-   ========================================================================== */
-
-/* Contact section header — glow pulse */
-.contact .section-header {
-    position: relative;
-}
-
-/* Contact grid split entrance */
-.contact-info,
-.form-card {
-    position: relative;
-}
-
-/* Input label — float animation on focus */
-.form-label {
-    transition: transform 0.3s var(--ease-spring),
-                color 0.3s ease,
-                font-size 0.3s ease;
-}
-
-/* Submit button — glow breathing */
-.form-card button[type="submit"] {
-    animation: submitGlow 4s ease-in-out infinite;
-}
-
-@keyframes submitGlow {
-    0%, 100% { box-shadow: 0 4px 20px rgba(0, 240, 255, 0.2); }
-    50%      { box-shadow: 0 8px 35px rgba(0, 240, 255, 0.4), 0 0 0 1px rgba(0, 240, 255, 0.15); }
-}
-
-/* ==========================================================================
-   LOADING SCREEN — 20+ MOTION EFFECTS (Apple Product Launch Style)
-   ========================================================================== */
-
-/* Loader background — cinematic depth gradient animate */
+/* Loader background crossfade */
 #loader {
-    background: radial-gradient(ellipse 120% 80% at 50% 40%,
-        rgba(0, 14, 40, 1) 0%,
-        rgba(5, 8, 22, 1) 60%,
-        rgba(0, 0, 0, 1) 100%
-    );
-    animation: loaderBgMorph 6s ease-in-out infinite;
+    transition: opacity 0.8s var(--ease-cinematic), visibility 0.8s var(--ease-cinematic);
+    will-change: opacity;
 }
 
-@keyframes loaderBgMorph {
-    0%, 100% { background-position: 50% 40%; }
-    50%      { background-position: 50% 45%; }
-}
-
-/* Loader inner container — entrance slide */
-.loader-inner {
-    animation: loaderInnerEntrance 0.8s var(--ease-spring) 0.2s both;
-}
-
-@keyframes loaderInnerEntrance {
-    from { transform: translateY(30px); opacity: 0; }
-    to   { transform: translateY(0);    opacity: 1; }
-}
-
-/* Avatar ring — conic rotation during load */
-.loader-avatar-wrap {
-    position: relative;
-}
-
-.loader-avatar-wrap::after {
-    content: '';
-    position: absolute;
-    inset: -4px;
-    border-radius: 50%;
-    background: conic-gradient(
-        from 0deg,
-        var(--primary) 0deg,
-        var(--secondary) 120deg,
-        var(--accent) 240deg,
-        var(--primary) 360deg
-    );
-    animation: loaderAvatarRing 2s linear infinite;
-    z-index: -1;
-    filter: blur(2px);
-}
-
-@keyframes loaderAvatarRing {
-    to { transform: rotate(360deg); }
-}
-
-/* Progress bar — glow shimmer on fill */
-.loader-bar {
-    position: relative;
-    overflow: hidden;
-}
-
-.loader-bar::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 40px;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
-    animation: barShimmer 1s ease-in-out infinite;
-}
-
-@keyframes barShimmer {
-    0%   { transform: translateX(-100%); }
-    100% { transform: translateX(300%); }
-}
-
-/* Loader letter spans — depth entrance */
+/* Loader elements assembly reveal states */
 #loaderName span {
     display: inline-block;
-    transform: translateY(20px) rotateX(-45deg);
+    transform: translateY(30px);
     opacity: 0;
-    transform-origin: top center;
-    transition: transform 0.5s var(--ease-spring), opacity 0.5s ease;
+    transition: transform 0.6s var(--ease-spring), opacity 0.6s ease;
 }
-
 #loaderName span.reveal {
-    transform: translateY(0) rotateX(0deg);
+    transform: translateY(0);
     opacity: 1;
 }
 
-/* Loader role — blur-in */
 #loaderRole {
-    filter: blur(6px);
-    transition: filter 0.6s ease, opacity 0.6s ease;
-}
-
-#loaderRole.reveal {
-    filter: blur(0px);
-}
-
-/* Status message — typewriter blink */
-#loaderStatus {
-    border-right: 2px solid rgba(0, 240, 255, 0.6);
-    animation: cursorBlink 0.8s ease-in-out infinite;
-}
-
-@keyframes cursorBlink {
-    0%, 100% { border-right-color: rgba(0, 240, 255, 0.6); }
-    50%      { border-right-color: transparent; }
-}
-
-/* ==========================================================================
-   NAVIGATION — Premium Motion System
-   ========================================================================== */
-
-/* Nav logo — float */
-.nav-logo {
-    animation: navLogoFloat 7s ease-in-out infinite;
-}
-
-@keyframes navLogoFloat {
-    0%, 100% { transform: translateY(0); }
-    50%      { transform: translateY(-2px); }
-}
-
-/* Nav links stagger entrance */
-.nav-links li {
     opacity: 0;
-    transform: translateY(-10px);
-    transition: opacity 0.4s ease, transform 0.4s var(--ease-spring);
+    transform: translateY(15px);
+    transition: opacity 0.8s ease 0.4s, transform 0.8s var(--ease-spring) 0.4s;
 }
-
-body.cinematic-ready .nav-links li {
+#loaderRole.reveal {
     opacity: 1;
     transform: translateY(0);
 }
 
-body.cinematic-ready .nav-links li:nth-child(1) { transition-delay: 0.15s; }
-body.cinematic-ready .nav-links li:nth-child(2) { transition-delay: 0.22s; }
-body.cinematic-ready .nav-links li:nth-child(3) { transition-delay: 0.29s; }
-body.cinematic-ready .nav-links li:nth-child(4) { transition-delay: 0.36s; }
-body.cinematic-ready .nav-links li:nth-child(5) { transition-delay: 0.43s; }
-body.cinematic-ready .nav-links li:nth-child(6) { transition-delay: 0.50s; }
-body.cinematic-ready .nav-links li:nth-child(7) { transition-delay: 0.57s; }
-body.cinematic-ready .nav-links li:nth-child(8) { transition-delay: 0.64s; }
-
-/* Scrolled nav — glass morph */
-.nav.scrolled {
-    animation: navScrolled 0.4s var(--ease-spring) forwards;
+/* Hero Section Page Transition Reveal (Website Assembly) */
+.hero-tag,
+.hero-title-container,
+.hero-rotating-container,
+.hero-desc,
+.btn-group,
+.hero-stack,
+.hero-profile-wrapper,
+.h-float-card {
+    opacity: 0;
+    transform: translateY(35px) scale(0.97);
+    transition: opacity 1.1s var(--ease-spring), transform 1.1s var(--ease-spring);
+    will-change: opacity, transform;
 }
 
-@keyframes navScrolled {
-    to {
-        background: rgba(5, 8, 22, 0.9);
-        backdrop-filter: blur(20px) saturate(180%);
-        border-bottom-color: rgba(255, 255, 255, 0.08);
-        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
-    }
+body.cinematic-ready .hero-tag { opacity: 1; transform: translateY(0) scale(1); transition-delay: 0.1s; }
+body.cinematic-ready .hero-title-container { opacity: 1; transform: translateY(0) scale(1); transition-delay: 0.22s; }
+body.cinematic-ready .hero-rotating-container { opacity: 1; transform: translateY(0) scale(1); transition-delay: 0.34s; }
+body.cinematic-ready .hero-desc { opacity: 1; transform: translateY(0) scale(1); transition-delay: 0.46s; }
+body.cinematic-ready .btn-group { opacity: 1; transform: translateY(0) scale(1); transition-delay: 0.58s; }
+body.cinematic-ready .hero-stack { opacity: 1; transform: translateY(0) scale(1); transition-delay: 0.7s; }
+body.cinematic-ready .hero-profile-wrapper { opacity: 1; transform: translateY(0) scale(1); transition-delay: 0.25s; }
+
+/* Stagger floating cards on load */
+body.cinematic-ready .h-float-card.fc1 { opacity: 1; transform: translateY(0) scale(1); transition-delay: 0.45s; }
+body.cinematic-ready .h-float-card.fc2 { opacity: 1; transform: translateY(0) scale(1); transition-delay: 0.55s; }
+body.cinematic-ready .h-float-card.fc3 { opacity: 1; transform: translateY(0) scale(1); transition-delay: 0.65s; }
+
+/* ==========================================================================
+   2. VIEWPORT-TRIGGERED REVEALS (Intersection Observer)
+   Staggered, clean one-time viewport entries for all elements
+   ========================================================================== */
+
+/* Typography and general section containers: Fade In / Fade Out transitions (strictly opacity) */
+.section-header,
+.about-body,
+.eco-info,
+.contact-info,
+.audit-intro,
+.footer {
+    opacity: 0;
+    transition: opacity 0.8s var(--ease-spring);
+    will-change: opacity;
+}
+.section-header.is-in-view,
+.about-body.is-in-view,
+.eco-info.is-in-view,
+.contact-info.is-in-view,
+.audit-intro.is-in-view,
+.footer.is-in-view {
+    opacity: 1 !important;
+}
+
+/* Cards, tags, list items: Scale In / Scale Out + Fade In / Fade Out transitions */
+.service-card,
+.project-card,
+.testimonial-card,
+.github-callout,
+.form-card,
+.audit-form-card,
+.metric-card,
+.skill-tag,
+.about-meta-item,
+.timeline-item {
+    opacity: 0;
+    transform: scale(0.95);
+    transition: opacity 0.7s var(--ease-spring),
+                transform 0.7s var(--ease-spring),
+                border-color 0.3s ease,
+                box-shadow 0.4s ease;
+    transition-delay: var(--sd, 0ms);
+    will-change: opacity, transform;
+}
+
+.service-card.is-in-view,
+.project-card.is-in-view,
+.testimonial-card.is-in-view,
+.github-callout.is-in-view,
+.form-card.is-in-view,
+.audit-form-card.is-in-view,
+.metric-card.is-in-view,
+.skill-tag.is-in-view,
+.about-meta-item.is-in-view,
+.timeline-item.is-in-view {
+    opacity: 1 !important;
+    transform: scale(1) !important;
+}
+
+/* Images: Scale In / Scale Out + Fade In / Fade Out transitions */
+.about-visual,
+.proj-thumb-img,
+.avatar-img {
+    opacity: 0;
+    transform: scale(0.95);
+    transition: opacity 1.1s var(--ease-spring), transform 1.1s var(--ease-spring);
+    will-change: opacity, transform;
+}
+.about-visual.is-in-view,
+.is-in-view .proj-thumb-img,
+.is-in-view .avatar-img {
+    opacity: 1 !important;
+    transform: scale(1) !important;
+}
+
+/* Experience timeline line draw */
+.timeline-line {
+    transform-origin: top;
+    transform: scaleY(0);
+    transition: transform 1.5s var(--ease-spring);
+    will-change: transform;
+}
+.experience-layout.is-in-view .timeline-line {
+    transform: scaleY(1);
 }
 
 /* ==========================================================================
-   FOOTER — Motion System
+   3. SCROLL TRANSITIONS — Pinning, Horizontal, & Parallax Scroll
    ========================================================================== */
 
-/* Footer logo float */
-.footer-logo {
-    animation: footerLogoFloat 8s ease-in-out infinite;
+/* HOME Parallax Scroll (Reacts strictly to scroll position, static when idle) */
+#home .hero-info {
+    transform: translateY(calc(var(--scroll-center-pos, 0) * -40px));
+}
+#home .hero-visual {
+    transform: translateY(calc(var(--scroll-center-pos, 0) * -20px));
+}
+/* Individual card scroll offsets creating natural depth */
+#home .h-float-card.fc1 { transform: translateY(calc(var(--scroll-center-pos, 0) * -80px)); }
+#home .h-float-card.fc2 { transform: translateY(calc(var(--scroll-center-pos, 0) * -50px)); }
+#home .h-float-card.fc3 { transform: translateY(calc(var(--scroll-center-pos, 0) * -110px)); }
+
+/* IMAGE PARALLAX (Only moves as page scrolls) */
+.avatar-img {
+    will-change: transform;
+    transition: transform 0.1s linear;
 }
 
-@keyframes footerLogoFloat {
-    0%, 100% { transform: translateY(0); }
-    50%      { transform: translateY(-4px); }
+
+/* PROJECTS SECTION — Grid entries optimized for vertical layout */
+.projects-grid {
+    width: 100%;
 }
 
-/* Footer decorative line — glow pulse */
-.footer::before {
-    animation: footerLinePulse 4s ease-in-out infinite;
+/* ==========================================================================
+   4. USER MICRO-INTERACTIONS (Hover tilts, glow, spotlight)
+   These are active ONLY when user interacts. No constant loops.
+   ========================================================================== */
+
+/* Universal Glow spotlight backdrop support */
+.glass-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(
+        circle 150px at var(--mouse-x, 50%) var(--mouse-y, 50%),
+        rgba(0, 240, 255, 0.08),
+        transparent 80%
+    );
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    pointer-events: none;
+    z-index: 1;
+}
+.glass-card:hover::before {
+    opacity: 1;
 }
 
-@keyframes footerLinePulse {
-    0%, 100% { opacity: 0.5; }
-    50%      { opacity: 1; box-shadow: 0 0 20px rgba(0, 240, 255, 0.3); }
+/* Card Hover Expand Transitions */
+.project-card,
+.service-card,
+.testimonial-card,
+.github-callout,
+.contact-link-card,
+.form-card {
+    transition: transform 0.5s var(--ease-spring),
+                border-color 0.3s ease,
+                box-shadow 0.5s ease,
+                background 0.3s ease;
 }
 
-/* Footer links — micro hover animations */
-.footer-nav-link {
+.project-card:hover,
+.service-card:hover,
+.testimonial-card:hover {
+    transform: translateY(-8px) scale(1.015) !important;
+    border-color: rgba(0, 240, 255, 0.25);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 
+                0 0 0 1px rgba(0, 240, 255, 0.1);
+}
+
+/* Card Expansion for Skill Tags */
+.skill-tag {
+    transition: transform 0.3s var(--ease-bounce),
+                border-color 0.3s ease,
+                box-shadow 0.3s ease,
+                background 0.3s ease;
+}
+.skill-tag:hover {
+    transform: scale(1.1) translateY(-3px) !important;
+    border-color: rgba(0, 240, 255, 0.4);
+    box-shadow: 0 6px 15px rgba(0, 240, 255, 0.2);
+    background: rgba(0, 240, 255, 0.05);
+}
+
+/* Image zoom & Rotation on hover */
+.proj-thumb {
     position: relative;
-    transition: color 0.3s ease, transform 0.3s var(--ease-spring);
+    overflow: hidden;
+}
+.proj-thumb-img {
+    transition: transform 0.6s var(--ease-spring);
+}
+.project-card:hover .proj-thumb-img {
+    transform: scale(1.08) rotate(1.5deg) !important;
 }
 
-.footer-nav-link:hover {
-    transform: translateX(4px);
-    color: var(--primary);
+/* Button hover transitions: minimal and premium */
+.btn {
+    transition: transform 0.4s var(--ease-spring),
+                border-color 0.3s ease,
+                box-shadow 0.4s ease,
+                background 0.3s ease;
+}
+.btn:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 8px 20px rgba(0, 240, 255, 0.25);
+}
+.btn-primary:hover {
+    background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);
+}
+
+/* Magnetic button centering overlay spring shift handled via JS */
+
+/* Avatar 3D Perspective Tilt on hover */
+.avatar-box {
+    transform-style: preserve-3d;
+    transition: transform 0.5s var(--ease-spring);
 }
 
 /* ==========================================================================
-   MOBILE — Full Premium Motion (No Reduction)
+   5. BACKGROUND & AMBIENT VISUALS — Subdued, lightweight
    ========================================================================== */
 
+/* Quiet down background glow animation - keep static gradient pulse */
+.aurora-container {
+    opacity: 0.7;
+    mix-blend-mode: screen;
+}
+.aurora-orb {
+    filter: blur(90px);
+    transition: opacity 1.5s ease;
+}
+
+/* Subdued grid mesh */
+.grid-mesh {
+    opacity: 0.15;
+}
+
+/* ==========================================================================
+   6. PREMIUM MOBILE & TABLET TRANSITIONS (Adaptive layouts)
+   ========================================================================== */
 @media screen and (max-width: 1024px) {
-    /* Maintain all float animations on mobile — just reduce magnitude */
 
-    .h-float-card.fc1 { animation: fc1FloatMobile 7s ease-in-out infinite; }
-    .h-float-card.fc2 { animation: fc2FloatMobile 5s ease-in-out infinite -2s; }
-    .h-float-card.fc3 { animation: fc3FloatMobile 9s ease-in-out infinite -4s; }
 
-    @keyframes fc1FloatMobile {
-        0%, 100% { transform: translateY(0); }
-        50%      { transform: translateY(-8px); }
-    }
-
-    @keyframes fc2FloatMobile {
-        0%, 100% { transform: translateY(0); }
-        50%      { transform: translateY(-10px); }
-    }
-
-    @keyframes fc3FloatMobile {
-        0%, 100% { transform: translateY(0); }
-        50%      { transform: translateY(-7px); }
-    }
-
-    /* Service cards — maintain float on mobile */
-    .service-card:nth-child(n) {
-        animation: cardFloat1 7s ease-in-out infinite !important;
-    }
-
-    /* Parallax section headers — disable scroll-driven (no JS scroll tracking on mobile) */
-    [data-scene] .section-header {
+    /* Disable Z depth parallax scales */
+    [data-scene] {
         transform: none !important;
     }
+    
+    #home .hero-info,
+    #home .hero-visual,
+    #home .h-float-card.fc1,
+    #home .h-float-card.fc2,
+    #home .h-float-card.fc3 {
+        transform: none !important;
+    }
+}
 
-    .about-visual,
-    .about-visual.is-in-view {
-        transform: translateX(0) !important;
+@media screen and (max-width: 768px) {
+    /* Mobile-first Snap scroll hints or cleaner swipe */
+    .projects-grid {
+        gap: 2rem;
+    }
+
+    .skill-tag:hover {
+        transform: scale(1.05) !important;
     }
 }
 
 /* ==========================================================================
-   PERFORMANCE SAFETY NET
+   7. PREFERS-REDUCED-MOTION ACCESSIBILITY SAFEGUARDS
    ========================================================================== */
-
-/* Pause ALL animations when tab is backgrounded */
-@media (prefers-reduced-motion: no-preference) {
-    /* Only apply complex animations if user hasn't opted out */
-    .gpu-anim {
-        will-change: transform, opacity;
-        backface-visibility: hidden;
-        perspective: 1000px;
-    }
-}
-
 @media (prefers-reduced-motion: reduce) {
     *,
     *::before,
     *::after {
-        animation-duration: 0.001ms !important;
+        animation-duration: 0.01ms !important;
         animation-iteration-count: 1 !important;
-        transition-duration: 0.001ms !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
     }
 
-    .loader-avatar-wrap::after,
-    .avatar-box::after,
-    .hero-profile-wrapper::before,
-    .sh-line,
-    .hero-tag .dot::before,
-    .hero-tag .dot::after {
-        display: none !important;
+    .proj-thumb-img,
+    .avatar-img,
+    .projects-grid,
+    .hero-info,
+    .hero-visual {
+        transform: none !important;
+        filter: none !important;
     }
 }

@@ -260,44 +260,37 @@ body.cinematic-ready .hero-scroll-cue {
      - Alternating slide direction (odd from left, even from right)
    -------------------------------------------------------------------------- */
 
-/* Alternating slide direction */
-.project-card:nth-child(odd) {
-    opacity: 0;
-    transform: translateX(-40px) scale(0.97);
-    transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
-        transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
+/* Project card entry reveals — scale and fade only */
+.project-card:nth-child(odd),
 .project-card:nth-child(even) {
     opacity: 0;
-    transform: translateX(40px) scale(0.97);
-    transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
-        transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+    transform: scale(0.96);
+    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+        transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .project-card.is-in-view {
     opacity: 1;
-    transform: translateX(0) scale(1);
+    transform: scale(1);
 }
 
-/* Project thumbnail — internal parallax */
+/* Project thumbnail */
 .proj-thumb-img {
-    transition: transform 0.1s linear;
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
     will-change: transform;
 }
 
-/* Project tags — staggered cascade */
+/* Project tags — staggered fade-in only */
 .proj-tag {
     opacity: 0;
-    transform: translateY(8px);
-    transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: opacity 0.4s ease;
 }
 
-.project-card.is-in-view .proj-tag:nth-child(1) { opacity: 1; transform: none; transition-delay: 0.15s; }
-.project-card.is-in-view .proj-tag:nth-child(2) { opacity: 1; transform: none; transition-delay: 0.22s; }
-.project-card.is-in-view .proj-tag:nth-child(3) { opacity: 1; transform: none; transition-delay: 0.29s; }
-.project-card.is-in-view .proj-tag:nth-child(4) { opacity: 1; transform: none; transition-delay: 0.36s; }
-.project-card.is-in-view .proj-tag:nth-child(n+5) { opacity: 1; transform: none; transition-delay: 0.43s; }
+.project-card.is-in-view .proj-tag:nth-child(1) { opacity: 1; transition-delay: 0.15s; }
+.project-card.is-in-view .proj-tag:nth-child(2) { opacity: 1; transition-delay: 0.22s; }
+.project-card.is-in-view .proj-tag:nth-child(3) { opacity: 1; transition-delay: 0.29s; }
+.project-card.is-in-view .proj-tag:nth-child(4) { opacity: 1; transition-delay: 0.36s; }
+.project-card.is-in-view .proj-tag:nth-child(n+5) { opacity: 1; transition-delay: 0.43s; }
 
 /* Project overlay icon — scale on hover */
 .proj-thumb-overlay i {
@@ -325,21 +318,15 @@ body.cinematic-ready .hero-scroll-cue {
         transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Ecosystem section — background radial depth pulse when active */
-#ecosystem.is-active::before {
-    animation: ecoActiveBg 6s ease-in-out infinite alternate;
+/* Ecosystem section — background radial depth active morph transition */
+#ecosystem::before {
+    opacity: 0.02;
+    transform: translate(-50%, -50%) scale(0.95);
+    transition: opacity 1.2s ease, transform 1.5s var(--ease-spring);
 }
-
-@keyframes ecoActiveBg {
-    0% {
-        opacity: 0.03;
-        transform: translate(-50%, -50%) scale(0.9);
-    }
-
-    100% {
-        opacity: 0.07;
-        transform: translate(-50%, -50%) scale(1.15);
-    }
+#ecosystem.is-active::before {
+    opacity: 0.06;
+    transform: translate(-50%, -50%) scale(1.05);
 }
 
 /* Feature items — depth entrance from bottom */
@@ -359,12 +346,14 @@ body.cinematic-ready .hero-scroll-cue {
 .eco-card.is-in-view .eco-features li:nth-child(7) { opacity: 1; transform: none; transition-delay: 0.58s; }
 .eco-card.is-in-view .eco-features li:nth-child(8) { opacity: 1; transform: none; transition-delay: 0.66s; }
 
-/* Eco orbital rings — different rotation speeds */
-.eco-orbit.o1 { animation: rotateOrbit 35s linear infinite; }
-.eco-orbit.o2 { animation: rotateOrbit 55s linear infinite reverse; }
-
-@keyframes rotateOrbit {
-    to { transform: rotate(360deg); }
+/* Eco orbital rings — scroll driven rotation for premium feel */
+.eco-orbit.o1 {
+    transform: rotate(calc(var(--scroll-center-pos, 0) * 110deg));
+    transition: transform 0.25s ease-out;
+}
+.eco-orbit.o2 {
+    transform: rotate(calc(var(--scroll-center-pos, 0) * -150deg));
+    transition: transform 0.25s ease-out;
 }
 
 /* --------------------------------------------------------------------------
@@ -397,16 +386,11 @@ body.cinematic-ready .hero-scroll-cue {
     filter: blur(0px);
 }
 
-/* Skill tags — wave float extending to all children */
-.skills-cloud-container .skill-tag:nth-child(11) { animation: skillTagFloat 6s ease-in-out infinite -5s; }
-.skills-cloud-container .skill-tag:nth-child(12) { animation: skillTagFloat 7s ease-in-out infinite -2s; }
-.skills-cloud-container .skill-tag:nth-child(13) { animation: skillTagFloat 8s ease-in-out infinite -1s; }
-.skills-cloud-container .skill-tag:nth-child(14) { animation: skillTagFloat 5s ease-in-out infinite -3.2s; }
-.skills-cloud-container .skill-tag:nth-child(15) { animation: skillTagFloat 9s ease-in-out infinite -4.5s; }
-.skills-cloud-container .skill-tag:nth-child(16) { animation: skillTagFloat 6s ease-in-out infinite -0.5s; }
-.skills-cloud-container .skill-tag:nth-child(17) { animation: skillTagFloat 7s ease-in-out infinite -2.8s; }
-.skills-cloud-container .skill-tag:nth-child(18) { animation: skillTagFloat 5s ease-in-out infinite -1.5s; }
-.skills-cloud-container .skill-tag:nth-child(n+19) { animation: skillTagFloat 7s ease-in-out infinite; }
+/* Skill tags — static base with premium reveals on viewport entry and hover expand transition */
+.skills-cloud-container .skill-tag {
+    /* No infinite looping animations. Clean, stable base. */
+    animation: none !important;
+}
 
 /* --------------------------------------------------------------------------
    7. SECTION — EXPERIENCE

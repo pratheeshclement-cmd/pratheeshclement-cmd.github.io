@@ -34,7 +34,6 @@
             initStatsCounters();
             initHeroSequence();
             initWordReveals();
-            initCinematicLayerSystem();
             initAmbientParticles();
         };
 
@@ -138,49 +137,7 @@
         targets.forEach((target) => observer.observe(target));
     }
 
-    function initCinematicLayerSystem() {
-        const sections = Array.from(document.querySelectorAll('main > section[id]'));
-        const animatables = document.querySelectorAll(
-            '.project-card, .service-card, .skill-tag, .timeline-item, .testimonial-card'
-        );
-        if (!sections.length) return;
 
-        // Observe animatable cards for .is-in-view (fallback if transitions.js not loaded)
-        const cardObserver = new IntersectionObserver((entries, watch) => {
-            entries.forEach((entry) => {
-                if (!entry.isIntersecting) return;
-                entry.target.classList.add('is-in-view');
-                watch.unobserve(entry.target);
-            });
-        }, { threshold: 0.1, rootMargin: '0px 0px -4% 0px' });
-        animatables.forEach((el) => cardObserver.observe(el));
-
-        // Scroll-driven section position variables (properly clamped)
-        let ticking = false;
-        const update = () => {
-            const viewportHeight = window.innerHeight || 1;
-            const viewportCenter = window.scrollY + viewportHeight / 2;
-            sections.forEach((section) => {
-                const center = section.offsetTop + section.offsetHeight / 2;
-                const range = viewportHeight / 2 + section.offsetHeight / 2;
-                // Clamp to [-1, 1] strictly — prevents overflow from extreme values
-                const distance = Math.max(-1, Math.min(1, (viewportCenter - center) / range));
-                const visibility = Math.max(0, Math.min(1, 1 - Math.abs(distance)));
-                section.style.setProperty('--scroll-center-pos', distance.toFixed(3));
-                section.style.setProperty('--scroll-center-pos-abs', Math.abs(distance).toFixed(3));
-                section.classList.toggle('is-active', visibility > 0.6);
-            });
-            ticking = false;
-        };
-        const requestUpdate = () => {
-            if (ticking) return;
-            ticking = true;
-            window.requestAnimationFrame(update);
-        };
-        window.addEventListener('scroll', requestUpdate, { passive: true });
-        window.addEventListener('resize', requestUpdate, { passive: true });
-        update();
-    }
 
     function initAmbientParticles() {
         const canvas = document.getElementById('airParticles');

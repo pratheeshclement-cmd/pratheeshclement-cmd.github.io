@@ -66,147 +66,55 @@ main#main-content {
    The original: rotate(calc(var(--scroll-center-pos, 0) * 35deg)) is too aggressive.
    Override to remove scroll-driven rotate, keep only the idle float. */
 .layer-5-icons {
-    animation: floatFastIconFixed 5s ease-in-out infinite !important;
+    animation: none !important;
     will-change: transform;
-    /* Remove the opacity calc that was making icons disappear */
     opacity: 1 !important;
-    transition: opacity 0.3s ease !important;
-}
-
-@keyframes floatFastIconFixed {
-
-    0%,
-    100% {
-        transform: translateY(0) scale(1) translate3d(0, 0, 0);
-    }
-
-    50% {
-        transform: translateY(-6px) scale(1.02) translate3d(0, 0, 0);
-    }
+    transition: transform 0.6s var(--ease-spring), opacity 0.3s ease !important;
 }
 
 /* Fix: layer-4-typo opacity was too aggressive (fading out when in view) */
 .layer-4-typo {
     opacity: 1 !important;
-    animation: floatTypoFixed 8s ease-in-out infinite !important;
-}
-
-@keyframes floatTypoFixed {
-
-    0%,
-    100% {
-        transform: translateY(0) translate3d(0, 0, 0);
-    }
-
-    50% {
-        transform: translateY(-5px) translate3d(0, 0, 0);
-    }
+    animation: none !important;
+    transition: transform 0.6s var(--ease-spring) !important;
 }
 
 /* Fix: layer-6-cards — clamp the perspective and remove scroll-pos rotate that causes horizontal scroll */
 .layer-6-cards {
-    animation: floatCardFixed 9s ease-in-out infinite !important;
+    animation: none !important;
     opacity: 1 !important;
     will-change: transform;
-}
-
-@keyframes floatCardFixed {
-
-    0%,
-    100% {
-        transform: translateY(0) translate3d(0, 0, 0);
-    }
-
-    50% {
-        transform: translateY(-8px) translate3d(0, 0, 0);
-    }
+    transition: transform 0.6s var(--ease-spring), box-shadow 0.6s ease, border-color 0.4s ease !important;
 }
 
 .layer-6-cards:nth-child(odd) {
-    animation: floatCardOddFixed 9s ease-in-out infinite !important;
+    animation: none !important;
 }
 
 .layer-6-cards:nth-child(even) {
-    animation: floatCardEvenFixed 9s ease-in-out infinite -3s !important;
-}
-
-@keyframes floatCardOddFixed {
-
-    0%,
-    100% {
-        transform: translateY(0) translateX(0);
-    }
-
-    50% {
-        transform: translateY(-10px) translateX(2px);
-    }
-}
-
-@keyframes floatCardEvenFixed {
-
-    0%,
-    100% {
-        transform: translateY(0) translateX(0);
-    }
-
-    50% {
-        transform: translateY(-8px) translateX(-2px);
-    }
+    animation: none !important;
 }
 
 /* Fix: layer-8-buttons opacity causing invisible buttons */
 .layer-8-buttons {
     opacity: 1 !important;
-    animation: floatBtnFixed 6s ease-in-out infinite !important;
-}
-
-@keyframes floatBtnFixed {
-
-    0%,
-    100% {
-        transform: translateY(0);
-    }
-
-    50% {
-        transform: translateY(-4px);
-    }
+    animation: none !important;
+    transition: transform 0.6s var(--ease-spring) !important;
 }
 
 /* Fix: layer-10-reveal opacity crash */
 .layer-10-reveal {
     opacity: 1 !important;
-    animation: floatRevealFixed 6s ease-in-out infinite !important;
-}
-
-@keyframes floatRevealFixed {
-
-    0%,
-    100% {
-        transform: translateY(0);
-    }
-
-    50% {
-        transform: translateY(-5px);
-    }
+    animation: none !important;
+    transition: transform 0.6s var(--ease-spring) !important;
 }
 
 /* Fix: layer-9-decor scaleX collapse causing sections to shrink */
 .layer-9-decor {
     transform: none !important;
     opacity: 1 !important;
-    animation: floatDecorFixed 7s ease-in-out infinite !important;
-}
-
-@keyframes floatDecorFixed {
-
-    0%,
-    100% {
-        transform: translateY(0);
-    }
-
-    50% {
-        transform: translateY(-3px);
-    }
+    animation: none !important;
+    transition: transform 0.6s var(--ease-spring) !important;
 }
 
 /* Fix layer-3-bg extreme scale values */
@@ -228,42 +136,32 @@ main#main-content {
 .reveal-up,
 .reveal-left,
 .reveal-right,
-.reveal-fade,
+.reveal-fade {
+    opacity: 0;
+    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    transition-delay: var(--sd, 0ms);
+    will-change: opacity;
+}
+
 .reveal-scale {
     opacity: 0;
+    transform: scale(0.95);
     transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
         transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
     transition-delay: var(--sd, 0ms);
     will-change: opacity, transform;
 }
 
-.reveal-up {
-    transform: translateY(50px);
-}
-
-.reveal-left {
-    transform: translateX(-50px);
-}
-
-.reveal-right {
-    transform: translateX(50px);
-}
-
-.reveal-fade {
-    transform: translateY(20px);
-}
-
-.reveal-scale {
-    transform: scale(0.92);
-}
-
 .reveal-up.revealed,
 .reveal-left.revealed,
 .reveal-right.revealed,
-.reveal-fade.revealed,
+.reveal-fade.revealed {
+    opacity: 1;
+}
+
 .reveal-scale.revealed {
     opacity: 1;
-    transform: none;
+    transform: scale(1);
 }
 
 /* Word reveal system */
@@ -346,25 +244,9 @@ main#main-content {
     isolation: isolate;
 }
 
-/* Floating profile image animation — premium slow orbit */
+/* Floating profile image animation — disabled for transition-heavy model */
 .hero-profile-wrapper {
-    animation: heroProfileFloat 7s ease-in-out infinite;
-}
-
-@keyframes heroProfileFloat {
-
-    0%,
-    100% {
-        transform: translateY(0) rotate(0deg);
-    }
-
-    33% {
-        transform: translateY(-12px) rotate(0.5deg);
-    }
-
-    66% {
-        transform: translateY(-6px) rotate(-0.3deg);
-    }
+    transition: transform 0.8s var(--ease-spring);
 }
 
 /* Hero profile card hover — Apple-style premium lift */
@@ -723,10 +605,38 @@ main#main-content {
     opacity: 1;
 }
 
-/* Smooth float on project card hover */
+/* Restored grid layout, alignment, and scale-only hover */
+.projects-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 4.5rem !important;
+    margin-bottom: 5rem !important;
+    width: 100% !important;
+}
+
+.project-card {
+    display: grid !important;
+    grid-template-columns: 1.15fr 0.85fr !important;
+    gap: 4rem !important;
+    align-items: stretch !important;
+    padding: 3.5rem !important;
+    width: 100% !important;
+}
+
+.project-card:nth-child(even) {
+    grid-template-columns: 0.85fr 1.15fr !important;
+}
+
+.proj-body {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    height: 100% !important;
+}
+
 .project-card:hover {
-    transform: translateY(-8px) !important;
-    box-shadow: 0 40px 80px rgba(0, 0, 0, 0.5),
+    transform: scale(1.025) !important;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.45),
         0 0 0 1px rgba(0, 240, 255, 0.2),
         inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
 }
@@ -735,64 +645,9 @@ main#main-content {
    8. ECOSYSTEM ORBITAL SYSTEM ENHANCEMENTS
    -------------------------------------------------------------------------- */
 
-/* Eco center hub — premium glow pulse */
+/* Eco center and nodes — static layout with high-end hover reveals */
 .eco-center {
-    animation: ecoCenterPulse 3s ease-in-out infinite alternate !important;
-}
-
-@keyframes ecoCenterPulse {
-    0% {
-        box-shadow: 0 0 20px var(--primary-glow), 0 0 40px rgba(0, 240, 255, 0.1);
-    }
-
-    100% {
-        box-shadow: 0 0 40px var(--primary-glow), 0 0 80px rgba(0, 240, 255, 0.2);
-    }
-}
-
-/* Eco nodes — each orbits at slightly different phase */
-.eco-node.n1 {
-    animation: ecoNodeFloat 6s ease-in-out infinite;
-}
-
-.eco-node.n2 {
-    animation: ecoNodeFloat 6s ease-in-out infinite -1.5s;
-}
-
-.eco-node.n3 {
-    animation: ecoNodeFloat 6s ease-in-out infinite -3s;
-}
-
-.eco-node.n4 {
-    animation: ecoNodeFloat 6s ease-in-out infinite -4.5s;
-}
-
-.eco-node.n5 {
-    animation: ecoNodeFloat 7s ease-in-out infinite -1s;
-}
-
-.eco-node.n6 {
-    animation: ecoNodeFloat 7s ease-in-out infinite -3.5s;
-}
-
-.eco-node.n7 {
-    animation: ecoNodeFloat 5s ease-in-out infinite -2s;
-}
-
-.eco-node.n8 {
-    animation: ecoNodeFloat 5s ease-in-out infinite -4s;
-}
-
-@keyframes ecoNodeFloat {
-
-    0%,
-    100% {
-        transform: translate(-50%, -50%) scale(1);
-    }
-
-    50% {
-        transform: translate(-50%, calc(-50% - 4px)) scale(1.05);
-    }
+    box-shadow: 0 0 30px var(--primary-glow) !important;
 }
 
 /* Override hover/active state to account for float animation */
@@ -1090,88 +945,15 @@ main#main-content {
    16. AURORA ORBS — Enhanced section-aware morphing
    -------------------------------------------------------------------------- */
 
-.orb-primary {
-    animation: move-glow-1 25s ease-in-out infinite alternate,
-        orbBreath 8s ease-in-out infinite !important;
-}
-
-.orb-secondary {
-    animation: move-glow-2 30s ease-in-out infinite alternate,
-        orbBreath 10s ease-in-out infinite -3s !important;
-}
-
+.orb-primary,
+.orb-secondary,
 .orb-accent {
-    animation: move-glow-3 20s ease-in-out infinite alternate,
-        orbBreath 6s ease-in-out infinite -1.5s !important;
-}
-
-@keyframes orbBreath {
-
-    0%,
-    100% {
-        opacity: 0.07;
-    }
-
-    50% {
-        opacity: 0.14;
-    }
+    animation: none !important;
 }
 
 /* --------------------------------------------------------------------------
    17. SKILLS CLOUD — Individual float phases
    -------------------------------------------------------------------------- */
-
-.skills-cloud-container .skill-tag:nth-child(1) {
-    animation: skillTagFloat 6s ease-in-out infinite;
-}
-
-.skills-cloud-container .skill-tag:nth-child(2) {
-    animation: skillTagFloat 7s ease-in-out infinite -1s;
-}
-
-.skills-cloud-container .skill-tag:nth-child(3) {
-    animation: skillTagFloat 5s ease-in-out infinite -2s;
-}
-
-.skills-cloud-container .skill-tag:nth-child(4) {
-    animation: skillTagFloat 8s ease-in-out infinite -0.5s;
-}
-
-.skills-cloud-container .skill-tag:nth-child(5) {
-    animation: skillTagFloat 6s ease-in-out infinite -3s;
-}
-
-.skills-cloud-container .skill-tag:nth-child(6) {
-    animation: skillTagFloat 9s ease-in-out infinite -1.5s;
-}
-
-.skills-cloud-container .skill-tag:nth-child(7) {
-    animation: skillTagFloat 7s ease-in-out infinite -2.5s;
-}
-
-.skills-cloud-container .skill-tag:nth-child(8) {
-    animation: skillTagFloat 6s ease-in-out infinite -4s;
-}
-
-.skills-cloud-container .skill-tag:nth-child(9) {
-    animation: skillTagFloat 8s ease-in-out infinite -0.8s;
-}
-
-.skills-cloud-container .skill-tag:nth-child(10) {
-    animation: skillTagFloat 5s ease-in-out infinite -3.5s;
-}
-
-@keyframes skillTagFloat {
-
-    0%,
-    100% {
-        transform: translateY(0) scale(1);
-    }
-
-    50% {
-        transform: translateY(-8px) scale(1.02);
-    }
-}
 
 /* Override hover to stop float */
 .skill-tag:hover {
@@ -1255,24 +1037,14 @@ main#main-content {
     height: 100%;
 }
 
-/* --------------------------------------------------------------------------
-   20. BACK TO TOP BUTTON — Premium float
-   -------------------------------------------------------------------------- */
-
 #bttBtn {
-    animation: bttFloat 3s ease-in-out infinite;
+    animation: none !important;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease, border-color 0.3s ease !important;
 }
 
-@keyframes bttFloat {
-
-    0%,
-    100% {
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-    }
-
-    50% {
-        box-shadow: 0 8px 25px rgba(0, 240, 255, 0.2);
-    }
+#bttBtn:hover {
+    transform: translateY(-4px) scale(1.08) !important;
+    box-shadow: 0 8px 25px rgba(0, 240, 255, 0.3) !important;
 }
 
 /* --------------------------------------------------------------------------
