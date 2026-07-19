@@ -16,6 +16,9 @@
         initBackToTop();
         initAuditForm();
         initContactForm();
+        initScrollTransitions();
+        initEcosystemHighlights();
+        initSettingsDrawer();
     });
 
     /* ─────────────────────────────────────────────
@@ -68,8 +71,8 @@
 
         // Close menu when clicking outside of menu
         document.addEventListener('click', (e) => {
-            if (menu.classList.contains('open') && 
-                !menu.contains(e.target) && 
+            if (menu.classList.contains('open') &&
+                !menu.contains(e.target) &&
                 !toggle.contains(e.target)) {
                 closeMenu();
             }
@@ -118,12 +121,12 @@
        ───────────────────────────────────────────── */
     function initSmoothScroll() {
         const nav = document.getElementById('nav');
-        
+
         document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
             anchor.addEventListener('click', function (e) {
                 const href = this.getAttribute('href');
-                if (href === '#') return;
-                
+                if (href === '#' || href === '#main-content') return;
+
                 const target = document.querySelector(href);
                 if (!target) return;
 
@@ -189,7 +192,7 @@
 
         form.addEventListener('submit', (e) => {
             e.preventDefault();
-            
+
             const urlInput = form.querySelector('#auditUrl');
             const nameInput = form.querySelector('#auditName');
             const emailInput = form.querySelector('#auditEmail');
@@ -219,7 +222,7 @@
             // Success feedback
             msgBox.className = 'form-message-box success show';
             msgBox.innerHTML = '<i class="fas fa-check-circle"></i><span>Audit query validated! Redirecting to email...</span>';
-            
+
             // Build mailto link
             const subject = encodeURIComponent(`Website Audit Request - ${name}`);
             const body = encodeURIComponent(
@@ -232,9 +235,9 @@
                 `- Phone Number: ${phone}\n\n` +
                 `Please let me know once you have analyzed the core metrics.`
             );
-            
+
             const mailtoUrl = `mailto:pratheesh.clement@gmail.com?subject=${subject}&body=${body}`;
-            
+
             setTimeout(() => {
                 window.location.href = mailtoUrl;
                 form.reset();
@@ -334,6 +337,241 @@
         setTimeout(() => {
             el.classList.remove('shake');
         }, 500);
+    }
+
+    /* ─────────────────────────────────────────────
+       9. SCROLL-DRIVEN TRANSITIONS ENGINE (Bazil/Apple Style)
+       ───────────────────────────────────────────── */
+    function initScrollTransitions() {
+        const sectionIds = [
+            'home', 'about', 'services', 'projects', 
+            'ecosystem', 'skills', 'experience', 'testimonials', 
+            'audit', 'contact'
+        ];
+        const sections = sectionIds.map(id => document.getElementById(id)).filter(el => el !== null);
+        const root = document.documentElement;
+
+        // Space themes mapping (HSL Colors)
+        const themes = {
+            home: { h: 250, s: 20, l: 4 },
+            about: { h: 260, s: 25, l: 5 },
+            services: { h: 280, s: 30, l: 4 },
+            projects: { h: 290, s: 20, l: 3 },
+            ecosystem: { h: 220, s: 25, l: 5 },
+            skills: { h: 250, s: 20, l: 4 },
+            experience: { h: 270, s: 25, l: 4 },
+            testimonials: { h: 280, s: 20, l: 4 },
+            audit: { h: 250, s: 20, l: 4 },
+            contact: { h: 250, s: 20, l: 4 }
+        };
+
+        const handleScroll = () => {
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            const viewportHeight = window.innerHeight;
+            const viewportCenter = scrollTop + viewportHeight / 2;
+
+            let activeSectionId = 'home';
+
+            sections.forEach((sec) => {
+                const secTop = sec.offsetTop;
+                const secHeight = sec.offsetHeight;
+                const secBottom = secTop + secHeight;
+
+                // Center position calculations based on physical offsets
+                const distanceFromCenter = (viewportCenter - (secTop + secHeight / 2)) / (viewportHeight / 2 + secHeight / 2);
+                const clampedDist = Math.max(-1, Math.min(1, distanceFromCenter));
+                const absDist = Math.abs(clampedDist);
+
+                sec.style.setProperty('--scroll-center-pos', clampedDist.toFixed(3));
+                sec.style.setProperty('--scroll-center-pos-abs', absDist.toFixed(3));
+
+                // Identify active background section based on physical scroll centers
+                if (viewportCenter >= secTop && viewportCenter < secBottom) {
+                    activeSectionId = sec.getAttribute('id');
+                }
+            });
+
+            // Set root HSL theme custom properties
+            const activeTheme = themes[activeSectionId];
+            if (activeTheme) {
+                const themeHue = typeof window.currentThemeHue !== 'undefined' ? window.currentThemeHue : activeTheme.h;
+                root.style.setProperty('--theme-h', themeHue);
+                root.style.setProperty('--theme-s', `${activeTheme.s}%`);
+                root.style.setProperty('--theme-l', `${activeTheme.l}%`);
+            }
+
+            // Update diagnostic telemetry readout
+            const activeSectionReadout = document.getElementById('telActiveSection');
+            const scrollVectorReadout = document.getElementById('telScrollVector');
+            if (activeSectionReadout) activeSectionReadout.textContent = `// ${activeSectionId.toUpperCase()}`;
+            if (scrollVectorReadout) scrollVectorReadout.textContent = scrollTop.toFixed(0);
+        };
+
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        handleScroll();
+    }
+
+    /* ─────────────────────────────────────────────
+       10. ECOSYSTEM GRAPH LINKED HIGHLIGHTS
+       ───────────────────────────────────────────── */
+    function initEcosystemHighlights() {
+        const nodes = document.querySelectorAll('.eco-node');
+        const items = document.querySelectorAll('.eco-features li');
+        if (nodes.length === 0 || items.length === 0) return;
+
+        nodes.forEach((node) => {
+            node.addEventListener('mouseenter', () => {
+                const targetKey = node.getAttribute('data-eco');
+                node.classList.add('active');
+                items.forEach((item) => {
+                    if (item.getAttribute('data-eco') === targetKey) {
+                        item.classList.add('active');
+                    } else {
+                        item.classList.remove('active');
+                    }
+                });
+            });
+
+            node.addEventListener('mouseleave', () => {
+                node.classList.remove('active');
+                items.forEach((item) => item.classList.remove('active'));
+            });
+        });
+
+        items.forEach((item) => {
+            item.addEventListener('mouseenter', () => {
+                const targetKey = item.getAttribute('data-eco');
+                item.classList.add('active');
+                nodes.forEach((node) => {
+                    if (node.getAttribute('data-eco') === targetKey) {
+                        node.classList.add('active');
+                    } else {
+                        node.classList.remove('active');
+                    }
+                });
+            });
+
+            item.addEventListener('mouseleave', () => {
+                item.classList.remove('active');
+                nodes.forEach((node) => node.classList.remove('active'));
+            });
+        });
+    }
+
+    /* ─────────────────────────────────────────────
+       11. SYSTEM CONFIGURATION & ACCESSIBILITY PARAMETERS
+       ───────────────────────────────────────────── */
+    function initSettingsDrawer() {
+        const fab = document.getElementById('settingsFab');
+        const drawer = document.getElementById('settingsDrawer');
+        const closeBtn = document.getElementById('settingsCloseBtn');
+        const backdrop = document.getElementById('settingsDrawerBackdrop');
+
+        if (!fab || !drawer) return;
+
+        // Toggle drawer
+        const toggleDrawer = () => {
+            const isOpen = drawer.classList.toggle('open');
+            drawer.setAttribute('aria-hidden', !isOpen);
+        };
+
+        const closeDrawer = () => {
+            drawer.classList.remove('open');
+            drawer.setAttribute('aria-hidden', 'true');
+        };
+
+        fab.addEventListener('click', toggleDrawer);
+        if (closeBtn) closeBtn.addEventListener('click', closeDrawer);
+        if (backdrop) backdrop.addEventListener('click', closeDrawer);
+
+        // Escape key to close
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && drawer.classList.contains('open')) {
+                closeDrawer();
+            }
+        });
+
+        // Theme switching logic
+        const themeButtons = document.querySelectorAll('.theme-btn');
+        themeButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                themeButtons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                const hue = parseInt(btn.getAttribute('data-hue'), 10);
+                const sat = btn.getAttribute('data-sat');
+                const light = btn.getAttribute('data-light');
+                const primary = btn.getAttribute('data-primary');
+                const secondary = btn.getAttribute('data-secondary');
+
+                // Set global hue override
+                window.currentThemeHue = hue;
+
+                // Update root styles
+                const root = document.documentElement;
+                root.style.setProperty('--primary', primary);
+                root.style.setProperty('--secondary', secondary);
+                root.style.setProperty('--primary-glow', primary + '66'); // hex 40% alpha
+                root.style.setProperty('--secondary-glow', secondary + '66');
+
+                // Store in localStorage
+                localStorage.setItem('selected-theme-hue', hue);
+                localStorage.setItem('selected-theme-primary', primary);
+                localStorage.setItem('selected-theme-secondary', secondary);
+
+                // Dispatch a scroll event to trigger background update
+                window.dispatchEvent(new Event('scroll'));
+            });
+        });
+
+        // Load saved theme if exists
+        const savedHue = localStorage.getItem('selected-theme-hue');
+        if (savedHue) {
+            const savedPrimary = localStorage.getItem('selected-theme-primary');
+            const savedSecondary = localStorage.getItem('selected-theme-secondary');
+
+            const matchBtn = Array.from(themeButtons).find(b => b.getAttribute('data-hue') === savedHue);
+            if (matchBtn) {
+                themeButtons.forEach(b => b.classList.remove('active'));
+                matchBtn.classList.add('active');
+            }
+
+            window.currentThemeHue = parseInt(savedHue, 10);
+            const root = document.documentElement;
+            root.style.setProperty('--primary', savedPrimary);
+            root.style.setProperty('--secondary', savedSecondary);
+            root.style.setProperty('--primary-glow', savedPrimary + '66');
+            root.style.setProperty('--secondary-glow', savedSecondary + '66');
+        }
+
+        // Motion control modes
+        const motionHigh = document.getElementById('motionHigh');
+        const motionLow = document.getElementById('motionLow');
+
+        if (motionHigh && motionLow) {
+            const setMotionMode = (isLow) => {
+                if (isLow) {
+                    motionLow.classList.add('active');
+                    motionHigh.classList.remove('active');
+                    document.body.classList.add('low-motion');
+                    localStorage.setItem('settings-low-motion', 'true');
+                } else {
+                    motionHigh.classList.add('active');
+                    motionLow.classList.remove('active');
+                    document.body.classList.remove('low-motion');
+                    localStorage.setItem('settings-low-motion', 'false');
+                }
+            };
+
+            motionHigh.addEventListener('click', () => setMotionMode(false));
+            motionLow.addEventListener('click', () => setMotionMode(true));
+
+            // Load saved motion state
+            const savedLowMotion = localStorage.getItem('settings-low-motion');
+            if (savedLowMotion === 'true') {
+                setMotionMode(true);
+            }
+        }
     }
 
 })();

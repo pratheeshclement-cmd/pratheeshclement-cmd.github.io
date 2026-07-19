@@ -1,0 +1,1534 @@
+/* ==========================================================================
+   PRATHEESH CLEMENT — FIXES + PREMIUM ENHANCEMENT LAYER  |  css/fixes.css
+   PURPOSE : Non-destructive override layer loaded after style.css.
+             Fixes layout collapse, overflow, mobile issues, and amplifies
+             the cinematic floating motion design.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. GLOBAL ARCHITECTURE FIXES — Stacking, Overflow, Isolation
+   -------------------------------------------------------------------------- */
+
+/* Ensure the body never overflows horizontally */
+html,
+body {
+    overflow-x: hidden;
+    max-width: 100vw;
+}
+
+/* Fix: main content stacking context so sections stack properly */
+main#main-content {
+    position: relative;
+    z-index: 1;
+    isolation: isolate;
+}
+
+/* Fix: sections must be positioned relative, never absolute */
+.section {
+    position: relative !important;
+    overflow: visible !important;
+    isolation: isolate;
+    contain: layout style;
+}
+
+/* Fix: hero overflow was hiding floating cards & causing overflow issues */
+.hero {
+    overflow: visible !important;
+    /* Use dynamic viewport height so mobile browser bars don't cause overflow */
+    min-height: 100dvh;
+    min-height: 100vh;
+    /* fallback */
+}
+
+/* Canvas particle layer — make sure it doesn't block touch events on mobile */
+#airParticles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    touch-action: none;
+}
+
+/* Fix: grid-mesh background z-index — must be behind everything */
+.grid-mesh {
+    z-index: -3;
+    pointer-events: none;
+}
+
+/* --------------------------------------------------------------------------
+   2. LAYER SYSTEM FIXES — Clamp all transforms to prevent overflow chaos
+   -------------------------------------------------------------------------- */
+
+/* Fix: layer-5-icons rotate animation caused extreme values at scroll edges.
+   The original: rotate(calc(var(--scroll-center-pos, 0) * 35deg)) is too aggressive.
+   Override to remove scroll-driven rotate, keep only the idle float. */
+.layer-5-icons {
+    animation: floatFastIconFixed 5s ease-in-out infinite !important;
+    will-change: transform;
+    /* Remove the opacity calc that was making icons disappear */
+    opacity: 1 !important;
+    transition: opacity 0.3s ease !important;
+}
+
+@keyframes floatFastIconFixed {
+
+    0%,
+    100% {
+        transform: translateY(0) scale(1) translate3d(0, 0, 0);
+    }
+
+    50% {
+        transform: translateY(-6px) scale(1.02) translate3d(0, 0, 0);
+    }
+}
+
+/* Fix: layer-4-typo opacity was too aggressive (fading out when in view) */
+.layer-4-typo {
+    opacity: 1 !important;
+    animation: floatTypoFixed 8s ease-in-out infinite !important;
+}
+
+@keyframes floatTypoFixed {
+
+    0%,
+    100% {
+        transform: translateY(0) translate3d(0, 0, 0);
+    }
+
+    50% {
+        transform: translateY(-5px) translate3d(0, 0, 0);
+    }
+}
+
+/* Fix: layer-6-cards — clamp the perspective and remove scroll-pos rotate that causes horizontal scroll */
+.layer-6-cards {
+    animation: floatCardFixed 9s ease-in-out infinite !important;
+    opacity: 1 !important;
+    will-change: transform;
+}
+
+@keyframes floatCardFixed {
+
+    0%,
+    100% {
+        transform: translateY(0) translate3d(0, 0, 0);
+    }
+
+    50% {
+        transform: translateY(-8px) translate3d(0, 0, 0);
+    }
+}
+
+.layer-6-cards:nth-child(odd) {
+    animation: floatCardOddFixed 9s ease-in-out infinite !important;
+}
+
+.layer-6-cards:nth-child(even) {
+    animation: floatCardEvenFixed 9s ease-in-out infinite -3s !important;
+}
+
+@keyframes floatCardOddFixed {
+
+    0%,
+    100% {
+        transform: translateY(0) translateX(0);
+    }
+
+    50% {
+        transform: translateY(-10px) translateX(2px);
+    }
+}
+
+@keyframes floatCardEvenFixed {
+
+    0%,
+    100% {
+        transform: translateY(0) translateX(0);
+    }
+
+    50% {
+        transform: translateY(-8px) translateX(-2px);
+    }
+}
+
+/* Fix: layer-8-buttons opacity causing invisible buttons */
+.layer-8-buttons {
+    opacity: 1 !important;
+    animation: floatBtnFixed 6s ease-in-out infinite !important;
+}
+
+@keyframes floatBtnFixed {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-4px);
+    }
+}
+
+/* Fix: layer-10-reveal opacity crash */
+.layer-10-reveal {
+    opacity: 1 !important;
+    animation: floatRevealFixed 6s ease-in-out infinite !important;
+}
+
+@keyframes floatRevealFixed {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-5px);
+    }
+}
+
+/* Fix: layer-9-decor scaleX collapse causing sections to shrink */
+.layer-9-decor {
+    transform: none !important;
+    opacity: 1 !important;
+    animation: floatDecorFixed 7s ease-in-out infinite !important;
+}
+
+@keyframes floatDecorFixed {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-3px);
+    }
+}
+
+/* Fix layer-3-bg extreme scale values */
+.layer-3-bg {
+    transform: none !important;
+    transition: none !important;
+}
+
+/* Fix layer-7-images to use controlled parallax only */
+.layer-7-images {
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+/* --------------------------------------------------------------------------
+   3. CINEMATIC SCROLL REVEAL SYSTEM (Replaces broken .revealed trigger)
+   -------------------------------------------------------------------------- */
+
+/* Base state — elements are invisible before reveal */
+.reveal-up,
+.reveal-left,
+.reveal-right,
+.reveal-fade,
+.reveal-scale {
+    opacity: 0;
+    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+        transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    transition-delay: var(--sd, 0ms);
+    will-change: opacity, transform;
+}
+
+.reveal-up {
+    transform: translateY(50px);
+}
+
+.reveal-left {
+    transform: translateX(-50px);
+}
+
+.reveal-right {
+    transform: translateX(50px);
+}
+
+.reveal-fade {
+    transform: translateY(20px);
+}
+
+.reveal-scale {
+    transform: scale(0.92);
+}
+
+.reveal-up.revealed,
+.reveal-left.revealed,
+.reveal-right.revealed,
+.reveal-fade.revealed,
+.reveal-scale.revealed {
+    opacity: 1;
+    transform: none;
+}
+
+/* Word reveal system */
+.cinematic-words .word-reveal {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+        transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: opacity, transform;
+}
+
+.cinematic-words.words-visible .word-reveal {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Stagger word reveals */
+.cinematic-words.words-visible .word-reveal:nth-child(1) {
+    transition-delay: 0ms;
+}
+
+.cinematic-words.words-visible .word-reveal:nth-child(2) {
+    transition-delay: 60ms;
+}
+
+.cinematic-words.words-visible .word-reveal:nth-child(3) {
+    transition-delay: 120ms;
+}
+
+.cinematic-words.words-visible .word-reveal:nth-child(4) {
+    transition-delay: 180ms;
+}
+
+.cinematic-words.words-visible .word-reveal:nth-child(5) {
+    transition-delay: 240ms;
+}
+
+.cinematic-words.words-visible .word-reveal:nth-child(6) {
+    transition-delay: 300ms;
+}
+
+.cinematic-words.words-visible .word-reveal:nth-child(7) {
+    transition-delay: 360ms;
+}
+
+.cinematic-words.words-visible .word-reveal:nth-child(8) {
+    transition-delay: 420ms;
+}
+
+/* --------------------------------------------------------------------------
+   4. HERO SECTION FIXES
+   -------------------------------------------------------------------------- */
+
+/* Hero container: allow cards to float outside their column without overflow */
+.hero-container {
+    overflow: visible !important;
+    position: relative;
+}
+
+/* Fix: hero floating cards were escaping viewport on desktop.
+   Use transform for positioning instead of negative % left/right */
+.h-float-card.fc1 {
+    top: -8%;
+    left: -18%;
+}
+
+.h-float-card.fc2 {
+    bottom: 18%;
+    right: -16%;
+}
+
+.h-float-card.fc3 {
+    bottom: -8%;
+    left: -12%;
+}
+
+/* Hero profile wrapper: create its own stacking context so glow stays inside */
+.hero-profile-wrapper {
+    isolation: isolate;
+}
+
+/* Floating profile image animation — premium slow orbit */
+.hero-profile-wrapper {
+    animation: heroProfileFloat 7s ease-in-out infinite;
+}
+
+@keyframes heroProfileFloat {
+
+    0%,
+    100% {
+        transform: translateY(0) rotate(0deg);
+    }
+
+    33% {
+        transform: translateY(-12px) rotate(0.5deg);
+    }
+
+    66% {
+        transform: translateY(-6px) rotate(-0.3deg);
+    }
+}
+
+/* Hero profile card hover — Apple-style premium lift */
+.hero-profile-card {
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+        border-color 0.4s ease,
+        box-shadow 0.6s ease !important;
+}
+
+.hero-profile-card:hover {
+    transform: scale(1.02) translateY(-4px) !important;
+}
+
+/* Hero title enhanced gradient animation */
+.hero-title .highlight {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 50%, var(--accent) 100%);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradientShift 4s ease-in-out infinite alternate;
+}
+
+@keyframes gradientShift {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    100% {
+        background-position: 100% 50%;
+    }
+}
+
+/* Hero tag availability dot — enhanced pulse */
+.hero-tag .dot {
+    animation: availablePulse 2s ease-in-out infinite !important;
+}
+
+@keyframes availablePulse {
+
+    0%,
+    100% {
+        box-shadow: 0 0 0 0 rgba(0, 240, 255, 0.5), 0 0 8px rgba(0, 240, 255, 0.8);
+        transform: scale(1);
+    }
+
+    50% {
+        box-shadow: 0 0 0 6px rgba(0, 240, 255, 0), 0 0 15px rgba(0, 240, 255, 0.4);
+        transform: scale(1.2);
+    }
+}
+
+/* Hero CTA buttons — magnetic float animation */
+.btn-group .btn {
+    position: relative;
+    overflow: hidden;
+}
+
+/* Shine sweep effect on buttons */
+.btn-group .btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(90deg,
+            transparent 0%,
+            rgba(255, 255, 255, 0.12) 50%,
+            transparent 100%);
+    transition: left 0.6s ease;
+}
+
+.btn-group .btn:hover::before {
+    left: 150%;
+}
+
+/* --------------------------------------------------------------------------
+   5. SECTION ENTRY ANIMATIONS — Cinematic floating scene transitions
+   -------------------------------------------------------------------------- */
+
+/* Each section has a "scene-in" state when entering viewport */
+.section[data-scene] {
+    transition: opacity 0.3s ease;
+}
+
+/* Service cards — staggered premium entry */
+.service-card {
+    opacity: 0;
+    transform: translateY(40px) scale(0.96);
+    transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+        transform 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+        filter 0.4s ease,
+        border-color 0.4s ease,
+        box-shadow 0.4s ease;
+    transition-delay: var(--sd, 0ms);
+}
+
+.service-card.is-in-view {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+/* Project cards — cinematic reveal */
+.project-card {
+    opacity: 0;
+    transform: translateY(60px);
+    transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+        transform 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+        border-color 0.4s ease,
+        box-shadow 0.4s ease;
+}
+
+.project-card.is-in-view {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Skill tags staggered entry */
+.skill-tag {
+    opacity: 0;
+    transform: translateY(30px) scale(0.9);
+    transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+        transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+        border-color 0.3s ease,
+        color 0.3s ease,
+        background 0.3s ease;
+    transition-delay: var(--sd, 0ms);
+}
+
+.skill-tag.is-in-view {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+/* Timeline items — slide in from left */
+.timeline-item {
+    opacity: 0;
+    transform: translateX(-30px);
+    transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+        transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    transition-delay: var(--sd, 0ms);
+}
+
+.timeline-item.is-in-view {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* Testimonial cards */
+.testimonial-card {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+        transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    transition-delay: var(--sd, 0ms);
+}
+
+.testimonial-card.is-in-view {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Metric cards */
+.metric-card {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+    transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+        transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    transition-delay: var(--sd, 0ms);
+}
+
+.metric-card.is-in-view {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+/* About visual block reveal */
+.about-visual {
+    opacity: 0;
+    transform: translateX(-40px);
+    transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+        transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.about-visual.is-in-view {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* About body reveal */
+.about-body {
+    opacity: 0;
+    transform: translateX(40px);
+    transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.2s,
+        transform 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.2s;
+}
+
+.about-body.is-in-view {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* Eco card reveal */
+.eco-card {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+        transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.eco-card.is-in-view {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* GitHub callout reveal */
+.github-callout {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+        transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.github-callout.is-in-view {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Contact info & form */
+.contact-info,
+.form-card {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+        transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.contact-info {
+    transition-delay: 0.1s;
+}
+
+.form-card {
+    transition-delay: 0.2s;
+}
+
+.contact-info.is-in-view,
+.form-card.is-in-view {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Audit intro */
+.audit-intro {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+        transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.audit-intro.is-in-view {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.audit-form-card {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.15s,
+        transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.15s;
+}
+
+.audit-form-card.is-in-view {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Section header reveals */
+.section-header {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+        transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.section-header.is-in-view {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Footer reveal */
+.footer {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.footer.is-in-view {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* --------------------------------------------------------------------------
+   6. ENHANCED PREMIUM SERVICE CARD INTERACTIONS
+   -------------------------------------------------------------------------- */
+
+/* Service card glow on hover */
+.service-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: inherit;
+    background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+            rgba(0, 240, 255, 0.06) 0%,
+            transparent 60%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.service-card:hover::after {
+    opacity: 1;
+}
+
+/* --------------------------------------------------------------------------
+   7. ENHANCED PROJECT CARDS — Apple Product Showcase Style
+   -------------------------------------------------------------------------- */
+
+/* Project card numbered overlay */
+.proj-thumb {
+    background: linear-gradient(135deg,
+            rgba(0, 240, 255, 0.03) 0%,
+            rgba(112, 0, 255, 0.06) 50%,
+            rgba(255, 0, 127, 0.03) 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Animated grid inside project thumbnails */
+.proj-thumb::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(rgba(0, 240, 255, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 240, 255, 0.04) 1px, transparent 1px);
+    background-size: 32px 32px;
+    opacity: 0;
+    transition: opacity 0.6s ease;
+}
+
+.project-card:hover .proj-thumb::before {
+    opacity: 1;
+}
+
+/* Smooth float on project card hover */
+.project-card:hover {
+    transform: translateY(-8px) !important;
+    box-shadow: 0 40px 80px rgba(0, 0, 0, 0.5),
+        0 0 0 1px rgba(0, 240, 255, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+}
+
+/* --------------------------------------------------------------------------
+   8. ECOSYSTEM ORBITAL SYSTEM ENHANCEMENTS
+   -------------------------------------------------------------------------- */
+
+/* Eco center hub — premium glow pulse */
+.eco-center {
+    animation: ecoCenterPulse 3s ease-in-out infinite alternate !important;
+}
+
+@keyframes ecoCenterPulse {
+    0% {
+        box-shadow: 0 0 20px var(--primary-glow), 0 0 40px rgba(0, 240, 255, 0.1);
+    }
+
+    100% {
+        box-shadow: 0 0 40px var(--primary-glow), 0 0 80px rgba(0, 240, 255, 0.2);
+    }
+}
+
+/* Eco nodes — each orbits at slightly different phase */
+.eco-node.n1 {
+    animation: ecoNodeFloat 6s ease-in-out infinite;
+}
+
+.eco-node.n2 {
+    animation: ecoNodeFloat 6s ease-in-out infinite -1.5s;
+}
+
+.eco-node.n3 {
+    animation: ecoNodeFloat 6s ease-in-out infinite -3s;
+}
+
+.eco-node.n4 {
+    animation: ecoNodeFloat 6s ease-in-out infinite -4.5s;
+}
+
+.eco-node.n5 {
+    animation: ecoNodeFloat 7s ease-in-out infinite -1s;
+}
+
+.eco-node.n6 {
+    animation: ecoNodeFloat 7s ease-in-out infinite -3.5s;
+}
+
+.eco-node.n7 {
+    animation: ecoNodeFloat 5s ease-in-out infinite -2s;
+}
+
+.eco-node.n8 {
+    animation: ecoNodeFloat 5s ease-in-out infinite -4s;
+}
+
+@keyframes ecoNodeFloat {
+
+    0%,
+    100% {
+        transform: translate(-50%, -50%) scale(1);
+    }
+
+    50% {
+        transform: translate(-50%, calc(-50% - 4px)) scale(1.05);
+    }
+}
+
+/* Override hover/active state to account for float animation */
+.eco-node:hover,
+.eco-node.active {
+    animation: none !important;
+    transform: translate(-50%, -50%) scale(1.2) !important;
+    color: var(--primary) !important;
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 20px var(--primary-glow) !important;
+}
+
+/* --------------------------------------------------------------------------
+   9. GLASSMORPHISM FIX — Reduce blur stacking
+   -------------------------------------------------------------------------- */
+
+/* Nested glass cards had compounding blur — fix by reducing inner blur */
+.glass-card .glass-card {
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+}
+
+/* Timeline cards inside glass containers */
+.timeline-card {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+}
+
+/* --------------------------------------------------------------------------
+   10. NAVIGATION FIXES & ENHANCEMENTS
+   -------------------------------------------------------------------------- */
+
+/* Nav z-index fix */
+.nav {
+    z-index: 9000 !important;
+}
+
+/* Settings widget z-index — must be above nav */
+.settings-widget {
+    z-index: 9001 !important;
+}
+
+/* Loader above everything */
+.loader-overlay {
+    z-index: 99999 !important;
+}
+
+/* Nav scrolled state — more premium glass */
+.nav.scrolled {
+    background: rgba(3, 0, 10, 0.85) !important;
+    border-bottom: 1px solid rgba(0, 240, 255, 0.06) !important;
+    box-shadow: 0 1px 40px rgba(0, 0, 0, 0.4);
+}
+
+/* --------------------------------------------------------------------------
+   11. ENHANCED BUTTON INTERACTIONS — Magnetic premium feel
+   -------------------------------------------------------------------------- */
+
+/* Primary button — enhanced glow */
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    background-size: 200% 200%;
+    background-position: 0% 50%;
+    transition: background-position 0.6s ease,
+        transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+        box-shadow 0.4s ease !important;
+}
+
+.btn-primary:hover {
+    background-position: 100% 50%;
+    transform: translateY(-5px) scale(1.03) !important;
+    box-shadow: 0 10px 40px rgba(0, 240, 255, 0.5) !important;
+}
+
+/* Outline button — subtle glow border */
+.btn-outline {
+    border-color: rgba(255, 255, 255, 0.12);
+    transition: border-color 0.3s ease,
+        transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+        box-shadow 0.4s ease !important;
+}
+
+.btn-outline:hover {
+    border-color: var(--primary);
+    transform: translateY(-5px) scale(1.03) !important;
+    box-shadow: 0 0 30px rgba(0, 240, 255, 0.15) !important;
+}
+
+/* --------------------------------------------------------------------------
+   12. CONTACT LINK CARDS ENHANCEMENTS
+   -------------------------------------------------------------------------- */
+
+.contact-link-card {
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+        border-color 0.3s ease,
+        background 0.3s ease !important;
+}
+
+.contact-link-card:hover {
+    transform: translateX(6px) !important;
+    border-color: rgba(0, 240, 255, 0.2) !important;
+    background: rgba(0, 240, 255, 0.02) !important;
+}
+
+/* --------------------------------------------------------------------------
+   13. SCROLL PROGRESS BAR — Enhanced gradient
+   -------------------------------------------------------------------------- */
+
+#scrollProgress {
+    background: linear-gradient(90deg,
+            var(--primary) 0%,
+            var(--secondary) 50%,
+            var(--accent) 100%) !important;
+    box-shadow: 0 0 8px rgba(0, 240, 255, 0.4);
+    transition: width 0.05s linear !important;
+}
+
+/* --------------------------------------------------------------------------
+   14. FORM INPUTS — Premium floating label interactions
+   -------------------------------------------------------------------------- */
+
+.form-field {
+    position: relative;
+}
+
+.form-field input:focus,
+.form-field textarea:focus {
+    outline: none;
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 0 3px rgba(0, 240, 255, 0.08) !important;
+}
+
+/* --------------------------------------------------------------------------
+   15. LOADER PARTICLES — Enhanced cinematic quality
+   -------------------------------------------------------------------------- */
+
+.loader-particles span {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(0, 240, 255, 0.5);
+    animation: loaderParticleFloat linear infinite;
+    will-change: transform, opacity;
+}
+
+.loader-particles span:nth-child(1) {
+    width: 3px;
+    height: 3px;
+    top: 20%;
+    left: 15%;
+    animation-duration: 8s;
+    animation-delay: 0s;
+    opacity: 0.4;
+}
+
+.loader-particles span:nth-child(2) {
+    width: 2px;
+    height: 2px;
+    top: 60%;
+    left: 25%;
+    animation-duration: 12s;
+    animation-delay: -2s;
+    opacity: 0.3;
+}
+
+.loader-particles span:nth-child(3) {
+    width: 4px;
+    height: 4px;
+    top: 30%;
+    left: 75%;
+    animation-duration: 10s;
+    animation-delay: -4s;
+    opacity: 0.5;
+}
+
+.loader-particles span:nth-child(4) {
+    width: 2px;
+    height: 2px;
+    top: 70%;
+    left: 80%;
+    animation-duration: 9s;
+    animation-delay: -1s;
+    opacity: 0.3;
+    background: rgba(112, 0, 255, 0.5);
+}
+
+.loader-particles span:nth-child(5) {
+    width: 3px;
+    height: 3px;
+    top: 80%;
+    left: 40%;
+    animation-duration: 14s;
+    animation-delay: -6s;
+    opacity: 0.4;
+}
+
+.loader-particles span:nth-child(6) {
+    width: 5px;
+    height: 5px;
+    top: 10%;
+    left: 60%;
+    animation-duration: 11s;
+    animation-delay: -3s;
+    opacity: 0.2;
+    background: rgba(255, 0, 127, 0.5);
+}
+
+.loader-particles span:nth-child(7) {
+    width: 2px;
+    height: 2px;
+    top: 45%;
+    left: 90%;
+    animation-duration: 13s;
+    animation-delay: -5s;
+    opacity: 0.3;
+}
+
+.loader-particles span:nth-child(8) {
+    width: 3px;
+    height: 3px;
+    top: 90%;
+    left: 10%;
+    animation-duration: 16s;
+    animation-delay: -8s;
+    opacity: 0.4;
+}
+
+.loader-particles span:nth-child(9) {
+    width: 2px;
+    height: 2px;
+    top: 25%;
+    left: 45%;
+    animation-duration: 7s;
+    animation-delay: -2s;
+    opacity: 0.35;
+}
+
+.loader-particles span:nth-child(10) {
+    width: 4px;
+    height: 4px;
+    top: 55%;
+    left: 55%;
+    animation-duration: 15s;
+    animation-delay: -7s;
+    opacity: 0.2;
+    background: rgba(0, 240, 255, 0.3);
+}
+
+.loader-particles span:nth-child(11) {
+    width: 2px;
+    height: 2px;
+    top: 15%;
+    left: 85%;
+    animation-duration: 9s;
+    animation-delay: -4s;
+    opacity: 0.3;
+}
+
+.loader-particles span:nth-child(12) {
+    width: 3px;
+    height: 3px;
+    top: 75%;
+    left: 65%;
+    animation-duration: 11s;
+    animation-delay: -1s;
+    opacity: 0.4;
+    background: rgba(112, 0, 255, 0.4);
+}
+
+@keyframes loaderParticleFloat {
+    0% {
+        transform: translateY(0) translateX(0) scale(1);
+        opacity: var(--p-opacity, 0.4);
+    }
+
+    25% {
+        transform: translateY(-30px) translateX(15px) scale(1.1);
+    }
+
+    50% {
+        transform: translateY(-15px) translateX(-10px) scale(0.9);
+        opacity: calc(var(--p-opacity, 0.4) * 0.5);
+    }
+
+    75% {
+        transform: translateY(-40px) translateX(5px) scale(1.05);
+    }
+
+    100% {
+        transform: translateY(0) translateX(0) scale(1);
+        opacity: var(--p-opacity, 0.4);
+    }
+}
+
+/* --------------------------------------------------------------------------
+   16. AURORA ORBS — Enhanced section-aware morphing
+   -------------------------------------------------------------------------- */
+
+.orb-primary {
+    animation: move-glow-1 25s ease-in-out infinite alternate,
+        orbBreath 8s ease-in-out infinite !important;
+}
+
+.orb-secondary {
+    animation: move-glow-2 30s ease-in-out infinite alternate,
+        orbBreath 10s ease-in-out infinite -3s !important;
+}
+
+.orb-accent {
+    animation: move-glow-3 20s ease-in-out infinite alternate,
+        orbBreath 6s ease-in-out infinite -1.5s !important;
+}
+
+@keyframes orbBreath {
+
+    0%,
+    100% {
+        opacity: 0.07;
+    }
+
+    50% {
+        opacity: 0.14;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   17. SKILLS CLOUD — Individual float phases
+   -------------------------------------------------------------------------- */
+
+.skills-cloud-container .skill-tag:nth-child(1) {
+    animation: skillTagFloat 6s ease-in-out infinite;
+}
+
+.skills-cloud-container .skill-tag:nth-child(2) {
+    animation: skillTagFloat 7s ease-in-out infinite -1s;
+}
+
+.skills-cloud-container .skill-tag:nth-child(3) {
+    animation: skillTagFloat 5s ease-in-out infinite -2s;
+}
+
+.skills-cloud-container .skill-tag:nth-child(4) {
+    animation: skillTagFloat 8s ease-in-out infinite -0.5s;
+}
+
+.skills-cloud-container .skill-tag:nth-child(5) {
+    animation: skillTagFloat 6s ease-in-out infinite -3s;
+}
+
+.skills-cloud-container .skill-tag:nth-child(6) {
+    animation: skillTagFloat 9s ease-in-out infinite -1.5s;
+}
+
+.skills-cloud-container .skill-tag:nth-child(7) {
+    animation: skillTagFloat 7s ease-in-out infinite -2.5s;
+}
+
+.skills-cloud-container .skill-tag:nth-child(8) {
+    animation: skillTagFloat 6s ease-in-out infinite -4s;
+}
+
+.skills-cloud-container .skill-tag:nth-child(9) {
+    animation: skillTagFloat 8s ease-in-out infinite -0.8s;
+}
+
+.skills-cloud-container .skill-tag:nth-child(10) {
+    animation: skillTagFloat 5s ease-in-out infinite -3.5s;
+}
+
+@keyframes skillTagFloat {
+
+    0%,
+    100% {
+        transform: translateY(0) scale(1);
+    }
+
+    50% {
+        transform: translateY(-8px) scale(1.02);
+    }
+}
+
+/* Override hover to stop float */
+.skill-tag:hover {
+    animation: none !important;
+    transform: translateY(-6px) scale(1.05) !important;
+    border-color: var(--primary) !important;
+    color: var(--text) !important;
+    box-shadow: 0 8px 30px rgba(0, 240, 255, 0.15) !important;
+}
+
+/* --------------------------------------------------------------------------
+   18. SECTION BACKGROUND SYSTEM — Ambient glow per section
+   -------------------------------------------------------------------------- */
+
+/* Each section gets its own ambient glow through pseudo-element */
+.hero::before {
+    content: '';
+    position: absolute;
+    top: -20%;
+    right: -10%;
+    width: 60vw;
+    height: 60vw;
+    background: radial-gradient(circle, rgba(0, 240, 255, 0.04) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: -1;
+}
+
+.services::before {
+    content: '';
+    position: absolute;
+    top: 10%;
+    left: -15%;
+    width: 50vw;
+    height: 50vw;
+    background: radial-gradient(circle, rgba(112, 0, 255, 0.04) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.projects::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: -10%;
+    width: 45vw;
+    height: 45vw;
+    background: radial-gradient(circle, rgba(0, 240, 255, 0.03) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.ecosystem::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60vw;
+    height: 60vw;
+    background: radial-gradient(circle, rgba(112, 0, 255, 0.04) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* --------------------------------------------------------------------------
+   19. TIMELINE — Draw line animation
+   -------------------------------------------------------------------------- */
+
+.experience-layout::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 7px;
+    width: 2px;
+    height: 0%;
+    background: linear-gradient(to bottom, var(--primary) 0%, var(--accent) 50%, var(--card-border) 100%);
+    transition: height 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.experience-layout.is-in-view::before {
+    height: 100%;
+}
+
+/* --------------------------------------------------------------------------
+   20. BACK TO TOP BUTTON — Premium float
+   -------------------------------------------------------------------------- */
+
+#bttBtn {
+    animation: bttFloat 3s ease-in-out infinite;
+}
+
+@keyframes bttFloat {
+
+    0%,
+    100% {
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    50% {
+        box-shadow: 0 8px 25px rgba(0, 240, 255, 0.2);
+    }
+}
+
+/* --------------------------------------------------------------------------
+   21. REDUCED MOTION — Honor prefers-reduced-motion
+   -------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+
+    .hero-profile-wrapper,
+    .layer-4-typo,
+    .layer-5-icons,
+    .layer-6-cards,
+    .layer-8-buttons,
+    .layer-9-decor,
+    .layer-10-reveal,
+    .skill-tag {
+        animation: none !important;
+        transform: none !important;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   22. MOBILE RESPONSIVE FIXES (≤1024px)
+   -------------------------------------------------------------------------- */
+
+@media screen and (max-width: 1024px) {
+
+    /* Hero floating cards: fully stacked on mobile */
+    .h-float-card {
+        position: relative !important;
+        top: auto !important;
+        left: auto !important;
+        right: auto !important;
+        bottom: auto !important;
+    }
+
+    /* Disable aggressive scroll layer transforms on mobile */
+    .layer-4-typo {
+        animation: none !important;
+        transform: none !important;
+    }
+
+    /* Disable hover-sensitive sibling blur on touch */
+    .services-grid:hover .service-card:not(:hover) {
+        filter: none !important;
+        opacity: 1 !important;
+    }
+
+    /* About grid — single column */
+    .about-grid {
+        grid-template-columns: 1fr !important;
+        gap: 3rem !important;
+    }
+
+    /* About visual — center on mobile */
+    .about-visual {
+        transform: none !important;
+        opacity: 1 !important;
+    }
+
+    .about-body {
+        transform: none !important;
+        opacity: 1 !important;
+    }
+
+    /* Disable horizontal slides on mobile since layout is single column */
+    .about-visual.is-in-view,
+    .about-body.is-in-view {
+        transform: none !important;
+    }
+
+    /* Timeline stagger delays — reduce on mobile */
+    .timeline-item {
+        transform: translateY(20px) !important;
+    }
+
+    .timeline-item.is-in-view {
+        transform: none !important;
+    }
+
+    /* Project cards — single column */
+    .project-card,
+    .project-card:nth-child(even) {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* Eco orbit — scale down properly */
+    .eco-visual {
+        transform: none !important;
+    }
+
+    /* Settings dial — reposition for mobile */
+    .modern-dial {
+        bottom: 1.5rem !important;
+        right: 1.5rem !important;
+        width: 52px !important;
+        height: 52px !important;
+    }
+
+    /* Back to top button */
+    #bttBtn {
+        bottom: 5rem !important;
+    }
+}
+
+@media screen and (max-width: 768px) {
+
+    /* Container padding */
+    .container {
+        padding: 0 1.4rem !important;
+    }
+
+    /* Reduce section padding on tablet */
+    .section {
+        padding: clamp(4rem, 8vw, 6rem) 0 !important;
+    }
+
+    /* Hero title size for tablet */
+    .hero-title {
+        font-size: clamp(2.6rem, 7vw, 4rem) !important;
+    }
+
+    /* Testimonials */
+    .testimonials-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* About meta — single column on tablet */
+    .about-meta {
+        grid-template-columns: 1fr !important;
+        gap: 1.2rem !important;
+    }
+}
+
+@media screen and (max-width: 480px) {
+
+    /* Container */
+    .container {
+        padding: 0 1rem !important;
+    }
+
+    /* Hero */
+    .hero-title {
+        font-size: clamp(2.2rem, 8vw, 3rem) !important;
+        letter-spacing: -0.03em !important;
+    }
+
+    /* Float cards on mobile */
+    .h-float-card {
+        max-width: 100% !important;
+        width: 100% !important;
+        margin-bottom: 1rem !important;
+    }
+
+    /* Skills cloud */
+    .skills-cloud-container {
+        gap: 1rem !important;
+        padding: 1.5rem 0 !important;
+    }
+
+    .skill-tag {
+        padding: 0.9rem 1.6rem !important;
+        font-size: 0.95rem !important;
+    }
+
+    /* Eco visual on very small screens */
+    .eco-visual {
+        max-width: 260px !important;
+    }
+
+    /* Footer */
+    .footer-grid {
+        gap: 2rem !important;
+    }
+
+    /* Buttons */
+    .btn-group {
+        gap: 0.8rem !important;
+    }
+
+    .btn {
+        padding: 0.8rem 1.5rem !important;
+        font-size: 0.9rem !important;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   23. LOW MOTION MODE OVERRIDES
+   -------------------------------------------------------------------------- */
+
+.low-motion * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.2s !important;
+}
+
+.low-motion .hero-profile-wrapper,
+.low-motion .skill-tag,
+.low-motion .eco-node,
+.low-motion .eco-center,
+.low-motion .layer-4-typo,
+.low-motion .layer-5-icons,
+.low-motion .layer-6-cards,
+.low-motion .layer-8-buttons,
+.low-motion .layer-10-reveal {
+    animation: none !important;
+    transform: none !important;
+}
+
+/* --------------------------------------------------------------------------
+   24. CINEMATIC READY STATE — After loader completes
+   -------------------------------------------------------------------------- */
+
+/* Before loader completes, hide main content */
+body:not(.cinematic-ready) main#main-content {
+    opacity: 0;
+}
+
+body.cinematic-ready main#main-content {
+    opacity: 1;
+    transition: opacity 0.8s ease;
+}
+
+/* Shake animation for form validation */
+@keyframes shake {
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    20% {
+        transform: translateX(-8px);
+    }
+
+    40% {
+        transform: translateX(8px);
+    }
+
+    60% {
+        transform: translateX(-5px);
+    }
+
+    80% {
+        transform: translateX(5px);
+    }
+}
+
+.shake {
+    animation: shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) !important;
+}

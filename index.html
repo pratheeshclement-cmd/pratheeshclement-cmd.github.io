@@ -53,13 +53,23 @@
         integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-    <!-- Premium fonts Outfit & JetBrains Mono -->
+    <!-- Premium fonts Space Grotesk, Inter, Outfit & JetBrains Mono -->
     <link
-        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;600;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;600;700&display=swap"
         rel="stylesheet">
 
     <!-- Main stylesheet -->
     <link rel="stylesheet" href="./css/style.css">
+    <!-- Architecture fixes & premium enhancement layer -->
+    <link rel="stylesheet" href="./css/fixes.css">
+    <!-- Smart cinematic transition system — section-specific motion identities -->
+    <link rel="stylesheet" href="./css/cinematic.css">
+    <!-- Ultimate 12-layer motion design architecture -->
+    <link rel="stylesheet" href="./css/motion.css">
+
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9160111740624678"
+        crossorigin="anonymous"></script>
 
     <!-- Rich Schema Markup (JSON-LD Graph) -->
     <script type="application/ld+json">
@@ -168,10 +178,51 @@
 </head>
 
 <body>
+    <!-- Premium Cinematic Loader -->
+    <div id="loader" class="loader-overlay cinematic-loader">
+        <div class="loader-backdrop-glow"></div>
+        <div class="loader-particles" aria-hidden="true">
+            <span></span><span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span><span></span>
+        </div>
+        <div class="loader-showcase">
+            <div class="loader-avatar-wrap">
+                <img src="./asset/logo-profile.png" alt="Pratheesh Clement" class="loader-avatar">
+                <div class="loader-avatar-glow"></div>
+            </div>
+            <div class="loader-logo-wrap">
+                <svg class="loader-logo-svg" viewBox="0 0 100 100" width="80" height="80">
+                    <circle cx="50" cy="50" r="45" fill="none" stroke="url(#logoGlow)" stroke-width="2"
+                        stroke-dasharray="283" stroke-dashoffset="283" class="logo-circle-path" />
+                    <text x="50%" y="58%" dominant-baseline="middle" text-anchor="middle"
+                        font-family="var(--font-display)" font-size="28" font-weight="900" fill="var(--primary)"
+                        class="logo-text-path">PC</text>
+                    <defs>
+                        <linearGradient id="logoGlow" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="var(--primary)" />
+                            <stop offset="100%" stop-color="var(--secondary)" />
+                        </linearGradient>
+                    </defs>
+                </svg>
+            </div>
+            <h2 class="loader-name" id="loaderName"></h2>
+            <div class="loader-role" id="loaderRole"></div>
+            <div class="loader-bar-container">
+                <div class="loader-bar" id="loaderProgressBar"></div>
+            </div>
+            <div class="loader-status-msg" id="loaderStatus">Initializing Systems...</div>
+        </div>
+    </div>
+
+
+
     <a class="skip-link" href="#main-content">Skip to content</a>
 
     <!-- Page Scroll Progress Tracker -->
     <div id="scrollProgress"></div>
+
+    <!-- GPU-friendly ambient particle field -->
+    <canvas id="airParticles" aria-hidden="true"></canvas>
 
     <!-- Dotted Background Grid Mesh -->
     <div class="grid-mesh"></div>
@@ -224,42 +275,50 @@
     <main id="main-content">
 
         <!-- 1. HERO SECTION -->
-        <section class="hero" id="home">
+        <section class="hero" id="home" data-scene="home">
             <div class="hero-grid-bg"></div>
             <div class="container hero-container">
-                <div class="hero-info">
-                    <div class="hero-tag reveal-fade">
+                <div class="hero-info layer-3-bg">
+                    <div class="hero-tag layer-10-reveal" style="--sd: 100ms;">
                         <span class="dot"></span>
                         <span>Available for Freelance Projects</span>
                     </div>
-                    <h1 class="hero-title reveal-up">
-                        Helping Businesses Grow Through <span class="highlight">SEO, Websites</span> &amp; Digital
-                        Marketing.
-                    </h1>
-                    <p class="hero-desc reveal-up" style="--sd: 150ms;">
-                        Freelance Digital Marketer, Website Developer and Digital Growth Specialist. Designing premium
-                        brand websites and automated lead systems to scale your organic revenue.
-                    </p>
-                    <div class="btn-group reveal-up" style="--sd: 300ms;">
-                        <a href="#contact" class="btn btn-primary"><i class="fas fa-user-check"></i>Hire Me</a>
-                        <a href="#projects" class="btn btn-secondary"><i class="fas fa-arrow-right"></i>View My Work</a>
-                        <a href="#contact" class="btn btn-outline"><i class="fas fa-paper-plane"></i>Contact Me</a>
+                    <div class="hero-title-container layer-4-typo">
+                        <h2 class="hero-eyebrow" style="--sd: 200ms;">PRATHEESH CLEMENT</h2>
+                        <h1 class="hero-title" style="--sd: 300ms;">
+                            Architect of <span class="highlight">Digital Ecosystems</span>
+                        </h1>
                     </div>
-                    <div class="hero-stack reveal-up" style="--sd: 450ms;">
-                        <div class="hero-stack-title">THE STACK I TRUST</div>
+                    <div class="hero-rotating-container layer-4-typo" style="--sd: 400ms;">
+                        <span class="rotating-prefix">SPECIALIZING IN</span>
+                        <div class="rotating-box">
+                            <span id="heroRoleCycle" class="rotating-text">Digital Ecosystem Builder</span>
+                        </div>
+                    </div>
+                    <p class="hero-desc layer-10-reveal" style="--sd: 500ms;">
+                        High-performance conversion systems, advanced technical SEO audits, and custom AI workflows
+                        built for modern digital authority.
+                    </p>
+                    <div class="btn-group layer-8-buttons" style="--sd: 600ms;">
+                        <a href="#contact" class="btn btn-primary"><i class="fas fa-user-check"></i>Hire Me</a>
+                        <a href="#projects" class="btn btn-secondary"><i class="fas fa-arrow-right"></i>View Work</a>
+                        <a href="#audit" class="btn btn-outline"><i class="fas fa-search-plus"></i>Free Audit</a>
+                    </div>
+                    <div class="hero-stack layer-9-decor" style="--sd: 700ms;">
+                        <div class="hero-stack-title">ENGINEERING SPECIFICATIONS</div>
                         <div class="hero-chips">
-                            <span class="hero-chip"><i class="fab fa-html5"></i> HTML5</span>
-                            <span class="hero-chip"><i class="fab fa-css3-alt"></i> CSS3</span>
-                            <span class="hero-chip"><i class="fab fa-js-square"></i> JavaScript</span>
-                            <span class="hero-chip"><i class="fas fa-search"></i> SEO</span>
+                            <span class="hero-chip"><i class="fas fa-search"></i> SEO Ranks</span>
+                            <span class="hero-chip"><i class="fas fa-robot"></i> AI Workflows</span>
+                            <span class="hero-chip"><i class="fab fa-js-square"></i> JS Dev</span>
                             <span class="hero-chip"><i class="fab fa-google"></i> Google Ads</span>
-                            <span class="hero-chip"><i class="fas fa-chart-pie"></i> Analytics</span>
+                            <span class="hero-chip"><i class="fab fa-facebook"></i> Meta Ads</span>
+                            <span class="hero-chip"><i class="fas fa-chart-line"></i> Analytics</span>
                         </div>
                     </div>
                 </div>
 
-                <div class="hero-visual">
-                    <div class="hero-profile-wrapper reveal-fade" style="--sd: 100ms;">
+                <div class="hero-visual layer-3-bg">
+                    <div class="hero-profile-wrapper layer-7-images">
                         <div class="hero-profile-glow"></div>
                         <div class="glass-card hero-profile-card">
                             <img src="./asset/logo-profile.png"
@@ -268,21 +327,21 @@
                                 class="hero-profile-img" width="320" height="320" loading="eager">
                         </div>
                     </div>
-                    <div class="glass-card h-float-card fc1 reveal-fade" style="--sd: 250ms;">
+                    <div class="glass-card h-float-card fc1 layer-6-cards">
                         <div class="fc-icon"><i class="fab fa-html5"></i></div>
                         <div class="fc-info">
                             <strong>Website Development</strong>
                             <span>Semantic, Mobile-first &amp; Fast</span>
                         </div>
                     </div>
-                    <div class="glass-card h-float-card fc2 reveal-fade" style="--sd: 400ms;">
+                    <div class="glass-card h-float-card fc2 layer-6-cards">
                         <div class="fc-icon"><i class="fas fa-search"></i></div>
                         <div class="fc-info">
                             <strong>Technical SEO</strong>
                             <span>Rankings, Schema &amp; Audits</span>
                         </div>
                     </div>
-                    <div class="glass-card h-float-card fc3 reveal-fade" style="--sd: 550ms;">
+                    <div class="glass-card h-float-card fc3 layer-6-cards">
                         <div class="fc-icon"><i class="fab fa-google"></i></div>
                         <div class="fc-info">
                             <strong>Google &amp; Meta Ads</strong>
@@ -291,12 +350,15 @@
                     </div>
                 </div>
             </div>
+            <a class="hero-scroll-cue" href="#about" aria-label="Scroll to discover the portfolio">
+                <span>Scroll to explore</span><i class="fas fa-arrow-down"></i>
+            </a>
         </section>
 
         <!-- 2. ABOUT SECTION -->
-        <section class="about section" id="about">
+        <section class="about section" id="about" data-scene="about">
             <div class="container">
-                <div class="section-header reveal-up">
+                <div class="section-header layer-4-typo">
                     <div class="sh-row">
                         <span class="mono sh-num">// 01</span>
                         <div class="sh-line"></div>
@@ -306,8 +368,8 @@
                 </div>
 
                 <div class="about-grid">
-                    <div class="about-visual reveal-left">
-                        <div class="avatar-container">
+                    <div class="about-visual layer-3-bg">
+                        <div class="avatar-container layer-7-images">
                             <div class="avatar-backdrop"></div>
                             <div class="avatar-box">
                                 <img src="./asset/logo-profile.png"
@@ -320,22 +382,22 @@
                             </div>
                         </div>
                         <div class="about-metrics">
-                            <div class="glass-card metric-card">
+                            <div class="glass-card metric-card layer-6-cards">
                                 <div class="metric-val"><span class="stat-num" data-count="5">0</span>+</div>
                                 <div class="metric-lbl">Projects Built</div>
                             </div>
-                            <div class="glass-card metric-card">
+                            <div class="glass-card metric-card layer-6-cards">
                                 <div class="metric-val"><span class="stat-num" data-count="1">0</span></div>
                                 <div class="metric-lbl">Google Certs</div>
                             </div>
-                            <div class="glass-card metric-card">
+                            <div class="glass-card metric-card layer-6-cards">
                                 <div class="metric-val"><span class="stat-num" data-count="1">0</span>+</div>
                                 <div class="metric-lbl">Years Experience</div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="about-body reveal-right">
+                    <div class="about-body layer-10-reveal">
                         <h3 class="about-name-title">Meet Pratheesh Clement</h3>
                         <p>
                             I am <strong>Pratheesh Clement</strong>, a highly motivated <strong>Freelance Digital
@@ -399,9 +461,9 @@
         </section>
 
         <!-- 3. SERVICES SECTION -->
-        <section class="services section" id="services">
+        <section class="services section" id="services" data-scene="services">
             <div class="container">
-                <div class="section-header reveal-up">
+                <div class="section-header layer-4-typo">
                     <div class="sh-row">
                         <span class="mono sh-num">// 02</span>
                         <div class="sh-line"></div>
@@ -410,10 +472,10 @@
                     <p class="sh-sub">Performance-Driven Digital Channels Engineered for Organic Revenue and Scale</p>
                 </div>
 
-                <div class="services-grid">
+                <div class="services-grid layer-3-bg">
                     <!-- Service 1 -->
-                    <article class="glass-card service-card reveal-up" style="--sd: 0ms;">
-                        <div class="s-card-icon"><i class="fas fa-code"></i></div>
+                    <article class="glass-card service-card layer-6-cards" style="--sd: 0ms;">
+                        <div class="s-card-icon layer-5-icons"><i class="fas fa-code"></i></div>
                         <h3>Website Development</h3>
                         <p>High-performance personal brand and corporate sites built using clean, semantic code
                             optimized for speed and accessibility.</p>
@@ -436,8 +498,8 @@
                     </article>
 
                     <!-- Service 2 -->
-                    <article class="glass-card service-card reveal-up" style="--sd: 100ms;">
-                        <div class="s-card-icon"><i class="fas fa-search-plus"></i></div>
+                    <article class="glass-card service-card layer-6-cards" style="--sd: 100ms;">
+                        <div class="s-card-icon layer-5-icons"><i class="fas fa-search-plus"></i></div>
                         <h3>SEO Services</h3>
                         <p>Rank for highly competitive keywords using advanced technical SEO strategies, structured
                             data, and performance audits.</p>
@@ -460,8 +522,8 @@
                     </article>
 
                     <!-- Service 3 -->
-                    <article class="glass-card service-card reveal-up" style="--sd: 200ms;">
-                        <div class="s-card-icon"><i class="fab fa-google"></i></div>
+                    <article class="glass-card service-card layer-6-cards" style="--sd: 200ms;">
+                        <div class="s-card-icon layer-5-icons"><i class="fab fa-google"></i></div>
                         <h3>Google Ads</h3>
                         <p>Set up targeted Google Search, Display, and Performance Max ad campaigns to acquire
                             high-intent leads and sales.</p>
@@ -484,8 +546,8 @@
                     </article>
 
                     <!-- Service 4 -->
-                    <article class="glass-card service-card reveal-up" style="--sd: 300ms;">
-                        <div class="s-card-icon"><i class="fab fa-meta"></i></div>
+                    <article class="glass-card service-card layer-6-cards" style="--sd: 300ms;">
+                        <div class="s-card-icon layer-5-icons"><i class="fab fa-meta"></i></div>
                         <h3>Meta Ads</h3>
                         <p>Scale lead generation and digital sales using targeted Facebook, Instagram, and Messenger
                             conversion campaigns.</p>
@@ -508,8 +570,8 @@
                     </article>
 
                     <!-- Service 5 -->
-                    <article class="glass-card service-card reveal-up" style="--sd: 400ms;">
-                        <div class="s-card-icon"><i class="fas fa-bullhorn"></i></div>
+                    <article class="glass-card service-card layer-6-cards" style="--sd: 400ms;">
+                        <div class="s-card-icon layer-5-icons"><i class="fas fa-bullhorn"></i></div>
                         <h3>Digital Marketing</h3>
                         <p>End-to-end multi-channel strategy consultation linking social reach, organic traffic, and
                             lead routing.</p>
@@ -532,8 +594,8 @@
                     </article>
 
                     <!-- Service 6 -->
-                    <article class="glass-card service-card reveal-up" style="--sd: 500ms;">
-                        <div class="s-card-icon"><i class="fas fa-rocket"></i></div>
+                    <article class="glass-card service-card layer-6-cards" style="--sd: 500ms;">
+                        <div class="s-card-icon layer-5-icons"><i class="fas fa-rocket"></i></div>
                         <h3>Landing Page Dev</h3>
                         <p>Deploy landing pages with a focused, single-goal flow, custom contact grids, and quick loads.
                         </p>
@@ -556,8 +618,8 @@
                     </article>
 
                     <!-- Service 7 -->
-                    <article class="glass-card service-card reveal-up" style="--sd: 0ms;">
-                        <div class="s-card-icon"><i class="fas fa-tachometer-alt"></i></div>
+                    <article class="glass-card service-card layer-6-cards" style="--sd: 0ms;">
+                        <div class="s-card-icon layer-5-icons"><i class="fas fa-tachometer-alt"></i></div>
                         <h3>Website Optimization</h3>
                         <p>Increase loading performance, Core Web Vitals, and responsive renders to boost search
                             rankings.</p>
@@ -580,8 +642,8 @@
                     </article>
 
                     <!-- Service 8 -->
-                    <article class="glass-card service-card reveal-up" style="--sd: 100ms;">
-                        <div class="s-card-icon"><i class="fas fa-robot"></i></div>
+                    <article class="glass-card service-card layer-6-cards" style="--sd: 100ms;">
+                        <div class="s-card-icon layer-5-icons"><i class="fas fa-robot"></i></div>
                         <h3>AI Tools &amp; Automation</h3>
                         <p>Leverage custom integrations, Zapier workflows, and automated bots to cut down client
                             onboarding times.</p>
@@ -604,8 +666,8 @@
                     </article>
 
                     <!-- Service 9 -->
-                    <article class="glass-card service-card reveal-up" style="--sd: 200ms;">
-                        <div class="s-card-icon"><i class="fas fa-fingerprint"></i></div>
+                    <article class="glass-card service-card layer-6-cards" style="--sd: 200ms;">
+                        <div class="s-card-icon layer-5-icons"><i class="fas fa-fingerprint"></i></div>
                         <h3>Personal Branding</h3>
                         <p>Design a cohesive, premium visual digital presence that builds trust and highlights your
                             professional credentials.</p>
@@ -631,9 +693,9 @@
         </section>
 
         <!-- 4. PROJECTS SECTION -->
-        <section class="projects section" id="projects">
+        <section class="projects section" id="projects" data-scene="projects">
             <div class="container">
-                <div class="section-header reveal-up">
+                <div class="section-header layer-4-typo">
                     <div class="sh-row">
                         <span class="mono sh-num">// 03</span>
                         <div class="sh-line"></div>
@@ -642,15 +704,15 @@
                     <p class="sh-sub">Explore Technical Frontend Implementations and Growth Strategies</p>
                 </div>
 
-                <div class="projects-grid">
+                <div class="projects-grid layer-3-bg">
                     <!-- Project 1 -->
-                    <article class="glass-card project-card reveal-up" style="--sd: 0ms;">
-                        <div class="proj-thumb">
+                    <article class="glass-card project-card layer-6-cards">
+                        <div class="proj-thumb layer-7-images">
                             <div class="proj-thumb-overlay"><i class="fas fa-laptop-code"></i></div>
                             <span class="proj-num">01</span>
                             <span class="proj-badge"><i class="fas fa-star"></i> Featured Project</span>
                         </div>
-                        <div class="proj-body">
+                        <div class="proj-body layer-10-reveal">
                             <div class="proj-tags">
                                 <span class="proj-tag"><i class="fas fa-book-open"></i> Case Study</span>
                                 <span class="proj-tag"><i class="fab fa-html5"></i> HTML5</span>
@@ -669,7 +731,7 @@
                                 <p><strong>Results:</strong> Target Lighthouse scores of 100 in Performance,
                                     Accessibility, and SEO, with rapid load metrics.</p>
                             </div>
-                            <div class="proj-actions">
+                            <div class="proj-actions layer-8-buttons">
                                 <a href="https://pratheeshclement-cmd.github.io/" target="_blank"
                                     rel="noopener noreferrer" class="proj-action-btn">
                                     <i class="fas fa-external-link-alt"></i> <span>Visit Website</span>
@@ -683,13 +745,13 @@
                     </article>
 
                     <!-- Project 2 -->
-                    <article class="glass-card project-card reveal-up" style="--sd: 200ms;">
-                        <div class="proj-thumb">
+                    <article class="glass-card project-card layer-6-cards">
+                        <div class="proj-thumb layer-7-images">
                             <div class="proj-thumb-overlay"><i class="fas fa-chart-line"></i></div>
                             <span class="proj-num">02</span>
                             <span class="proj-badge private"><i class="fas fa-lock"></i> Client Private</span>
                         </div>
-                        <div class="proj-body">
+                        <div class="proj-body layer-10-reveal">
                             <div class="proj-tags">
                                 <span class="proj-tag"><i class="fas fa-book-open"></i> Case Study</span>
                                 <span class="proj-tag"><i class="fas fa-search-plus"></i> SEO Services</span>
@@ -708,7 +770,7 @@
                                 <p><strong>Results:</strong> Significant organic visibility gain, rich snippet results
                                     in SERP, and lower bounce rates in 60 days.</p>
                             </div>
-                            <div class="proj-actions">
+                            <div class="proj-actions layer-8-buttons">
                                 <a href="#contact" class="proj-action-btn">
                                     <i class="fas fa-paper-plane"></i> <span>Request Details</span>
                                 </a>
@@ -717,13 +779,13 @@
                     </article>
 
                     <!-- Project 3 -->
-                    <article class="glass-card project-card reveal-up" style="--sd: 0ms;">
-                        <div class="proj-thumb">
+                    <article class="glass-card project-card layer-6-cards">
+                        <div class="proj-thumb layer-7-images">
                             <div class="proj-thumb-overlay"><i class="fas fa-utensils"></i></div>
                             <span class="proj-num">03</span>
                             <span class="proj-badge"><i class="fas fa-award"></i> Featured Project</span>
                         </div>
-                        <div class="proj-body">
+                        <div class="proj-body layer-10-reveal">
                             <div class="proj-tags">
                                 <span class="proj-tag"><i class="fas fa-book-open"></i> Case Study</span>
                                 <span class="proj-tag"><i class="fas fa-code"></i> CSS Grid</span>
@@ -741,7 +803,7 @@
                                 <p><strong>Results:</strong> Smooth multi-viewport displays and a clean layout codebase
                                     ready for backend integrations.</p>
                             </div>
-                            <div class="proj-actions">
+                            <div class="proj-actions layer-8-buttons">
                                 <a href="https://github.com/pratheeshclement-cmd" target="_blank"
                                     rel="noopener noreferrer" class="proj-action-btn secondary">
                                     <i class="fab fa-github"></i> <span>View Github</span>
@@ -751,13 +813,13 @@
                     </article>
 
                     <!-- Project 4 -->
-                    <article class="glass-card project-card reveal-up" style="--sd: 200ms;">
-                        <div class="proj-thumb">
+                    <article class="glass-card project-card layer-6-cards">
+                        <div class="proj-thumb layer-7-images">
                             <div class="proj-thumb-overlay"><i class="fab fa-meta"></i></div>
                             <span class="proj-num">04</span>
                             <span class="proj-badge private"><i class="fas fa-lock"></i> Client Private</span>
                         </div>
-                        <div class="proj-body">
+                        <div class="proj-body layer-10-reveal">
                             <div class="proj-tags">
                                 <span class="proj-tag"><i class="fas fa-book-open"></i> Case Study</span>
                                 <span class="proj-tag"><i class="fab fa-facebook-f"></i> Meta Ads</span>
@@ -775,7 +837,7 @@
                                 <p><strong>Results:</strong> Reduced average CPL metrics, while generating pre-qualified
                                     business leads.</p>
                             </div>
-                            <div class="proj-actions">
+                            <div class="proj-actions layer-8-buttons">
                                 <a href="#contact" class="proj-action-btn">
                                     <i class="fas fa-paper-plane"></i> <span>Request Audit</span>
                                 </a>
@@ -784,7 +846,7 @@
                     </article>
                 </div>
 
-                <div class="glass-card github-callout reveal-up">
+                <div class="glass-card github-callout layer-6-cards">
                     <h3>Curious for more?</h3>
                     <p>I constantly commit source files, layout structures, and search configurations to my repository.
                     </p>
@@ -797,9 +859,9 @@
         </section>
 
         <!-- 5. DIGITAL ECOSYSTEM SECTION -->
-        <section class="ecosystem section" id="ecosystem">
+        <section class="ecosystem section" id="ecosystem" data-scene="ecosystem">
             <div class="container">
-                <div class="section-header reveal-up">
+                <div class="section-header layer-4-typo">
                     <div class="sh-row">
                         <span class="mono sh-num">// 04</span>
                         <div class="sh-line"></div>
@@ -808,8 +870,8 @@
                     <p class="sh-sub">Centralized Integration for Digital Growth &amp; Analytics Management</p>
                 </div>
 
-                <div class="glass-card eco-card reveal-up">
-                    <div class="eco-info">
+                <div class="glass-card eco-card layer-3-bg">
+                    <div class="eco-info layer-10-reveal">
                         <h3>Centralize Your Operations With Integrated Suites</h3>
                         <p>
                             My Digital Ecosystem represents a cohesive analytics integration concept, designed to link
@@ -819,41 +881,41 @@
 
                         <!-- 8 Detailed Ecosystem Features Grid List -->
                         <ul class="eco-features">
-                            <li><i class="fas fa-tasks"></i>
+                            <li data-eco="productivity"><i class="fas fa-tasks"></i>
                                 <div><strong>Productivity</strong><span>Streamlined scheduling and task tracking
                                         workflows.</span></div>
                             </li>
-                            <li><i class="fas fa-brain"></i>
+                            <li data-eco="ai"><i class="fas fa-brain"></i>
                                 <div><strong>AI Tools</strong><span>Native machine learning models and content
                                         generators.</span></div>
                             </li>
-                            <li><i class="fas fa-graduation-cap"></i>
+                            <li data-eco="learning"><i class="fas fa-graduation-cap"></i>
                                 <div><strong>Learning Resources</strong><span>Curated dev assets and guides
                                         library.</span></div>
                             </li>
-                            <li><i class="fas fa-bolt"></i>
+                            <li data-eco="automation"><i class="fas fa-bolt"></i>
                                 <div><strong>Automation</strong><span>Event-driven Zapier triggers and server
                                         webhooks.</span></div>
                             </li>
-                            <li><i class="fas fa-network-wired"></i>
+                            <li data-eco="business"><i class="fas fa-network-wired"></i>
                                 <div><strong>Business Systems</strong><span>Unified client onboarding and lead
                                         sync.</span></div>
                             </li>
-                            <li><i class="fas fa-folder-tree"></i>
+                            <li data-eco="knowledge"><i class="fas fa-folder-tree"></i>
                                 <div><strong>Knowledge Management</strong><span>Organized documentation folders and
                                         tags.</span></div>
                             </li>
-                            <li><i class="fas fa-lightbulb"></i>
+                            <li data-eco="projects"><i class="fas fa-lightbulb"></i>
                                 <div><strong>Future Projects</strong><span>Upcoming SaaS utilities roadmap
                                         tracker.</span></div>
                             </li>
-                            <li><i class="fas fa-bullhorn"></i>
+                            <li data-eco="marketing"><i class="fas fa-bullhorn"></i>
                                 <div><strong>Digital Marketing Resources</strong><span>Ad audits checklists and
                                         calculators.</span></div>
                             </li>
                         </ul>
 
-                        <div class="btn-group">
+                        <div class="btn-group layer-8-buttons">
                             <a href="https://pratheeshclement-cmd.github.io/pratheesh-digital-ecosystem/"
                                 target="_blank" rel="noopener noreferrer" class="btn btn-primary">
                                 <i class="fas fa-external-link-alt"></i> <span>Visit Website</span>
@@ -863,20 +925,28 @@
                             </a>
                         </div>
                     </div>
-                    <div class="eco-visual">
+                    <div class="eco-visual layer-6-cards">
                         <div class="eco-orbit o1"></div>
                         <div class="eco-orbit o2"></div>
                         <div class="eco-center"><i class="fas fa-network-wired"></i></div>
 
-                        <!-- 8 Orbit Nodes with specific icons -->
-                        <div class="eco-node n1" title="Productivity"><i class="fas fa-tasks"></i></div>
-                        <div class="eco-node n2" title="AI Tools"><i class="fas fa-brain"></i></div>
-                        <div class="eco-node n3" title="Learning Resources"><i class="fas fa-graduation-cap"></i></div>
-                        <div class="eco-node n4" title="Automation"><i class="fas fa-bolt"></i></div>
-                        <div class="eco-node n5" title="Business Systems"><i class="fas fa-network-wired"></i></div>
-                        <div class="eco-node n6" title="Knowledge Management"><i class="fas fa-folder-tree"></i></div>
-                        <div class="eco-node n7" title="Future Projects"><i class="fas fa-lightbulb"></i></div>
-                        <div class="eco-node n8" title="Digital Marketing Resources"><i class="fas fa-bullhorn"></i>
+                        <!-- 8 Orbit Nodes with specific icons and targets -->
+                        <div class="eco-node n1 layer-5-icons" data-eco="productivity" title="Productivity"><i
+                                class="fas fa-tasks"></i></div>
+                        <div class="eco-node n2 layer-5-icons" data-eco="ai" title="AI Tools"><i
+                                class="fas fa-brain"></i></div>
+                        <div class="eco-node n3 layer-5-icons" data-eco="learning" title="Learning Resources"><i
+                                class="fas fa-graduation-cap"></i></div>
+                        <div class="eco-node n4 layer-5-icons" data-eco="automation" title="Automation"><i
+                                class="fas fa-bolt"></i></div>
+                        <div class="eco-node n5 layer-5-icons" data-eco="business" title="Business Systems"><i
+                                class="fas fa-network-wired"></i></div>
+                        <div class="eco-node n6 layer-5-icons" data-eco="knowledge" title="Knowledge Management"><i
+                                class="fas fa-folder-tree"></i></div>
+                        <div class="eco-node n7 layer-5-icons" data-eco="projects" title="Future Projects"><i
+                                class="fas fa-lightbulb"></i></div>
+                        <div class="eco-node n8 layer-5-icons" data-eco="marketing" title="Digital Marketing Resources">
+                            <i class="fas fa-bullhorn"></i>
                         </div>
                     </div>
                 </div>
@@ -884,9 +954,9 @@
         </section>
 
         <!-- 6. SKILLS SECTION -->
-        <section class="skills section" id="skills">
+        <section class="skills section" id="skills" data-scene="skills">
             <div class="container">
-                <div class="section-header reveal-up">
+                <div class="section-header layer-4-typo">
                     <div class="sh-row">
                         <span class="mono sh-num">// 05</span>
                         <div class="sh-line"></div>
@@ -895,55 +965,33 @@
                     <p class="sh-sub">The Core Skills and Technologies Powering My Work</p>
                 </div>
 
-                <div class="skills-grid">
-                    <div class="glass-card skill-card reveal-up" style="--sd: 0ms;">
-                        <div class="skill-icon"><i class="fas fa-search"></i></div>
-                        <h3>SEO</h3>
+                <div class="skills-cloud-container layer-3-bg">
+                    <div class="skill-tag layer-6-cards" style="--sd: 0ms;"><i class="fas fa-search"></i> SEO</div>
+                    <div class="skill-tag layer-6-cards" style="--sd: 100ms;"><i class="fas fa-brain"></i> AI</div>
+                    <div class="skill-tag layer-6-cards" style="--sd: 200ms;"><i class="fas fa-code"></i> Web
+                        Development</div>
+                    <div class="skill-tag layer-6-cards" style="--sd: 300ms;"><i class="fas fa-pencil-ruler"></i> UI/UX
                     </div>
-                    <div class="glass-card skill-card reveal-up" style="--sd: 100ms;">
-                        <div class="skill-icon"><i class="fab fa-google"></i></div>
-                        <h3>Google Ads</h3>
+                    <div class="skill-tag layer-6-cards" style="--sd: 400ms;"><i class="fab fa-facebook-f"></i> Meta Ads
                     </div>
-                    <div class="glass-card skill-card reveal-up" style="--sd: 200ms;">
-                        <div class="skill-icon"><i class="fab fa-facebook-f"></i></div>
-                        <h3>Meta Ads</h3>
+                    <div class="skill-tag layer-6-cards" style="--sd: 500ms;"><i class="fab fa-google"></i> Google Ads
                     </div>
-                    <div class="glass-card skill-card reveal-up" style="--sd: 300ms;">
-                        <div class="skill-icon"><i class="fab fa-html5"></i></div>
-                        <h3>HTML</h3>
+                    <div class="skill-tag layer-6-cards" style="--sd: 100ms;"><i class="fas fa-bullhorn"></i> Digital
+                        Marketing</div>
+                    <div class="skill-tag layer-6-cards" style="--sd: 200ms;"><i class="fas fa-robot"></i> Automation
                     </div>
-                    <div class="glass-card skill-card reveal-up" style="--sd: 400ms;">
-                        <div class="skill-icon"><i class="fab fa-css3-alt"></i></div>
-                        <h3>CSS</h3>
-                    </div>
-                    <div class="glass-card skill-card reveal-up" style="--sd: 500ms;">
-                        <div class="skill-icon"><i class="fab fa-js"></i></div>
-                        <h3>JavaScript</h3>
-                    </div>
-                    <div class="glass-card skill-card reveal-up" style="--sd: 0ms;">
-                        <div class="skill-icon"><i class="fas fa-code"></i></div>
-                        <h3>Web Dev</h3>
-                    </div>
-                    <div class="glass-card skill-card reveal-up" style="--sd: 100ms;">
-                        <div class="skill-icon"><i class="fas fa-bullhorn"></i></div>
-                        <h3>Digital Mktg</h3>
-                    </div>
-                    <div class="glass-card skill-card reveal-up" style="--sd: 200ms;">
-                        <div class="skill-icon"><i class="fas fa-robot"></i></div>
-                        <h3>AI Tools</h3>
-                    </div>
-                    <div class="glass-card skill-card reveal-up" style="--sd: 300ms;">
-                        <div class="skill-icon"><i class="fas fa-chart-line"></i></div>
-                        <h3>Analytics</h3>
-                    </div>
+                    <div class="skill-tag layer-6-cards" style="--sd: 300ms;"><i class="fas fa-chart-line"></i>
+                        Analytics</div>
+                    <div class="skill-tag layer-6-cards" style="--sd: 400ms;"><i class="fas fa-network-wired"></i>
+                        Integrations</div>
                 </div>
             </div>
         </section>
 
         <!-- 7. EXPERIENCE SECTION -->
-        <section class="experience section" id="experience">
+        <section class="experience section" id="experience" data-scene="experience">
             <div class="container">
-                <div class="section-header reveal-up">
+                <div class="section-header layer-4-typo">
                     <div class="sh-row">
                         <span class="mono sh-num">// 06</span>
                         <div class="sh-line"></div>
@@ -952,9 +1000,9 @@
                     <p class="sh-sub">Milestones in Professional Work and Continuous Skills Acquisition</p>
                 </div>
 
-                <div class="experience-layout">
+                <div class="experience-layout layer-3-bg">
                     <!-- Google Certificate -->
-                    <div class="timeline-item cert-item reveal-up">
+                    <div class="timeline-item cert-item layer-6-cards">
                         <div class="timeline-dot"></div>
                         <div class="timeline-meta">
                             <span class="timeline-date">14 March 2026</span>
@@ -979,7 +1027,7 @@
                     </div>
 
                     <!-- Work experience Nexteer -->
-                    <div class="timeline-item reveal-up">
+                    <div class="timeline-item layer-6-cards">
                         <div class="timeline-dot"></div>
                         <div class="timeline-meta">
                             <span class="timeline-date">Past Period</span>
@@ -1006,7 +1054,7 @@
                     </div>
 
                     <!-- Web Dev Journey -->
-                    <div class="timeline-item reveal-up">
+                    <div class="timeline-item layer-6-cards">
                         <div class="timeline-dot"></div>
                         <div class="timeline-meta">
                             <span class="timeline-date">Ongoing</span>
@@ -1036,9 +1084,9 @@
         </section>
 
         <!-- 8. TESTIMONIAL SECTION -->
-        <section class="testimonials section" id="testimonials">
+        <section class="testimonials section" id="testimonials" data-scene="testimonials">
             <div class="container">
-                <div class="section-header reveal-up">
+                <div class="section-header layer-4-typo">
                     <div class="sh-row">
                         <span class="mono sh-num">// 07</span>
                         <div class="sh-line"></div>
@@ -1047,8 +1095,8 @@
                     <p class="sh-sub">What Collaborators and Clients Say About My Digital Consultancy</p>
                 </div>
 
-                <div class="testimonials-grid">
-                    <div class="glass-card testimonial-card reveal-up" style="--sd: 0ms;">
+                <div class="testimonials-grid layer-3-bg">
+                    <div class="glass-card testimonial-card layer-6-cards" style="--sd: 0ms;">
                         <div class="test-stars">
                             <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
                                 class="fas fa-star"></i><i class="fas fa-star"></i>
@@ -1067,7 +1115,7 @@
                         </div>
                     </div>
 
-                    <div class="glass-card testimonial-card reveal-up" style="--sd: 100ms;">
+                    <div class="glass-card testimonial-card layer-6-cards" style="--sd: 100ms;">
                         <div class="test-stars">
                             <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
                                 class="fas fa-star"></i><i class="fas fa-star"></i>
@@ -1085,7 +1133,7 @@
                         </div>
                     </div>
 
-                    <div class="glass-card testimonial-card reveal-up" style="--sd: 200ms;">
+                    <div class="glass-card testimonial-card layer-6-cards" style="--sd: 200ms;">
                         <div class="test-stars">
                             <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
                                 class="fas fa-star"></i><i class="fas fa-star"></i>
@@ -1107,9 +1155,9 @@
         </section>
 
         <!-- 9. AUDIT & CONTACT SECTION -->
-        <section class="audit-cta" id="audit">
+        <section class="audit-cta section" id="audit" data-scene="audit">
             <div class="container audit-grid">
-                <div class="audit-intro reveal-left">
+                <div class="audit-intro layer-10-reveal">
                     <h3>Get a FREE Website Health Audit Today.</h3>
                     <p>Uncover critical bottlenecks blocking your search visibility and conversion funnels. I will
                         personally analyze your site and map out concrete solutions.</p>
@@ -1139,7 +1187,7 @@
                     </div>
                 </div>
 
-                <div class="glass-card form-card audit-form-card reveal-right">
+                <div class="glass-card form-card audit-form-card layer-6-cards">
                     <form id="auditForm" novalidate>
                         <div class="form-field">
                             <input type="url" id="auditUrl" name="websiteUrl" placeholder=" " required>
@@ -1168,9 +1216,9 @@
         </section>
 
         <!-- 10. CONTACT SECTION -->
-        <section class="contact section" id="contact">
+        <section class="contact section" id="contact" data-scene="contact">
             <div class="container">
-                <div class="section-header reveal-up">
+                <div class="section-header layer-4-typo">
                     <div class="sh-row">
                         <span class="mono sh-num">// 08</span>
                         <div class="sh-line"></div>
@@ -1180,7 +1228,7 @@
                 </div>
 
                 <div class="contact-grid">
-                    <div class="contact-info reveal-left">
+                    <div class="contact-info layer-10-reveal">
                         <h3>Let's Build Your Next Digital Success Story</h3>
                         <p>
                             Whether you need a high-performance personal brand site, targeted search rankings campaign,
@@ -1268,7 +1316,7 @@
                         </div>
                     </div>
 
-                    <div class="glass-card form-card reveal-right">
+                    <div class="glass-card form-card layer-6-cards">
                         <form id="contactForm" novalidate>
                             <div class="form-group-2">
                                 <div class="form-field">
@@ -1344,79 +1392,174 @@
             </div>
         </section>
 
+        <!-- ══════════════ FOOTER ══════════════ -->
+        <footer class="footer">
+            <div class="container">
+                <div class="footer-grid">
+                    <div class="footer-brand">
+                        <div class="footer-logo-wrap">
+                            <img src="./asset/logo-footer.png"
+                                srcset="./asset/logo-footer.png 1x, ./asset/favicon.svg.png 2x"
+                                alt="Pratheesh Clement - Freelance Digital Marketer, SEO Specialist and Website Developer"
+                                class="footer-logo-img" width="48" height="48" loading="lazy">
+                            <h2>Pratheesh Clement<span class="highlight">.</span></h2>
+                        </div>
+                        <p>High-performance personal brand websites and target campaign marketing engineered to drive
+                            organic growth.</p>
+                        <div class="footer-socials">
+                            <a href="mailto:pratheesh.clement@gmail.com" class="social-pill" aria-label="Email"><i
+                                    class="fas fa-envelope"></i></a>
+                            <a href="https://www.linkedin.com/in/mariya-pratheesh-5b8a9b316/" target="_blank"
+                                rel="noopener noreferrer" class="social-pill" aria-label="LinkedIn"><i
+                                    class="fab fa-linkedin-in"></i></a>
+                            <a href="https://github.com/pratheeshclement-cmd" target="_blank" rel="noopener noreferrer"
+                                class="social-pill" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                        </div>
+                    </div>
+
+                    <div class="footer-col">
+                        <h4>Direct Links</h4>
+                        <div class="footer-links">
+                            <a href="#home" class="footer-link">Home</a>
+                            <a href="#about" class="footer-link">About Me</a>
+                            <a href="#services" class="footer-link">Services</a>
+                        </div>
+                    </div>
+
+                    <div class="footer-col">
+                        <h4>Showcase</h4>
+                        <div class="footer-links">
+                            <a href="#projects" class="footer-link">Featured Work</a>
+                            <a href="#ecosystem" class="footer-link">Digital Ecosystem</a>
+                            <a href="#skills" class="footer-link">Technical Skills</a>
+                        </div>
+                    </div>
+
+                    <div class="footer-col">
+                        <h4>Inquiries</h4>
+                        <div class="footer-links">
+                            <a href="#audit" class="footer-link">Free Audit Check</a>
+                            <a href="#contact" class="footer-link">Contact Desk</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="footer-bottom">
+                    <p class="footer-copy">
+                        &copy; 2026 <strong>Pratheesh Clement</strong>. All rights reserved.
+                    </p>
+                    <nav class="footer-nav" aria-label="Secondary navigation">
+                        <a href="#home">Home</a>
+                        <a href="#about">About</a>
+                        <a href="#services">Services</a>
+                        <a href="#projects">Projects</a>
+                        <a href="#ecosystem">Ecosystem</a>
+                        <a href="#contact">Contact</a>
+                    </nav>
+                </div>
+            </div>
+        </footer>
     </main>
 
-    <!-- ══════════════ FOOTER ══════════════ -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-grid">
-                <div class="footer-brand">
-                    <div class="footer-logo-wrap">
-                        <img src="./asset/logo-footer.png"
-                            srcset="./asset/logo-footer.png 1x, ./asset/favicon.svg.png 2x"
-                            alt="Pratheesh Clement - Freelance Digital Marketer, SEO Specialist and Website Developer"
-                            class="footer-logo-img" width="48" height="48" loading="lazy">
-                        <h2>Pratheesh Clement<span class="highlight">.</span></h2>
+    <!-- Premium Interactive Settings Widget -->
+    <div class="settings-widget">
+        <button class="settings-fab modern-dial" id="settingsFab" aria-label="Open System Parameters">
+            <div class="dial-glow"></div>
+            <div class="dial-ring-outer"></div>
+            <div class="dial-ring-inner"></div>
+            <i class="fas fa-sliders-h dial-core-icon"></i>
+            <span class="settings-fab-label">CONTROL PANEL</span>
+        </button>
+
+        <div class="settings-modal-overlay" id="settingsDrawer" aria-hidden="true">
+            <div class="settings-modal-backdrop" id="settingsDrawerBackdrop"></div>
+            <div class="settings-modal-card">
+                <div class="settings-modal-header">
+                    <h3>
+                        <span class="cyber-badge">SYSTEM CONTROL</span>
+                        <span class="cyber-title">Ecosystem Parameters</span>
+                    </h3>
+                    <button class="settings-close-btn" id="settingsCloseBtn" aria-label="Close settings">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <div class="settings-modal-body">
+                    <!-- Section 1: Themes Color Space -->
+                    <div class="settings-group">
+                        <div class="settings-group-title"><i class="fas fa-palette"></i> THEME COLOR SPACE</div>
+                        <div class="theme-grid">
+                            <button class="theme-btn active" data-hue="250" data-sat="20%" data-light="4%"
+                                data-primary="#00f0ff" data-secondary="#7000ff" style="--btn-color: #00f0ff;">
+                                <span>Cyberpunk Cyan</span>
+                            </button>
+                            <button class="theme-btn" data-hue="145" data-sat="30%" data-light="3%"
+                                data-primary="#39ff14" data-secondary="#00ff66" style="--btn-color: #39ff14;">
+                                <span>Matrix Green</span>
+                            </button>
+                            <button class="theme-btn" data-hue="215" data-sat="15%" data-light="5%"
+                                data-primary="#228be6" data-secondary="#15aabf" style="--btn-color: #228be6;">
+                                <span>Tesla Slate</span>
+                            </button>
+                            <button class="theme-btn" data-hue="42" data-sat="25%" data-light="4%"
+                                data-primary="#d4af37" data-secondary="#aa7c11" style="--btn-color: #d4af37;">
+                                <span>Premium Gold</span>
+                            </button>
+                            <button class="theme-btn" data-hue="335" data-sat="25%" data-light="4%"
+                                data-primary="#ff007f" data-secondary="#ff00aa" style="--btn-color: #ff007f;">
+                                <span>Neon Magenta</span>
+                            </button>
+                        </div>
                     </div>
-                    <p>High-performance personal brand websites and target campaign marketing engineered to drive
-                        organic growth.</p>
-                    <div class="footer-socials">
-                        <a href="mailto:pratheesh.clement@gmail.com" class="social-pill" aria-label="Email"><i
-                                class="fas fa-envelope"></i></a>
-                        <a href="https://www.linkedin.com/in/mariya-pratheesh-5b8a9b316/" target="_blank"
-                            rel="noopener noreferrer" class="social-pill" aria-label="LinkedIn"><i
-                                class="fab fa-linkedin-in"></i></a>
-                        <a href="https://github.com/pratheeshclement-cmd" target="_blank" rel="noopener noreferrer"
-                            class="social-pill" aria-label="GitHub"><i class="fab fa-github"></i></a>
+
+                    <!-- Section 2: Motion Profile -->
+                    <div class="settings-group">
+                        <div class="settings-group-title"><i class="fas fa-running"></i> MOTION CONTROLLER</div>
+                        <div class="motion-toggle-wrap">
+                            <button class="motion-btn active" id="motionHigh">
+                                <i class="fas fa-film"></i> Cinematic Motion
+                            </button>
+                            <button class="motion-btn" id="motionLow">
+                                <i class="fas fa-bolt"></i> Low Motion
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Section 3: Diagnostic Stream -->
+                    <div class="settings-group">
+                        <div class="settings-group-title"><i class="fas fa-broadcast-tower"></i> DIAGNOSTIC TELEMETRY
+                        </div>
+                        <div class="telemetry-readout">
+                            <div class="tel-row">
+                                <span>ACTIVE LAYER STATE</span>
+                                <strong id="telActiveSection">// HOME</strong>
+                            </div>
+                            <div class="tel-row">
+                                <span>SCROLL VECTOR</span>
+                                <strong id="telScrollVector">0.00</strong>
+                            </div>
+                            <div class="tel-row">
+                                <span>RENDER BASIS</span>
+                                <strong>Sharp-Motion v2.5</strong>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="footer-col">
-                    <h4>Direct Links</h4>
-                    <div class="footer-links">
-                        <a href="#home" class="footer-link">Home</a>
-                        <a href="#about" class="footer-link">About Me</a>
-                        <a href="#services" class="footer-link">Services</a>
-                    </div>
+                <div class="settings-modal-footer">
+                    <span>Ecosystem Telemetry Grid</span>
+                    <span class="mono">STATUS: ACTIVE</span>
                 </div>
-
-                <div class="footer-col">
-                    <h4>Showcase</h4>
-                    <div class="footer-links">
-                        <a href="#projects" class="footer-link">Featured Work</a>
-                        <a href="#ecosystem" class="footer-link">Digital Ecosystem</a>
-                        <a href="#skills" class="footer-link">Technical Skills</a>
-                    </div>
-                </div>
-
-                <div class="footer-col">
-                    <h4>Inquiries</h4>
-                    <div class="footer-links">
-                        <a href="#audit" class="footer-link">Free Audit Check</a>
-                        <a href="#contact" class="footer-link">Contact Desk</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="footer-bottom">
-                <p class="footer-copy">
-                    &copy; 2026 <strong>Pratheesh Clement</strong>. All rights reserved.
-                </p>
-                <nav class="footer-nav" aria-label="Secondary navigation">
-                    <a href="#home">Home</a>
-                    <a href="#about">About</a>
-                    <a href="#services">Services</a>
-                    <a href="#projects">Projects</a>
-                    <a href="#ecosystem">Ecosystem</a>
-                    <a href="#contact">Contact</a>
-                </nav>
             </div>
         </div>
-    </footer>
+    </div>
 
     <!-- Core Scripts -->
+    <script src="./js/transitions.js"></script>
     <script src="./js/animations.js"></script>
     <script src="./js/main.js"></script>
+    <!-- Master Motion Orchestrator — 12-layer motion design architecture -->
+    <script src="./js/motion.js"></script>
 </body>
 
 </html>
