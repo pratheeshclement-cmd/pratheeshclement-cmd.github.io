@@ -1,6 +1,6 @@
 /**
  * Meta Pixel Utility & Custom Event Tracking System
- * Pixel ID: 2059152391340799
+ * Active Pixel IDs: 2059152391340799, 983425767341384
  * 
  * Provides clean, reusable functions and automatic DOM listeners for 
  * Meta conversion events without modifying core website architecture.
