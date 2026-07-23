@@ -1,577 +1,272 @@
-/* ==========================================================================
-   PRATHEESH CLEMENT — PORTFOLIO  |  js/main.js
-   Desc: Core interaction scripting covering navigation states, mobile
-         toggle, offsets scroll, scroll-progress, back-to-top, and mailto forms.
-   ========================================================================== */
+/* ===========================================================================
+   PRATHEESH AI — CORE UI INTERACTIONS
+
+   Scroll, active navigation, route transitions, and progress live exclusively
+   in harmony-motion.js. This module retains only menu, form, filters, linked
+   ecosystem content, and control-panel behavior.
+   =========================================================================== */
 
 (function () {
     'use strict';
 
     document.addEventListener('DOMContentLoaded', () => {
-        initStickyNav();
         initMobileMenu();
-        initActiveLinks();
-        initSmoothScroll();
-        initScrollProgress();
-        initBackToTop();
         initAuditForm();
         initContactForm();
-        initScrollTransitions();
         initEcosystemHighlights();
+        initSkillsFilter();
         initSettingsDrawer();
-    });
+    }, { once: true });
 
-    /* ─────────────────────────────────────────────
-       1. STICKY NAV HEADER
-       ───────────────────────────────────────────── */
-    function initStickyNav() {
-        const nav = document.getElementById('nav');
-        if (!nav) return;
-
-        const handleScroll = () => {
-            if (window.scrollY > 60) {
-                nav.classList.add('scrolled');
-            } else {
-                nav.classList.remove('scrolled');
-            }
-        };
-
-        window.addEventListener('scroll', handleScroll, { passive: true });
-        handleScroll(); // Run once in case page loads scrolled down
-    }
-
-    /* ─────────────────────────────────────────────
-       2. MOBILE MENU TOGGLE
-       ───────────────────────────────────────────── */
     function initMobileMenu() {
         const toggle = document.getElementById('navToggle');
         const menu = document.getElementById('navLinks');
         if (!toggle || !menu) return;
 
-        const openMenu = () => {
-            const open = menu.classList.toggle('open');
-            toggle.classList.toggle('open', open);
-            toggle.setAttribute('aria-expanded', open);
-            document.body.style.overflow = open ? 'hidden' : '';
-        };
-
         const closeMenu = () => {
             menu.classList.remove('open');
             toggle.classList.remove('open');
-            toggle.setAttribute('aria-expanded', false);
-            document.body.style.overflow = '';
+            toggle.setAttribute('aria-expanded', 'false');
+            document.body.classList.remove('nav-menu-open');
         };
 
-        toggle.addEventListener('click', openMenu);
-
-        // Close when clicking nav links
-        menu.querySelectorAll('.nav-link').forEach((link) => {
-            link.addEventListener('click', closeMenu);
-        });
-
-        // Close menu when clicking outside of menu
-        document.addEventListener('click', (e) => {
-            if (menu.classList.contains('open') &&
-                !menu.contains(e.target) &&
-                !toggle.contains(e.target)) {
-                closeMenu();
-            }
-        });
-    }
-
-    /* ─────────────────────────────────────────────
-       3. ACTIVE NAVIGATION LINK ON SCROLL
-       ───────────────────────────────────────────── */
-    function initActiveLinks() {
-        const navLinks = document.querySelectorAll('.nav-link');
-        const sections = document.querySelectorAll('section[id]');
-        const nav = document.getElementById('nav');
-
-        const updateActive = () => {
-            const scrollY = window.scrollY;
-            const navHeight = nav ? nav.offsetHeight : 80;
-            const buffer = 40;
-
-            sections.forEach((sec) => {
-                const top = sec.offsetTop - navHeight - buffer;
-                const bottom = top + sec.offsetHeight;
-                const id = sec.getAttribute('id');
-
-                if (scrollY >= top && scrollY < bottom) {
-                    navLinks.forEach((link) => {
-                        const href = link.getAttribute('href');
-                        if (href === `#${id}`) {
-                            link.classList.add('active');
-                            link.setAttribute('aria-current', 'page');
-                        } else {
-                            link.classList.remove('active');
-                            link.removeAttribute('aria-current');
-                        }
-                    });
-                }
-            });
+        const toggleMenu = () => {
+            const isOpen = menu.classList.toggle('open');
+            toggle.classList.toggle('open', isOpen);
+            toggle.setAttribute('aria-expanded', String(isOpen));
+            document.body.classList.toggle('nav-menu-open', isOpen);
         };
 
-        window.addEventListener('scroll', updateActive, { passive: true });
-        updateActive();
-    }
-
-    /* ─────────────────────────────────────────────
-       4. SMOOTH SCROLL ROUTING WITH NAVBAR OFFSET
-       ───────────────────────────────────────────── */
-    function initSmoothScroll() {
-        const nav = document.getElementById('nav');
-
-        document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
-            anchor.addEventListener('click', function (e) {
-                const href = this.getAttribute('href');
-                if (href === '#' || href === '#main-content') return;
-
-                const target = document.querySelector(href);
-                if (!target) return;
-
-                e.preventDefault();
-                const navHeight = nav ? nav.offsetHeight : 80;
-                const buffer = 20;
-                const top = target.getBoundingClientRect().top + window.scrollY - navHeight - buffer;
-
-                window.scrollTo({
-                    top: top,
-                    behavior: 'smooth'
-                });
-            });
+        toggle.addEventListener('click', toggleMenu);
+        menu.querySelectorAll('.nav-link').forEach((link) => link.addEventListener('click', closeMenu));
+        document.addEventListener('click', (event) => {
+            if (menu.classList.contains('open') && !menu.contains(event.target) && !toggle.contains(event.target)) closeMenu();
+        });
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && menu.classList.contains('open')) closeMenu();
         });
     }
 
-    /* ─────────────────────────────────────────────
-       5. SCROLL PROGRESS INDICATOR
-       ───────────────────────────────────────────── */
-    function initScrollProgress() {
-        const bar = document.getElementById('scrollProgress');
-        if (!bar) return;
-
-        window.addEventListener('scroll', () => {
-            const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
-            const progress = scrollHeight > 0 ? (window.scrollY / scrollHeight) * 100 : 0;
-            bar.style.width = `${progress}%`;
-        }, { passive: true });
-    }
-
-    /* ─────────────────────────────────────────────
-       6. BACK TO TOP BUTTON
-       ───────────────────────────────────────────── */
-    function initBackToTop() {
-        const btt = document.getElementById('bttBtn');
-        if (btt) return; // Prevent duplicate if it exists in markup
-
-        const btn = document.createElement('button');
-        btn.id = 'bttBtn';
-        btn.setAttribute('aria-label', 'Back to top');
-        btn.innerHTML = '<i class="fas fa-arrow-up"></i>';
-        document.body.appendChild(btn);
-
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 400) {
-                btn.classList.add('show');
-            } else {
-                btn.classList.remove('show');
-            }
-        }, { passive: true });
-
-        btn.addEventListener('click', () => {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
-    }
-
-    /* ─────────────────────────────────────────────
-       7. AUDIT REQUEST FORM HANDLER (mailto redirection)
-       ───────────────────────────────────────────── */
     function initAuditForm() {
         const form = document.getElementById('auditForm');
         if (!form) return;
 
-        form.addEventListener('submit', (e) => {
-            e.preventDefault();
+        form.addEventListener('submit', (event) => {
+            event.preventDefault();
+            const url = form.querySelector('#auditUrl');
+            const name = form.querySelector('#auditName');
+            const email = form.querySelector('#auditEmail');
+            const phone = form.querySelector('#auditPhone');
+            const message = document.getElementById('auditSuccess');
+            const fields = [url, name, email, phone].filter(Boolean);
 
-            const urlInput = form.querySelector('#auditUrl');
-            const nameInput = form.querySelector('#auditName');
-            const emailInput = form.querySelector('#auditEmail');
-            const phoneInput = form.querySelector('#auditPhone');
-            const msgBox = document.getElementById('auditSuccess');
-
-            // Reset field borders
-            [urlInput, nameInput, emailInput, phoneInput].forEach(inp => inp.style.borderColor = '');
-
-            // Simple validation
-            if (!urlInput.value.trim() || !nameInput.value.trim() || !emailInput.value.trim() || !phoneInput.value.trim()) {
+            fields.forEach((field) => { field.style.borderColor = ''; });
+            if (fields.length !== 4 || fields.some((field) => !field.value.trim())) {
                 shakeElement(form);
                 return;
             }
-
-            if (!validateEmail(emailInput.value.trim())) {
-                emailInput.style.borderColor = '#ef4444';
-                shakeElement(emailInput);
+            if (!validateEmail(email.value.trim())) {
+                email.style.borderColor = '#ef4444';
+                shakeElement(email);
                 return;
             }
 
-            const name = nameInput.value.trim();
-            const url = urlInput.value.trim();
-            const email = emailInput.value.trim();
-            const phone = phoneInput.value.trim();
-
-            // Success feedback
-            msgBox.className = 'form-message-box success show';
-            msgBox.innerHTML = '<i class="fas fa-check-circle"></i><span>Audit query validated! Redirecting to email...</span>';
-
-            // Build mailto link
-            const subject = encodeURIComponent(`Website Audit Request - ${name}`);
-            const body = encodeURIComponent(
-                `Hello Pratheesh,\n\n` +
-                `I would like to request a FREE Website Health Audit for my digital page.\n\n` +
-                `Contact Details:\n` +
-                `- Client Name: ${name}\n` +
-                `- Website URL: ${url}\n` +
-                `- Email Address: ${email}\n` +
-                `- Phone Number: ${phone}\n\n` +
-                `Please let me know once you have analyzed the core metrics.`
-            );
-
-            const mailtoUrl = `mailto:pratheesh.clement@gmail.com?subject=${subject}&body=${body}`;
-
-            setTimeout(() => {
-                window.location.href = mailtoUrl;
-                form.reset();
-                msgBox.classList.remove('show');
-            }, 1200);
+            showSuccess(message, 'Audit query validated. Opening your email client…');
+            const subject = encodeURIComponent(`Website Audit Request - ${name.value.trim()}`);
+            const body = encodeURIComponent([
+                'Hello Pratheesh,', '',
+                'I would like to request a FREE Website Health Audit for my digital page.', '',
+                'Contact Details:',
+                `- Client Name: ${name.value.trim()}`,
+                `- Website URL: ${url.value.trim()}`,
+                `- Email Address: ${email.value.trim()}`,
+                `- Phone Number: ${phone.value.trim()}`, '',
+                'Please let me know once you have analyzed the core metrics.',
+            ].join('\n'));
+            openMailClient(`mailto:pratheesh.clement@gmail.com?subject=${subject}&body=${body}`, form, message);
         });
     }
 
-    /* ─────────────────────────────────────────────
-       8. CONTACT FORM HANDLER (mailto redirection)
-       ───────────────────────────────────────────── */
     function initContactForm() {
         const form = document.getElementById('contactForm');
         if (!form) return;
 
-        form.addEventListener('submit', (e) => {
-            e.preventDefault();
+        form.addEventListener('submit', (event) => {
+            event.preventDefault();
+            const name = form.querySelector('#fname');
+            const email = form.querySelector('#femail');
+            const phone = form.querySelector('#fphone');
+            const business = form.querySelector('#fbusiness');
+            const website = form.querySelector('#fweburl');
+            const detail = form.querySelector('#fmessage');
+            const message = document.getElementById('formSuccess');
+            const fields = [name, email, phone, business, detail].filter(Boolean);
 
-            const nameInput = form.querySelector('#fname');
-            const emailInput = form.querySelector('#femail');
-            const phoneInput = form.querySelector('#fphone');
-            const bizInput = form.querySelector('#fbusiness');
-            const weburlInput = form.querySelector('#fweburl');
-            const msgInput = form.querySelector('#fmessage');
-            const msgBox = document.getElementById('formSuccess');
-
-            // Reset field borders
-            [nameInput, emailInput, phoneInput, bizInput, msgInput].forEach(inp => inp.style.borderColor = '');
-
-            // Validate mandatory fields
-            if (!nameInput.value.trim() || !emailInput.value.trim() || !phoneInput.value.trim() || !bizInput.value.trim() || !msgInput.value.trim()) {
+            fields.forEach((field) => { field.style.borderColor = ''; });
+            if (fields.length !== 5 || fields.some((field) => !field.value.trim())) {
                 shakeElement(form);
                 return;
             }
-
-            if (!validateEmail(emailInput.value.trim())) {
-                emailInput.style.borderColor = '#ef4444';
-                shakeElement(emailInput);
+            if (!validateEmail(email.value.trim())) {
+                email.style.borderColor = '#ef4444';
+                shakeElement(email);
                 return;
             }
 
-            // Get checked services
-            const checkedServices = [];
-            form.querySelectorAll('input[name="services"]:checked').forEach((cb) => {
-                checkedServices.push(cb.value);
-            });
-
-            const name = nameInput.value.trim();
-            const email = emailInput.value.trim();
-            const phone = phoneInput.value.trim();
-            const business = bizInput.value.trim();
-            const website = weburlInput.value.trim() || 'N/A';
-            const message = msgInput.value.trim();
-            const services = checkedServices.length > 0 ? checkedServices.join(', ') : 'Not Specified';
-
-            // Success feedback
-            msgBox.className = 'form-message-box success show';
-            msgBox.innerHTML = '<i class="fas fa-check-circle"></i><span>Message validated! Opening your email client...</span>';
-
-            // Build mailto link
-            const subject = encodeURIComponent(`Project Inquiry from ${name} (${business})`);
-            const body = encodeURIComponent(
-                `Hello Pratheesh,\n\n` +
-                `I would like to discuss a potential project/consultation collaboration.\n\n` +
-                `Project Brief & Details:\n` +
-                `- Client Name: ${name}\n` +
-                `- Business Name: ${business}\n` +
-                `- Email Address: ${email}\n` +
-                `- Phone Number: ${phone}\n` +
-                `- Website URL: ${website}\n` +
-                `- Services Required: ${services}\n\n` +
-                `Message / Scope of Work:\n` +
-                `${message}\n\n` +
-                `Looking forward to scheduling an alignment call.`
-            );
-
-            const mailtoUrl = `mailto:pratheesh.clement@gmail.com?subject=${subject}&body=${body}`;
-
-            setTimeout(() => {
-                window.location.href = mailtoUrl;
-                form.reset();
-                msgBox.classList.remove('show');
-            }, 1200);
+            const services = Array.from(form.querySelectorAll('input[name="services"]:checked'))
+                .map((input) => input.value)
+                .join(', ') || 'Not specified';
+            showSuccess(message, 'Message validated. Opening your email client…');
+            const subject = encodeURIComponent(`Project Inquiry from ${name.value.trim()} (${business.value.trim()})`);
+            const body = encodeURIComponent([
+                'Hello Pratheesh,', '',
+                'I would like to discuss a potential project or consultation.', '',
+                'Project Brief & Details:',
+                `- Client Name: ${name.value.trim()}`,
+                `- Business Name: ${business.value.trim()}`,
+                `- Email Address: ${email.value.trim()}`,
+                `- Phone Number: ${phone.value.trim()}`,
+                `- Website URL: ${website?.value.trim() || 'N/A'}`,
+                `- Services Required: ${services}`, '',
+                'Message / Scope of Work:',
+                detail.value.trim(), '',
+                'Looking forward to scheduling an alignment call.',
+            ].join('\n'));
+            openMailClient(`mailto:pratheesh.clement@gmail.com?subject=${subject}&body=${body}`, form, message);
         });
     }
 
-    /* ─────────────────────────────────────────────
-       HELPER UTILITIES
-       ───────────────────────────────────────────── */
     function validateEmail(email) {
-        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return re.test(email);
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     }
 
-    function shakeElement(el) {
-        el.classList.add('shake');
-        setTimeout(() => {
-            el.classList.remove('shake');
-        }, 500);
+    function showSuccess(element, text) {
+        if (!element) return;
+        element.className = 'form-message-box success show';
+        element.innerHTML = `<i class="fas fa-check-circle"></i><span>${text}</span>`;
     }
 
-    /* ─────────────────────────────────────────────
-       9. SCROLL-DRIVEN TRANSITIONS ENGINE (Bazil/Apple Style)
-       ───────────────────────────────────────────── */
-    function initScrollTransitions() {
-        const sectionIds = [
-            'home', 'about', 'services', 'projects', 
-            'ecosystem', 'skills', 'experience', 'testimonials', 
-            'audit', 'contact'
-        ];
-        const sections = sectionIds.map(id => document.getElementById(id)).filter(el => el !== null);
-        const root = document.documentElement;
+    function openMailClient(url, form, message) {
+        window.setTimeout(() => {
+            window.location.href = url;
+            form.reset();
+            message?.classList.remove('show');
+        }, 450);
+    }
 
-        // Space themes mapping (HSL Colors)
-        const themes = {
-            home: { h: 250, s: 20, l: 4 },
-            about: { h: 260, s: 25, l: 5 },
-            services: { h: 280, s: 30, l: 4 },
-            projects: { h: 290, s: 20, l: 3 },
-            ecosystem: { h: 220, s: 25, l: 5 },
-            skills: { h: 250, s: 20, l: 4 },
-            experience: { h: 270, s: 25, l: 4 },
-            testimonials: { h: 280, s: 20, l: 4 },
-            audit: { h: 250, s: 20, l: 4 },
-            contact: { h: 250, s: 20, l: 4 }
+    function shakeElement(element) {
+        element.classList.remove('shake');
+        requestAnimationFrame(() => element.classList.add('shake'));
+        window.setTimeout(() => element.classList.remove('shake'), 350);
+    }
+
+    function initEcosystemHighlights() {
+        const nodes = Array.from(document.querySelectorAll('.eco-node'));
+        const items = Array.from(document.querySelectorAll('.eco-features li'));
+        if (!nodes.length || !items.length) return;
+
+        const setActive = (key) => {
+            nodes.forEach((node) => node.classList.toggle('active', node.dataset.eco === key));
+            items.forEach((item) => item.classList.toggle('active', item.dataset.eco === key));
         };
+        const clearActive = () => setActive('');
 
-        const handleScroll = () => {
-            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-            const viewportHeight = window.innerHeight;
-            const viewportCenter = scrollTop + viewportHeight / 2;
+        [...nodes, ...items].forEach((element) => {
+            element.addEventListener('mouseenter', () => setActive(element.dataset.eco));
+            element.addEventListener('mouseleave', clearActive);
+            element.addEventListener('focus', () => setActive(element.dataset.eco));
+            element.addEventListener('blur', clearActive);
+        });
+    }
 
-            let activeSectionId = 'home';
+    function initSkillsFilter() {
+        const tags = Array.from(document.querySelectorAll('.skills-cloud-container .skill-tag'));
+        const cards = Array.from(document.querySelectorAll('.skill-showcase-card'));
+        if (!tags.length || !cards.length) return;
 
-            sections.forEach((sec) => {
-                const secTop = sec.offsetTop;
-                const secHeight = sec.offsetHeight;
-                const secBottom = secTop + secHeight;
-
-                // Center position calculations based on physical offsets
-                const distanceFromCenter = (viewportCenter - (secTop + secHeight / 2)) / (viewportHeight / 2 + secHeight / 2);
-                const clampedDist = Math.max(-1, Math.min(1, distanceFromCenter));
-                const absDist = Math.abs(clampedDist);
-
-                sec.style.setProperty('--scroll-center-pos', clampedDist.toFixed(3));
-                sec.style.setProperty('--scroll-center-pos-abs', absDist.toFixed(3));
-
-                // Identify active background section based on physical scroll centers
-                if (viewportCenter >= secTop && viewportCenter < secBottom) {
-                    activeSectionId = sec.getAttribute('id');
+        tags.forEach((tag) => {
+            tag.setAttribute('role', 'button');
+            tag.tabIndex = 0;
+            const applyFilter = () => {
+                const filter = tag.textContent.trim().toLowerCase();
+                tags.forEach((item) => item.classList.toggle('active', item === tag));
+                cards.forEach((card) => {
+                    const title = card.querySelector('h3')?.textContent.toLowerCase() || '';
+                    const show = filter.includes('all') || filter.includes(title) || title.includes(filter);
+                    card.hidden = !show;
+                });
+            };
+            tag.addEventListener('click', applyFilter);
+            tag.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    applyFilter();
                 }
             });
-
-            // Set root HSL theme custom properties
-            const activeTheme = themes[activeSectionId];
-            if (activeTheme) {
-                const themeHue = typeof window.currentThemeHue !== 'undefined' ? window.currentThemeHue : activeTheme.h;
-                root.style.setProperty('--theme-h', themeHue);
-                root.style.setProperty('--theme-s', `${activeTheme.s}%`);
-                root.style.setProperty('--theme-l', `${activeTheme.l}%`);
-            }
-
-            // Update diagnostic telemetry readout
-            const activeSectionReadout = document.getElementById('telActiveSection');
-            const scrollVectorReadout = document.getElementById('telScrollVector');
-            if (activeSectionReadout) activeSectionReadout.textContent = `// ${activeSectionId.toUpperCase()}`;
-            if (scrollVectorReadout) scrollVectorReadout.textContent = scrollTop.toFixed(0);
-        };
-
-        window.addEventListener('scroll', handleScroll, { passive: true });
-        handleScroll();
-    }
-
-    /* ─────────────────────────────────────────────
-       10. ECOSYSTEM GRAPH LINKED HIGHLIGHTS
-       ───────────────────────────────────────────── */
-    function initEcosystemHighlights() {
-        const nodes = document.querySelectorAll('.eco-node');
-        const items = document.querySelectorAll('.eco-features li');
-        if (nodes.length === 0 || items.length === 0) return;
-
-        nodes.forEach((node) => {
-            node.addEventListener('mouseenter', () => {
-                const targetKey = node.getAttribute('data-eco');
-                node.classList.add('active');
-                items.forEach((item) => {
-                    if (item.getAttribute('data-eco') === targetKey) {
-                        item.classList.add('active');
-                    } else {
-                        item.classList.remove('active');
-                    }
-                });
-            });
-
-            node.addEventListener('mouseleave', () => {
-                node.classList.remove('active');
-                items.forEach((item) => item.classList.remove('active'));
-            });
-        });
-
-        items.forEach((item) => {
-            item.addEventListener('mouseenter', () => {
-                const targetKey = item.getAttribute('data-eco');
-                item.classList.add('active');
-                nodes.forEach((node) => {
-                    if (node.getAttribute('data-eco') === targetKey) {
-                        node.classList.add('active');
-                    } else {
-                        node.classList.remove('active');
-                    }
-                });
-            });
-
-            item.addEventListener('mouseleave', () => {
-                item.classList.remove('active');
-                nodes.forEach((node) => node.classList.remove('active'));
-            });
         });
     }
 
-    /* ─────────────────────────────────────────────
-       11. SYSTEM CONFIGURATION & ACCESSIBILITY PARAMETERS
-       ───────────────────────────────────────────── */
     function initSettingsDrawer() {
         const fab = document.getElementById('settingsFab');
         const drawer = document.getElementById('settingsDrawer');
-        const closeBtn = document.getElementById('settingsCloseBtn');
+        const closeButton = document.getElementById('settingsCloseBtn');
         const backdrop = document.getElementById('settingsDrawerBackdrop');
-
         if (!fab || !drawer) return;
 
-        // Toggle drawer
-        const toggleDrawer = () => {
-            const isOpen = drawer.classList.toggle('open');
-            drawer.setAttribute('aria-hidden', !isOpen);
-        };
-
-        const closeDrawer = () => {
+        const close = () => {
             drawer.classList.remove('open');
             drawer.setAttribute('aria-hidden', 'true');
+            fab.focus({ preventScroll: true });
+        };
+        const toggle = () => {
+            const open = drawer.classList.toggle('open');
+            drawer.setAttribute('aria-hidden', String(!open));
+            if (open) closeButton?.focus({ preventScroll: true });
         };
 
-        fab.addEventListener('click', toggleDrawer);
-        if (closeBtn) closeBtn.addEventListener('click', closeDrawer);
-        if (backdrop) backdrop.addEventListener('click', closeDrawer);
-
-        // Escape key to close
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && drawer.classList.contains('open')) {
-                closeDrawer();
-            }
+        fab.addEventListener('click', toggle);
+        closeButton?.addEventListener('click', close);
+        backdrop?.addEventListener('click', close);
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && drawer.classList.contains('open')) close();
         });
 
-        // Theme switching logic
-        const themeButtons = document.querySelectorAll('.theme-btn');
-        themeButtons.forEach(btn => {
-            btn.addEventListener('click', () => {
-                themeButtons.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
+        const themeButtons = Array.from(document.querySelectorAll('.theme-btn'));
+        const applyTheme = (button, persist) => {
+            const primary = button.dataset.primary;
+            const secondary = button.dataset.secondary;
+            const hue = Number.parseInt(button.dataset.hue, 10);
+            if (!primary || !secondary || Number.isNaN(hue)) return;
 
-                const hue = parseInt(btn.getAttribute('data-hue'), 10);
-                const sat = btn.getAttribute('data-sat');
-                const light = btn.getAttribute('data-light');
-                const primary = btn.getAttribute('data-primary');
-                const secondary = btn.getAttribute('data-secondary');
-
-                // Set global hue override
-                window.currentThemeHue = hue;
-
-                // Update root styles
-                const root = document.documentElement;
-                root.style.setProperty('--primary', primary);
-                root.style.setProperty('--secondary', secondary);
-                root.style.setProperty('--primary-glow', primary + '66'); // hex 40% alpha
-                root.style.setProperty('--secondary-glow', secondary + '66');
-
-                // Store in localStorage
-                localStorage.setItem('selected-theme-hue', hue);
+            themeButtons.forEach((item) => item.classList.toggle('active', item === button));
+            const root = document.documentElement;
+            window.currentThemeHue = hue;
+            root.style.setProperty('--primary', primary);
+            root.style.setProperty('--secondary', secondary);
+            root.style.setProperty('--primary-glow', `${primary}66`);
+            root.style.setProperty('--secondary-glow', `${secondary}66`);
+            if (persist) {
+                localStorage.setItem('selected-theme-hue', String(hue));
                 localStorage.setItem('selected-theme-primary', primary);
                 localStorage.setItem('selected-theme-secondary', secondary);
+            }
+        };
 
-                // Dispatch a scroll event to trigger background update
-                window.dispatchEvent(new Event('scroll'));
-            });
-        });
-
-        // Load saved theme if exists
+        themeButtons.forEach((button) => button.addEventListener('click', () => applyTheme(button, true)));
         const savedHue = localStorage.getItem('selected-theme-hue');
-        if (savedHue) {
-            const savedPrimary = localStorage.getItem('selected-theme-primary');
-            const savedSecondary = localStorage.getItem('selected-theme-secondary');
+        const savedButton = themeButtons.find((button) => button.dataset.hue === savedHue);
+        if (savedButton) applyTheme(savedButton, false);
 
-            const matchBtn = Array.from(themeButtons).find(b => b.getAttribute('data-hue') === savedHue);
-            if (matchBtn) {
-                themeButtons.forEach(b => b.classList.remove('active'));
-                matchBtn.classList.add('active');
-            }
-
-            window.currentThemeHue = parseInt(savedHue, 10);
-            const root = document.documentElement;
-            root.style.setProperty('--primary', savedPrimary);
-            root.style.setProperty('--secondary', savedSecondary);
-            root.style.setProperty('--primary-glow', savedPrimary + '66');
-            root.style.setProperty('--secondary-glow', savedSecondary + '66');
-        }
-
-        // Motion control modes
-        const motionHigh = document.getElementById('motionHigh');
-        const motionLow = document.getElementById('motionLow');
-
-        if (motionHigh && motionLow) {
-            const setMotionMode = (isLow) => {
-                if (isLow) {
-                    motionLow.classList.add('active');
-                    motionHigh.classList.remove('active');
-                    document.body.classList.add('low-motion');
-                    localStorage.setItem('settings-low-motion', 'true');
-                } else {
-                    motionHigh.classList.add('active');
-                    motionLow.classList.remove('active');
-                    document.body.classList.remove('low-motion');
-                    localStorage.setItem('settings-low-motion', 'false');
-                }
-            };
-
-            motionHigh.addEventListener('click', () => setMotionMode(false));
-            motionLow.addEventListener('click', () => setMotionMode(true));
-
-            // Load saved motion state
-            const savedLowMotion = localStorage.getItem('settings-low-motion');
-            if (savedLowMotion === 'true') {
-                setMotionMode(true);
-            }
-        }
+        const highMotion = document.getElementById('motionHigh');
+        const lowMotion = document.getElementById('motionLow');
+        const setMotionMode = (low) => {
+            document.body.classList.toggle('low-motion', low);
+            highMotion?.classList.toggle('active', !low);
+            lowMotion?.classList.toggle('active', low);
+            localStorage.setItem('settings-low-motion', String(low));
+        };
+        highMotion?.addEventListener('click', () => setMotionMode(false));
+        lowMotion?.addEventListener('click', () => setMotionMode(true));
+        if (localStorage.getItem('settings-low-motion') === 'true') setMotionMode(true);
     }
-
 })();

@@ -1,0 +1,42 @@
+{
+  "skillCategories": [
+    {
+      "category": "Technical SEO",
+      "icon": "fas fa-search",
+      "level": "Expert",
+      "skills": ["Schema Markup / JSON-LD", "Technical SEO Audits", "Keyword Research", "Competitor Gap Analysis", "robots.txt", "XML Sitemaps", "Core Web Vitals", "Google Search Console", "GA4 Analytics"]
+    },
+    {
+      "category": "Web Development",
+      "icon": "fas fa-code",
+      "level": "Proficient",
+      "skills": ["HTML5 (Semantic)", "CSS3 / Custom Properties", "Vanilla JavaScript", "CSS Grid & Flexbox", "Responsive / Mobile-First", "Performance Optimization", "Intersection Observer API", "Web Animations API"]
+    },
+    {
+      "category": "Paid Advertising",
+      "icon": "fab fa-google",
+      "level": "Expert",
+      "skills": ["Google Ads (Search, Display, PMax)", "Meta Ads (Facebook, Instagram)", "Conversion Tracking", "Custom Audiences", "Lookalike Audiences", "Negative Keyword Lists", "CPL Optimization", "Pixel Setup"]
+    },
+    {
+      "category": "Digital Marketing",
+      "icon": "fas fa-bullhorn",
+      "level": "Expert",
+      "skills": ["Digital Strategy", "Multi-Channel Marketing", "Lead Generation", "Content Strategy", "Conversion Rate Optimization", "Email Marketing", "Marketing Analytics", "Growth Roadmaps"]
+    },
+    {
+      "category": "AI & Automation",
+      "icon": "fas fa-robot",
+      "level": "Proficient",
+      "skills": ["AI Workflow Design", "Zapier Automation", "API Integrations", "Chatbot Setups", "Content Generation", "Automated Reporting", "Document Automation"]
+    },
+    {
+      "category": "UI/UX Design",
+      "icon": "fas fa-pencil-ruler",
+      "level": "Proficient",
+      "skills": ["Glassmorphism Design", "Dark Mode Interfaces", "Micro-interactions", "Animation Design", "Responsive Layouts", "Typography Systems", "Color Theory"]
+    }
+  ],
+  "cloudTags": ["SEO", "AI", "Web Development", "UI/UX", "Meta Ads", "Google Ads", "Digital Marketing", "Automation", "Analytics", "Integrations"],
+  "tools": ["Google Analytics 4", "Google Search Console", "Meta Business Suite", "Google Ads Manager", "Zapier", "VS Code", "GitHub", "Figma", "ChatGPT / Gemini", "Canva"]
+}

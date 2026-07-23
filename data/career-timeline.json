@@ -1,0 +1,40 @@
+{
+  "timeline": [
+    {
+      "id": "google-cert",
+      "date": "14 March 2026",
+      "type": "CERTIFICATION",
+      "title": "Fundamentals of Digital Marketing",
+      "organization": "Google Skillshop",
+      "organizationIcon": "fab fa-google",
+      "description": "Verified certification accredited by Interactive Advertising Bureau (IAB) Europe and The Open University. Covers search engine ranking basics, content strategies, analytics tracks, email/mobile outreach, and display network integrations.",
+      "tags": [],
+      "certInfo": "Completion ID: 453421024 (Verified Status)"
+    },
+    {
+      "id": "nexteer-automotive",
+      "date": "Past Period",
+      "type": "PROFESSIONAL ROLE",
+      "title": "Store Department — Production Associate",
+      "organization": "Nexteer Automotive Chennai (Steering Systems Manufacturer)",
+      "organizationIcon": "fas fa-building",
+      "description": "Handled warehouse layouts, tracked raw materials inventory, managed parts supplies, and collaborated with floor supervisors to prevent production line halts. Acquired rigorous attention to detail, operational layout structures, and team communications.",
+      "tags": ["Inventory Audits", "Operations Management", "Detail Orientation", "Cross-Collaboration"],
+      "certInfo": null
+    },
+    {
+      "id": "self-taught-dev",
+      "date": "Ongoing",
+      "type": "SELF-LEARNING",
+      "title": "Self-Taught Web Developer",
+      "organization": "Continuous Learning & Projects",
+      "organizationIcon": "fas fa-laptop-code",
+      "description": "Built personal files and deployed web assets on cloud hosting setups. Mastered responsive layout architectures, clean variable styling in CSS, technical schemas, and performant JavaScript.",
+      "tags": ["Semantic HTML5", "CSS Custom Variables", "Vanilla JS", "Git Version Control"],
+      "certInfo": null
+    }
+  ],
+  "currentFocus": ["Digital Marketing", "Web Development", "AI Automation", "SEO"],
+  "openToWork": true,
+  "workTypes": ["Freelance", "Contract", "Remote"]
+}

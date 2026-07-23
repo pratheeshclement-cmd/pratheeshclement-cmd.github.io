@@ -1,0 +1,52 @@
+{
+  "social": [
+    {
+      "platform": "Email",
+      "label": "Email Address",
+      "value": "pratheesh.clement@gmail.com",
+      "url": "mailto:pratheesh.clement@gmail.com",
+      "icon": "fas fa-envelope",
+      "primary": true
+    },
+    {
+      "platform": "Phone",
+      "label": "Phone / WhatsApp",
+      "value": "+91 8667876102",
+      "url": "tel:+918667876102",
+      "icon": "fas fa-phone",
+      "primary": true
+    },
+    {
+      "platform": "LinkedIn",
+      "label": "LinkedIn Profile",
+      "value": "Pratheesh Clement",
+      "url": "https://www.linkedin.com/in/mariya-pratheesh-5b8a9b316/",
+      "icon": "fab fa-linkedin-in",
+      "primary": true
+    },
+    {
+      "platform": "GitHub",
+      "label": "GitHub Codebase",
+      "value": "pratheeshclement-cmd",
+      "url": "https://github.com/pratheeshclement-cmd",
+      "icon": "fab fa-github",
+      "primary": false
+    },
+    {
+      "platform": "Portfolio",
+      "label": "Portfolio Website",
+      "value": "pratheeshclement-cmd.github.io",
+      "url": "https://pratheeshclement-cmd.github.io/",
+      "icon": "fas fa-globe",
+      "primary": false
+    },
+    {
+      "platform": "Digital Ecosystem",
+      "label": "Digital Ecosystem Project",
+      "value": "pratheesh-digital-ecosystem",
+      "url": "https://pratheeshclement-cmd.github.io/pratheesh-digital-ecosystem/",
+      "icon": "fas fa-network-wired",
+      "primary": false
+    }
+  ]
+}

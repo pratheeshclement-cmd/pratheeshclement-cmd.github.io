@@ -1,0 +1,91 @@
+{
+  "services": [
+    {
+      "id": "website-development",
+      "title": "Website Development",
+      "icon": "fas fa-code",
+      "shortDesc": "High-performance personal brand and corporate sites built using clean, semantic code optimized for speed and accessibility.",
+      "features": ["Mobile-First Architecture", "Performance Focused", "Semantic HTML5", "CSS Custom Variables", "Vanilla JavaScript"],
+      "ideal": ["Recruiter", "Client", "Startup", "Founder"],
+      "priceRange": "Custom Quote"
+    },
+    {
+      "id": "seo-services",
+      "title": "SEO Services",
+      "icon": "fas fa-search-plus",
+      "shortDesc": "Rank for highly competitive keywords using advanced technical SEO strategies, structured data, and performance audits.",
+      "features": ["Rich Schema Markup", "Technical SEO Audit", "Keyword Research", "Search Rankings", "Google Search Console Setup"],
+      "ideal": ["Client", "Startup", "Founder"],
+      "priceRange": "Custom Quote"
+    },
+    {
+      "id": "google-ads",
+      "title": "Google Ads",
+      "icon": "fab fa-google",
+      "shortDesc": "Set up targeted Google Search, Display, and Performance Max ad campaigns to acquire high-intent leads and sales.",
+      "features": ["Conversion Funnels", "Negative Match Lists", "Performance Max Campaigns", "Keyword Targeting", "Budget Optimization"],
+      "ideal": ["Client", "Startup", "Founder"],
+      "priceRange": "Custom Quote"
+    },
+    {
+      "id": "meta-ads",
+      "title": "Meta Ads",
+      "icon": "fab fa-meta",
+      "shortDesc": "Scale lead generation and digital sales using targeted Facebook, Instagram, and Messenger conversion campaigns.",
+      "features": ["Custom Audiences", "Pixel Setup", "Lookalike Audiences", "Retargeting Funnels", "Copy Testing"],
+      "ideal": ["Client", "Startup", "Founder"],
+      "priceRange": "Custom Quote"
+    },
+    {
+      "id": "digital-marketing",
+      "title": "Digital Marketing",
+      "icon": "fas fa-bullhorn",
+      "shortDesc": "End-to-end multi-channel strategy consultation linking social reach, organic traffic, and lead routing.",
+      "features": ["Growth Roadmaps", "Actionable Analytics", "GA4 Integration", "Multi-Channel Strategy", "Lead Routing"],
+      "ideal": ["Client", "Startup", "Founder"],
+      "priceRange": "Custom Quote"
+    },
+    {
+      "id": "landing-page-dev",
+      "title": "Landing Page Development",
+      "icon": "fas fa-rocket",
+      "shortDesc": "Deploy landing pages with a focused, single-goal flow, custom contact grids, and quick loads.",
+      "features": ["High Conversion Rates", "Lead Forms", "Fast Load Times", "CTA Optimization", "Mobile-First"],
+      "ideal": ["Client", "Startup", "Founder"],
+      "priceRange": "Custom Quote"
+    },
+    {
+      "id": "website-optimization",
+      "title": "Website Optimization",
+      "icon": "fas fa-tachometer-alt",
+      "shortDesc": "Increase loading performance, Core Web Vitals, and responsive renders to boost search rankings.",
+      "features": ["Speed Optimization", "Lighthouse Score Improvement", "Code Minification", "Image Compression", "Caching Strategies"],
+      "ideal": ["Client", "Startup", "Developer"],
+      "priceRange": "Custom Quote"
+    },
+    {
+      "id": "ai-automation",
+      "title": "AI Tools & Automation",
+      "icon": "fas fa-robot",
+      "shortDesc": "Leverage custom integrations, Zapier workflows, and automated bots to cut down client onboarding times.",
+      "features": ["Workflow Automation", "API Triggers", "Zapier Integration", "Document Generation", "Chatbot Setup"],
+      "ideal": ["Client", "Startup", "Founder"],
+      "priceRange": "Custom Quote"
+    },
+    {
+      "id": "personal-branding",
+      "title": "Personal Branding",
+      "icon": "fas fa-fingerprint",
+      "shortDesc": "Design a cohesive, premium visual digital presence that builds trust and highlights your professional credentials.",
+      "features": ["Cohesive Styling", "Trust Metrics", "Case Studies", "Certifications Display", "Premium Visual Identity"],
+      "ideal": ["Client", "Founder", "Recruiter", "Developer"],
+      "priceRange": "Custom Quote"
+    }
+  ],
+  "freeAudit": {
+    "title": "FREE Website Health Audit",
+    "description": "Uncover critical bottlenecks blocking your search visibility and conversion funnels.",
+    "includes": ["SEO Performance Review", "Speed & Core Web Vitals Audit", "Lead Conversion Mapping", "Actionable Recommendations"],
+    "ctaUrl": "#audit"
+  }
+}

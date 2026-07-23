@@ -1,0 +1,19 @@
+{
+  "certifications": [
+    {
+      "id": "google-digital-marketing",
+      "title": "Fundamentals of Digital Marketing",
+      "issuer": "Google Skillshop",
+      "issuedDate": "14 March 2026",
+      "completionId": "453421024",
+      "status": "Verified",
+      "accreditedBy": ["Interactive Advertising Bureau (IAB) Europe", "The Open University"],
+      "description": "Verified certification accredited by Interactive Advertising Bureau (IAB) Europe and The Open University. Covers search engine ranking basics, content strategies, analytics tracks, email/mobile outreach, and display network integrations.",
+      "topics": ["Search Engine Optimization", "Content Strategy", "Analytics", "Email Marketing", "Mobile Marketing", "Display Advertising"],
+      "verifyUrl": null,
+      "icon": "fab fa-google"
+    }
+  ],
+  "totalCertifications": 1,
+  "inProgress": ["Google Ads Certification", "Meta Blueprint Certification"]
+}

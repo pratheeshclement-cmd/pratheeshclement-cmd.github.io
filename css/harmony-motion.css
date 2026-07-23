@@ -1,0 +1,609 @@
+/* ===========================================================================
+   HARMONYOS NEXT–INSPIRED MOTION SYSTEM
+
+   This layer is intentionally small and declarative. It replaces the old
+   competing cinematic layers with one vocabulary: route, reveal, shared
+   element, and sheet. Every animated property is transform or opacity.
+   =========================================================================== */
+
+:root {
+    --harmony-fast: 150ms;
+    --harmony-normal: 250ms;
+    --harmony-premium: 350ms;
+    --harmony-long-take: 500ms;
+    --harmony-spatial: 700ms;
+    --harmony-maximum: 900ms;
+    --harmony-ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --harmony-emphasis: cubic-bezier(0.16, 1, 0.3, 1);
+    --harmony-nav-base: 100px;
+}
+
+/* Retire legacy cursor, particle, float, orbit, and parallax decoration. */
+#ai-cursor-outer,
+#ai-cursor-dot,
+#airParticles,
+.m-particle,
+.loader-particles {
+    display: none !important;
+}
+
+.h-float-card,
+.aurora-orb,
+.eco-orbit,
+.eco-node,
+.hero-scroll-cue,
+.loader-backdrop-glow,
+.loader-overlay::before,
+#ai-fab {
+    animation: none !important;
+}
+
+/* ---------------------------------------------------------------------------
+   Loading: one short glass-to-content hand-off, not a particle sequence.
+   --------------------------------------------------------------------------- */
+.loader-overlay {
+    transition: opacity var(--harmony-premium) var(--harmony-ease), visibility 0s linear var(--harmony-premium) !important;
+}
+
+.loader-overlay.fade-out {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.loader-bar {
+    width: 100% !important;
+    transform: scaleX(var(--harmony-loader-progress, 0));
+    transform-origin: left center;
+    transition: transform var(--harmony-normal) var(--harmony-ease) !important;
+}
+
+/* ---------------------------------------------------------------------------
+   Route and navigation continuity.
+   --------------------------------------------------------------------------- */
+.nav-links {
+    position: relative;
+}
+
+.harmony-nav-indicator {
+    position: absolute;
+    left: 0;
+    bottom: -0.1rem;
+    width: var(--harmony-nav-base);
+    height: 2px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--primary, #00f0ff), var(--secondary, #7000ff));
+    opacity: 0;
+    pointer-events: none;
+    transform: translate3d(var(--harmony-nav-x, 0px), 0, 0) scaleX(var(--harmony-nav-scale, 0));
+    transform-origin: left center;
+    transition: transform var(--harmony-premium) var(--harmony-ease), opacity var(--harmony-normal) ease;
+    will-change: transform, opacity;
+}
+
+.harmony-nav-indicator.is-visible {
+    opacity: 1;
+}
+
+html[data-harmony-route="push"] .nav {
+    transform: translate3d(0, 0, 0);
+}
+
+html[data-harmony-route="pop"] .nav {
+    transform: translate3d(0, 0, 0);
+}
+
+/* ---------------------------------------------------------------------------
+   Component lifecycle transitions: opacity + scale + translate3d only.
+   The script assigns a purpose-specific reveal type and stagger.
+   --------------------------------------------------------------------------- */
+[data-harmony-reveal] {
+    --harmony-enter-x: 0px;
+    --harmony-enter-y: 18px;
+    --harmony-enter-scale: 1;
+    --harmony-delay: 0ms;
+    --harmony-duration: var(--harmony-premium);
+    will-change: transform, opacity;
+}
+
+html.harmony-motion-ready [data-harmony-reveal] {
+    opacity: 0;
+    transform: translate3d(var(--harmony-enter-x), var(--harmony-enter-y), 0) scale(var(--harmony-enter-scale));
+    transition: transform var(--harmony-duration) var(--harmony-ease) var(--harmony-delay), opacity var(--harmony-duration) ease var(--harmony-delay);
+}
+
+html.harmony-motion-ready [data-harmony-reveal].harmony-visible {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+}
+
+/* HOME — long take: progressive vertical choreography. */
+[data-harmony-reveal="home"] {
+    --harmony-enter-y: 22px;
+    --harmony-duration: var(--harmony-long-take);
+}
+
+[data-harmony-reveal="home-visual"] {
+    --harmony-enter-x: 18px;
+    --harmony-enter-y: 12px;
+    --harmony-enter-scale: 0.97;
+    --harmony-duration: var(--harmony-long-take);
+}
+
+/* ABOUT — shared profile hand-off followed by quiet fade. */
+[data-harmony-reveal="about"] {
+    --harmony-enter-x: -18px;
+    --harmony-enter-y: 0px;
+}
+
+[data-harmony-reveal="about-copy"] {
+    --harmony-enter-x: 18px;
+    --harmony-enter-y: 0px;
+}
+
+/* SERVICES — left/right spaced movement. */
+[data-harmony-reveal="service"] {
+    --harmony-enter-y: 0px;
+    --harmony-enter-x: -28px;
+}
+
+.service-card:nth-child(even)[data-harmony-reveal="service"] {
+    --harmony-enter-x: 28px;
+}
+
+/* PROJECTS — Apple-like product showcase: scale into place. */
+[data-harmony-reveal="project"] {
+    --harmony-enter-y: 20px;
+    --harmony-enter-scale: 0.965;
+    --harmony-duration: var(--harmony-premium);
+}
+
+/* ECOSYSTEM — layered spatial planes. */
+[data-harmony-reveal="ecosystem"] {
+    --harmony-enter-y: 22px;
+    --harmony-enter-scale: 0.98;
+    --harmony-duration: var(--harmony-spatial);
+}
+
+[data-harmony-reveal="ecosystem-depth"] {
+    --harmony-enter-x: 20px;
+    --harmony-enter-y: 12px;
+    --harmony-enter-scale: 0.96;
+    --harmony-duration: var(--harmony-spatial);
+}
+
+/* SKILLS — displacement reveal without filter or clip-path work. */
+[data-harmony-reveal="skill"] {
+    --harmony-enter-x: -20px;
+    --harmony-enter-y: 0px;
+}
+
+.skill-tag:nth-child(even)[data-harmony-reveal="skill"],
+.skill-showcase-card:nth-child(even)[data-harmony-reveal="skill"] {
+    --harmony-enter-x: 20px;
+}
+
+/* EXPERIENCE — alternating timeline movement keeps chronological direction. */
+[data-harmony-reveal="timeline"] {
+    --harmony-enter-x: -24px;
+    --harmony-enter-y: 0px;
+    --harmony-duration: var(--harmony-long-take);
+}
+
+.timeline-item:nth-child(even)[data-harmony-reveal="timeline"] {
+    --harmony-enter-x: 24px;
+}
+
+/* CONTACT — a sheet-like rise with no layout animation. */
+[data-harmony-reveal="contact"] {
+    --harmony-enter-y: 20px;
+    --harmony-enter-scale: 0.985;
+}
+
+/* ---------------------------------------------------------------------------
+   Shared element geometry. The controller places a fixed ghost above the
+   scroll while source and destination swap visibility.
+   --------------------------------------------------------------------------- */
+.harmony-shared-ghost {
+    position: fixed;
+    z-index: 9800;
+    margin: 0;
+    pointer-events: none;
+    overflow: hidden;
+    border-radius: inherit;
+    transform-origin: top left;
+    will-change: transform, opacity;
+}
+
+.harmony-shared-source-hidden,
+.harmony-shared-target-hidden {
+    opacity: 0 !important;
+}
+
+/* ---------------------------------------------------------------------------
+   Project shared transition / product showcase cover.
+   --------------------------------------------------------------------------- */
+.harmony-project-open {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    margin-top: 0.7rem;
+    padding: 0.55rem 0.75rem;
+    border: 1px solid rgba(0, 240, 255, 0.25);
+    border-radius: 999px;
+    background: rgba(0, 240, 255, 0.06);
+    color: var(--text, #e2e8f0);
+    font: inherit;
+    font-size: 0.78rem;
+    cursor: pointer;
+    transition: transform var(--harmony-normal) var(--harmony-ease), opacity var(--harmony-normal) ease;
+}
+
+.harmony-project-open:hover,
+.harmony-project-open:focus-visible {
+    transform: translate3d(0, -2px, 0) scale(1.01);
+}
+
+#harmony-project-cover {
+    position: fixed;
+    inset: 0;
+    z-index: 9700;
+    display: grid;
+    place-items: center;
+    padding: clamp(1rem, 4vw, 3rem);
+    background: rgba(4, 7, 20, 0.78);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity var(--harmony-normal) ease, visibility 0s linear var(--harmony-normal);
+}
+
+@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    #harmony-project-cover {
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+    }
+}
+
+#harmony-project-cover.is-open {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transition-delay: 0s;
+}
+
+.harmony-project-detail {
+    position: relative;
+    width: min(860px, 100%);
+    max-height: min(82vh, 780px);
+    overflow: auto;
+    padding: clamp(1.15rem, 3vw, 2rem);
+    border: 1px solid rgba(255, 255, 255, 0.13);
+    border-radius: 28px;
+    background: rgba(11, 15, 35, 0.92);
+    box-shadow: 0 30px 100px rgba(0, 0, 0, 0.5);
+    transform-origin: top left;
+    will-change: transform, opacity;
+}
+
+@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .harmony-project-detail {
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+    }
+}
+
+.harmony-project-detail .harmony-project-open {
+    display: none;
+}
+
+.harmony-project-detail a,
+.harmony-project-detail button:not(.harmony-project-close) {
+    pointer-events: none;
+}
+
+.harmony-project-close {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    margin: 0 0 1rem auto;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--text, #e2e8f0);
+    font: inherit;
+    cursor: pointer;
+    transition: transform var(--harmony-fast) var(--harmony-ease), opacity var(--harmony-fast) ease;
+}
+
+.harmony-project-close:hover,
+.harmony-project-close:focus-visible {
+    transform: translate3d(0, -1px, 0) scale(1.02);
+}
+
+body.harmony-cover-open {
+    overflow: hidden;
+}
+
+/* ---------------------------------------------------------------------------
+   Sheet, content-cover, menu, and context-menu foundations.
+   --------------------------------------------------------------------------- */
+[data-harmony-sheet],
+[data-harmony-content-cover] {
+    will-change: transform, opacity;
+}
+
+[data-harmony-sheet="contact"].harmony-visible {
+    transform: translate3d(0, 0, 0) scale(1);
+}
+
+.settings-modal-overlay,
+#ai-tour-modal,
+#ai-welcome-overlay,
+#ai-exit-intent {
+    transition: opacity var(--harmony-normal) ease, visibility 0s linear var(--harmony-normal) !important;
+}
+
+.settings-modal-card,
+.ai-tour-card,
+.ai-welcome-card,
+.ai-exit-card {
+    transform: translate3d(0, 18px, 0) scale(0.985);
+    transition: transform var(--harmony-premium) var(--harmony-ease), opacity var(--harmony-premium) ease !important;
+    will-change: transform, opacity;
+}
+
+.settings-modal-overlay.open .settings-modal-card,
+#ai-tour-modal.visible .ai-tour-card,
+#ai-welcome-overlay.visible .ai-welcome-card,
+#ai-exit-intent.visible .ai-exit-card {
+    transform: translate3d(0, 0, 0) scale(1);
+}
+
+/* AI Concierge: a stable glass content cover rather than a floating widget. */
+#ai-fab {
+    transition: transform var(--harmony-normal) var(--harmony-ease), opacity var(--harmony-normal) ease !important;
+}
+
+#ai-fab:hover,
+#ai-fab:focus-visible {
+    transform: translate3d(0, -2px, 0) scale(1.01);
+}
+
+#ai-chat-panel {
+    transform: translate3d(0, 18px, 0) scale(0.975) !important;
+    transition: transform var(--harmony-premium) var(--harmony-ease), opacity var(--harmony-normal) ease, visibility 0s linear var(--harmony-premium) !important;
+    will-change: transform, opacity;
+}
+
+@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    #ai-chat-panel {
+        background: rgba(10, 12, 30, 0.82) !important;
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+    }
+}
+
+#ai-chat-panel.open {
+    transform: translate3d(0, 0, 0) scale(1) !important;
+    transition-delay: 0s !important;
+}
+
+.ai-message {
+    animation: harmony-message-in var(--harmony-normal) var(--harmony-ease) both !important;
+}
+
+@keyframes harmony-message-in {
+    from { opacity: 0; transform: translate3d(0, 8px, 0); }
+    to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+/* Static glass in spatial areas; blur is never animated. */
+.eco-card,
+.glass-card {
+    transform-style: preserve-3d;
+}
+
+/* ---------------------------------------------------------------------------
+   Reduced motion and low-motion preference: preserve all content and action.
+   --------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+    html.harmony-motion-ready [data-harmony-reveal],
+    html.harmony-motion-ready [data-harmony-reveal].harmony-visible,
+    .harmony-shared-ghost,
+    #harmony-project-cover,
+    .harmony-project-detail,
+    #ai-chat-panel,
+    .settings-modal-card,
+    .ai-tour-card,
+    .ai-welcome-card,
+    .ai-exit-card {
+        transition-duration: 1ms !important;
+        animation-duration: 1ms !important;
+        opacity: 1;
+        transform: none !important;
+    }
+}
+
+body.low-motion .harmony-nav-indicator,
+body.low-motion [data-harmony-reveal],
+body.low-motion #ai-chat-panel,
+body.low-motion .settings-modal-card,
+body.low-motion .ai-tour-card,
+body.low-motion .ai-welcome-card,
+body.low-motion .ai-exit-card {
+    transition-duration: 1ms !important;
+    animation-duration: 1ms !important;
+}
+
+@media (max-width: 1024px) {
+    .harmony-nav-indicator { display: none; }
+
+    [data-harmony-reveal="service"],
+    .service-card:nth-child(even)[data-harmony-reveal="service"],
+    [data-harmony-reveal="skill"],
+    .skill-tag:nth-child(even)[data-harmony-reveal="skill"],
+    .skill-showcase-card:nth-child(even)[data-harmony-reveal="skill"],
+    [data-harmony-reveal="timeline"],
+    .timeline-item:nth-child(even)[data-harmony-reveal="timeline"] {
+        --harmony-enter-x: 0px;
+        --harmony-enter-y: 16px;
+    }
+}
+
+@media (max-width: 640px) {
+    #harmony-project-cover { padding: 0.75rem; }
+    .harmony-project-detail { max-height: 88vh; border-radius: 20px; }
+}
+
+/* ---------------------------------------------------------------------------
+   Production layout stabilization: one scroll chrome and resilient AI surfaces.
+   --------------------------------------------------------------------------- */
+#scrollProgress {
+    width: 100% !important;
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: none !important;
+    will-change: transform;
+}
+
+#bttBtn {
+    transition: transform var(--harmony-normal) var(--harmony-ease), opacity var(--harmony-normal) ease !important;
+    will-change: transform, opacity;
+}
+
+#ai-panel-wrapper {
+    right: clamp(1rem, 2.4vw, 2rem);
+    bottom: clamp(1rem, 2.4vw, 2rem);
+    width: min(420px, calc(100vw - 2rem));
+    max-width: calc(100vw - 2rem);
+    align-items: stretch;
+}
+
+#ai-chat-panel {
+    width: 100% !important;
+    height: min(640px, calc(100dvh - 8rem));
+    max-height: min(640px, calc(100dvh - 8rem));
+    min-height: 360px;
+}
+
+.ai-panel-header,
+.ai-input-area,
+.ai-quick-questions {
+    flex: 0 0 auto;
+}
+
+.ai-panel-info,
+.ai-msg-bubble,
+.ai-welcome-message,
+.ai-tour-header {
+    min-width: 0;
+}
+
+.ai-panel-close {
+    margin-left: auto;
+    flex: 0 0 auto;
+}
+
+#ai-messages {
+    min-height: 0;
+    overscroll-behavior: contain;
+    scrollbar-gutter: stable;
+}
+
+.ai-input-area textarea {
+    min-width: 0;
+    resize: none;
+}
+
+#ai-fab {
+    align-self: flex-end;
+    max-width: 100%;
+}
+
+.ai-fab-status,
+.ai-panel-status-dot,
+.ai-avatar-status,
+.ai-nav-dot,
+.ai-badge {
+    animation: none !important;
+}
+
+.settings-modal-overlay,
+#ai-welcome-overlay,
+#ai-tour-modal,
+#ai-exit-intent {
+    padding: clamp(0.9rem, 3vw, 2rem);
+}
+
+.settings-modal-card,
+.ai-welcome-card,
+.ai-tour-card,
+.ai-exit-card {
+    width: min(100%, 620px);
+    max-height: calc(100dvh - 2rem);
+    overflow: auto;
+    overscroll-behavior: contain;
+}
+
+.ai-tour-roles {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.ai-role-chip {
+    min-width: 0;
+}
+
+@media (max-width: 640px) {
+    #ai-panel-wrapper {
+        right: 1rem;
+        left: 1rem;
+        bottom: 0.9rem;
+        width: auto;
+        max-width: none;
+    }
+
+    #ai-chat-panel {
+        height: min(68dvh, 590px);
+        max-height: min(68dvh, 590px);
+        min-height: 330px;
+    }
+
+    #ai-fab {
+        align-self: flex-end;
+    }
+
+    .ai-fab-role {
+        display: none;
+    }
+
+    .ai-tour-roles,
+    .ai-welcome-btns,
+    .ai-exit-actions {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 390px) {
+    .ai-tour-roles,
+    .ai-welcome-btns,
+    .ai-exit-actions {
+        grid-template-columns: 1fr;
+    }
+
+    #ai-chat-panel {
+        height: min(70dvh, 540px);
+        max-height: min(70dvh, 540px);
+    }
+}
+body.nav-menu-open {
+    overflow: hidden;
+}
+
+.skill-showcase-card[hidden] {
+    display: none !important;
+}

@@ -1,0 +1,33 @@
+{
+  "testimonials": [
+    {
+      "id": 1,
+      "name": "John Doe",
+      "title": "CEO, TechVentures",
+      "initials": "JD",
+      "rating": 5,
+      "text": "Pratheesh completely redesigned our business landing page. Not only does it look premium, but the load times dropped significantly, and our search query rankings improved within weeks.",
+      "service": "Website Development + SEO"
+    },
+    {
+      "id": 2,
+      "name": "Sarah Miller",
+      "title": "Director of Growth, FinScale",
+      "initials": "SM",
+      "rating": 5,
+      "text": "His understanding of technical SEO and Google Ads schemas was critical for our product launch. Our advertising CPL reduced significantly while qualified lead metrics rose.",
+      "service": "Google Ads + Technical SEO"
+    },
+    {
+      "id": 3,
+      "name": "Rajesh Kumar",
+      "title": "Founder, Zenith Retail",
+      "initials": "RK",
+      "rating": 5,
+      "text": "Very clean code layouts and exceptional eye for detail. The mobile navigation works perfectly, and the site responsiveness is flawless on all devices. Highly recommended.",
+      "service": "Website Development"
+    }
+  ],
+  "averageRating": 5,
+  "totalReviews": 3
+}

@@ -1,0 +1,60 @@
+{
+  "faqs": [
+    {
+      "question": "Tell me about yourself",
+      "answer": "I'm Pratheesh Clement — a Freelance Digital Marketer, Website Developer, and SEO Specialist based in Chennai, India. I design responsive, high-performance web applications and build conversion-focused ad funnels to help businesses scale. I hold a Google Digital Marketing certification and specialize in Technical SEO, Google & Meta Ads, and AI workflow automation."
+    },
+    {
+      "question": "What services do you provide?",
+      "answer": "I offer Website Development, Technical SEO, Google Ads, Meta Ads, Digital Marketing Strategy, Landing Page Development, Website Optimization, AI & Automation workflows, and Personal Branding. I also provide a FREE Website Health Audit to get started."
+    },
+    {
+      "question": "Why should I hire you?",
+      "answer": "I combine three powerful disciplines in one: technical web development, data-driven digital marketing, and AI automation. I don't just build websites — I build digital ecosystems that rank on search engines, convert visitors into leads, and scale with your business. My work is clean, performance-optimized, and measurable."
+    },
+    {
+      "question": "Show your best project",
+      "answer": "My flagship project is this very Digital Ecosystem Portfolio — built with pure HTML5, CSS3, and Vanilla JS, targeting Lighthouse scores of 100 across Performance, Accessibility, and SEO. I also successfully ran a B2B Meta Ads campaign that significantly reduced cost-per-lead while generating pre-qualified business inquiries."
+    },
+    {
+      "question": "What is your tech stack?",
+      "answer": "For web development: HTML5, CSS3 with custom properties, Vanilla JavaScript. For SEO: JSON-LD Schema, Google Search Console, robots.txt, XML Sitemaps. For ads: Google Ads Manager, Meta Business Suite. For automation: Zapier, API integrations. For AI: Gemini, ChatGPT workflows."
+    },
+    {
+      "question": "Do you have certifications?",
+      "answer": "Yes! I hold the Google Fundamentals of Digital Marketing certification (Completion ID: 453421024), accredited by the Interactive Advertising Bureau (IAB) Europe and The Open University, issued March 14, 2026."
+    },
+    {
+      "question": "Can we work together?",
+      "answer": "Absolutely! I'm currently available for freelance projects. You can reach me at pratheesh.clement@gmail.com, call/WhatsApp at +91 8667876102, or use the contact form on this website. I typically respond within 24 hours."
+    },
+    {
+      "question": "How do I contact you?",
+      "answer": "You can reach me via Email: pratheesh.clement@gmail.com, Phone/WhatsApp: +91 8667876102, LinkedIn: linkedin.com/in/mariya-pratheesh-5b8a9b316/, or GitHub: github.com/pratheeshclement-cmd. The contact form on this page also works great!"
+    },
+    {
+      "question": "Where are you located?",
+      "answer": "I'm based in Chennai, India, and work with clients remotely across India and internationally."
+    },
+    {
+      "question": "What is the Digital Ecosystem?",
+      "answer": "The Digital Ecosystem is my centralized integration concept — linking website speeds, SEO rankings, Google/Meta campaign results, productivity tools, AI workflows, and automated systems into a unified web portal. It represents how I think about digital presence holistically."
+    },
+    {
+      "question": "Do you offer a free audit?",
+      "answer": "Yes! I offer a completely free Website Health Audit covering: SEO performance review (crawl errors, meta issues, rich snippets), Speed & Core Web Vitals audit, Lead conversion mapping, and actionable recommendations. Just fill out the form in the Audit section."
+    },
+    {
+      "question": "Download your resume",
+      "answer": "You can view my professional profile on LinkedIn at linkedin.com/in/mariya-pratheesh-5b8a9b316/ for my full resume and experience details. You can also contact me directly at pratheesh.clement@gmail.com to request a PDF resume."
+    },
+    {
+      "question": "Book a meeting",
+      "answer": "To book a consultation, send me an email at pratheesh.clement@gmail.com or WhatsApp me at +91 8667876102. I'll set up a call to understand your requirements and propose the best solutions for your business."
+    },
+    {
+      "question": "What technologies does this website use?",
+      "answer": "This Digital Ecosystem portfolio is built with pure HTML5, CSS3 with custom design tokens, and Vanilla JavaScript — no heavy frameworks. It uses GSAP-style animations via CSS, Intersection Observers, canvas-based particle systems, glassmorphism design, and the Gemini AI API for the Pratheesh AI Concierge system. Hosted on GitHub Pages."
+    }
+  ]
+}

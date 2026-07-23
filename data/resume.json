@@ -1,0 +1,38 @@
+{
+  "name": "Pratheesh Clement",
+  "title": "Freelance Digital Marketer | Website Developer | SEO Specialist",
+  "location": "Chennai, India",
+  "email": "pratheesh.clement@gmail.com",
+  "phone": "+91 8667876102",
+  "linkedin": "https://www.linkedin.com/in/mariya-pratheesh-5b8a9b316/",
+  "github": "https://github.com/pratheeshclement-cmd",
+  "portfolio": "https://pratheeshclement-cmd.github.io/",
+  "summary": "Highly motivated Freelance Digital Marketer, Website Developer, and SEO Specialist. Designs responsive, accessible, and fast-loading web applications while building high-converting ad funnels to help businesses scale. Combines technical web architecture with conversion-focused growth strategies to build high-impact personal brands and marketing engines.",
+  "experience": [
+    {
+      "title": "Store Department — Production Associate",
+      "company": "Nexteer Automotive Chennai",
+      "period": "Past Period",
+      "type": "Professional Role",
+      "highlights": ["Inventory management and warehouse operations", "Cross-team collaboration", "Attention to detail and operational efficiency"]
+    },
+    {
+      "title": "Freelance Digital Marketer & Web Developer",
+      "company": "Self-Employed",
+      "period": "Ongoing",
+      "type": "Freelance",
+      "highlights": ["Website development and SEO optimization", "Google & Meta Ads campaign management", "AI workflow automation", "Personal branding consulting"]
+    }
+  ],
+  "certifications": [
+    {
+      "name": "Fundamentals of Digital Marketing",
+      "issuer": "Google Skillshop",
+      "date": "March 2026",
+      "id": "453421024"
+    }
+  ],
+  "skills": ["HTML5", "CSS3", "JavaScript", "SEO", "Google Ads", "Meta Ads", "AI Automation", "Digital Marketing", "Analytics", "Schema Markup"],
+  "downloadNote": "Request PDF resume via email: pratheesh.clement@gmail.com",
+  "linkedinProfile": "https://www.linkedin.com/in/mariya-pratheesh-5b8a9b316/"
+}

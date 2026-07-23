@@ -60,12 +60,10 @@
 
     <!-- Main stylesheet -->
     <link rel="stylesheet" href="./css/style.css">
-    <!-- Architecture fixes & premium enhancement layer -->
-    <link rel="stylesheet" href="./css/fixes.css">
-    <!-- Smart cinematic transition system — section-specific motion identities -->
-    <link rel="stylesheet" href="./css/cinematic.css">
-    <!-- Ultimate 12-layer motion design architecture -->
-    <link rel="stylesheet" href="./css/motion.css">
+    <!-- AI Portfolio Concierge System -->
+    <link rel="stylesheet" href="./css/ai-concierge.css">
+    <!-- HarmonyOS NEXT-inspired motion system -->
+    <link rel="stylesheet" href="./css/harmony-motion.css">
 
     <!-- Google AdSense -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9160111740624678"
@@ -180,20 +178,22 @@
 
     <!-- Meta Pixel Code (ID: 983425767341384) -->
     <script>
-    !function(f,b,e,v,n,t,s)
-    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-    n.queue=[];t=b.createElement(e);t.async=!0;
-    t.src=v;s=b.getElementsByTagName(e)[0];
-    s.parentNode.insertBefore(t,s)}(window, document,'script',
-    'https://connect.facebook.net/en_US/fbevents.js');
-    fbq('init', '983425767341384');
-    fbq('track', 'PageView');
+        !function (f, b, e, v, n, t, s) {
+            if (f.fbq) return; n = f.fbq = function () {
+                n.callMethod ?
+                    n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+            };
+            if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0';
+            n.queue = []; t = b.createElement(e); t.async = !0;
+            t.src = v; s = b.getElementsByTagName(e)[0];
+            s.parentNode.insertBefore(t, s)
+        }(window, document, 'script',
+            'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '983425767341384');
+        fbq('track', 'PageView');
     </script>
     <noscript><img height="1" width="1" style="display:none"
-    src="https://www.facebook.com/tr?id=983425767341384&ev=PageView&noscript=1"
-    /></noscript>
+            src="https://www.facebook.com/tr?id=983425767341384&ev=PageView&noscript=1" /></noscript>
     <!-- End Meta Pixel Code -->
 </head>
 
@@ -276,6 +276,10 @@
             </ul>
 
             <div class="nav-links-right">
+                <button class="ai-nav-btn" id="ai-nav-btn" aria-label="Open Pratheesh AI Concierge">
+                    <span class="ai-nav-dot"></span>
+                    Pratheesh AI
+                </button>
                 <a href="https://github.com/pratheeshclement-cmd" target="_blank" rel="noopener noreferrer"
                     class="btn btn-outline" style="padding: 0.5rem 1.2rem; font-size: 0.85rem;">
                     <i class="fab fa-github"></i><span>GitHub</span>
@@ -723,155 +727,156 @@
                 </div>
 
                 <div class="projects-grid layer-3-bg">
-                        <!-- Project 1 -->
-                        <article class="glass-card project-card layer-6-cards">
-                            <div class="proj-thumb layer-7-images">
-                                <div class="proj-thumb-overlay"><i class="fas fa-laptop-code"></i></div>
-                                <span class="proj-num">01</span>
-                                <span class="proj-badge"><i class="fas fa-star"></i> Featured Project</span>
+                    <!-- Project 1 -->
+                    <article class="glass-card project-card layer-6-cards">
+                        <div class="proj-thumb layer-7-images">
+                            <div class="proj-thumb-overlay"><i class="fas fa-laptop-code"></i></div>
+                            <span class="proj-num">01</span>
+                            <span class="proj-badge"><i class="fas fa-star"></i> Featured Project</span>
+                        </div>
+                        <div class="proj-body layer-10-reveal">
+                            <div class="proj-tags">
+                                <span class="proj-tag"><i class="fas fa-book-open"></i> Case Study</span>
+                                <span class="proj-tag"><i class="fab fa-html5"></i> HTML5</span>
+                                <span class="proj-tag"><i class="fab fa-css3-alt"></i> CSS3</span>
+                                <span class="proj-tag"><i class="fab fa-js"></i> Vanilla JS</span>
+                                <span class="proj-tag"><i class="fas fa-search"></i> SEO</span>
                             </div>
-                            <div class="proj-body layer-10-reveal">
-                                <div class="proj-tags">
-                                    <span class="proj-tag"><i class="fas fa-book-open"></i> Case Study</span>
-                                    <span class="proj-tag"><i class="fab fa-html5"></i> HTML5</span>
-                                    <span class="proj-tag"><i class="fab fa-css3-alt"></i> CSS3</span>
-                                    <span class="proj-tag"><i class="fab fa-js"></i> Vanilla JS</span>
-                                    <span class="proj-tag"><i class="fas fa-search"></i> SEO</span>
-                                </div>
-                                <h3>Personal Portfolio Redesign</h3>
-                                <div class="proj-case-study">
-                                    <p><strong>Overview:</strong> A premium, single-page, mobile-first brand website to
-                                        showcase capabilities and drive enquiries.</p>
-                                    <p><strong>Problem:</strong> Previous designs carried redundant dependencies, custom
-                                        cursor scripts, and layout alignment errors on mobile.</p>
-                                    <p><strong>Solution:</strong> Redesigned with custom CSS grids, fluid clamp variables,
-                                        and lightweight Intersection Observers for layout entry states.</p>
-                                    <p><strong>Results:</strong> Target Lighthouse scores of 100 in Performance,
-                                        Accessibility, and SEO, with rapid load metrics.</p>
-                                </div>
-                                <div class="proj-actions layer-8-buttons">
-                                    <a href="https://pratheeshclement-cmd.github.io/" target="_blank"
-                                        rel="noopener noreferrer" class="proj-action-btn">
-                                        <i class="fas fa-external-link-alt"></i> <span>Visit Website</span>
-                                    </a>
-                                    <a href="https://github.com/pratheeshclement-cmd" target="_blank"
-                                        rel="noopener noreferrer" class="proj-action-btn secondary">
-                                        <i class="fab fa-github"></i> <span>View Github</span>
-                                    </a>
-                                </div>
+                            <h3>Personal Portfolio Redesign</h3>
+                            <div class="proj-case-study">
+                                <p><strong>Overview:</strong> A premium, single-page, mobile-first brand website to
+                                    showcase capabilities and drive enquiries.</p>
+                                <p><strong>Problem:</strong> Previous designs carried redundant dependencies, custom
+                                    cursor scripts, and layout alignment errors on mobile.</p>
+                                <p><strong>Solution:</strong> Redesigned with custom CSS grids, fluid clamp variables,
+                                    and lightweight Intersection Observers for layout entry states.</p>
+                                <p><strong>Results:</strong> Target Lighthouse scores of 100 in Performance,
+                                    Accessibility, and SEO, with rapid load metrics.</p>
                             </div>
-                        </article>
+                            <div class="proj-actions layer-8-buttons">
+                                <a href="https://pratheeshclement-cmd.github.io/" target="_blank"
+                                    rel="noopener noreferrer" class="proj-action-btn">
+                                    <i class="fas fa-external-link-alt"></i> <span>Visit Website</span>
+                                </a>
+                                <a href="https://github.com/pratheeshclement-cmd" target="_blank"
+                                    rel="noopener noreferrer" class="proj-action-btn secondary">
+                                    <i class="fab fa-github"></i> <span>View Github</span>
+                                </a>
+                            </div>
+                        </div>
+                    </article>
 
-                        <!-- Project 2 -->
-                        <article class="glass-card project-card layer-6-cards">
-                            <div class="proj-thumb layer-7-images">
-                                <div class="proj-thumb-overlay"><i class="fas fa-chart-line"></i></div>
-                                <span class="proj-num">02</span>
-                                <span class="proj-badge private"><i class="fas fa-lock"></i> Client Private</span>
+                    <!-- Project 2 -->
+                    <article class="glass-card project-card layer-6-cards">
+                        <div class="proj-thumb layer-7-images">
+                            <div class="proj-thumb-overlay"><i class="fas fa-chart-line"></i></div>
+                            <span class="proj-num">02</span>
+                            <span class="proj-badge private"><i class="fas fa-lock"></i> Client Private</span>
+                        </div>
+                        <div class="proj-body layer-10-reveal">
+                            <div class="proj-tags">
+                                <span class="proj-tag"><i class="fas fa-book-open"></i> Case Study</span>
+                                <span class="proj-tag"><i class="fas fa-search-plus"></i> SEO Services</span>
+                                <span class="proj-tag"><i class="fas fa-chart-line"></i> Competitor Gap</span>
+                                <span class="proj-tag"><i class="fas fa-code"></i> JSON-LD</span>
+                                <span class="proj-tag"><i class="fas fa-chart-pie"></i> GA4</span>
                             </div>
-                            <div class="proj-body layer-10-reveal">
-                                <div class="proj-tags">
-                                    <span class="proj-tag"><i class="fas fa-book-open"></i> Case Study</span>
-                                    <span class="proj-tag"><i class="fas fa-search-plus"></i> SEO Services</span>
-                                    <span class="proj-tag"><i class="fas fa-chart-line"></i> Competitor Gap</span>
-                                    <span class="proj-tag"><i class="fas fa-code"></i> JSON-LD</span>
-                                    <span class="proj-tag"><i class="fas fa-chart-pie"></i> GA4</span>
-                                </div>
-                                <h3>SEO Growth Campaign</h3>
-                                <div class="proj-case-study">
-                                    <p><strong>Overview:</strong> Full-funnel technical search audit and keyword
-                                        optimization for an e-commerce platform in India.</p>
-                                    <p><strong>Problem:</strong> Low organic page indexation, duplicate titles, lack of
-                                        schema markup, and stagnant search rankings.</p>
-                                    <p><strong>Solution:</strong> Re-coded robots.txt, established site sitemaps, integrated
-                                        detailed JSON-LD graphs, and fixed keyword gaps.</p>
-                                    <p><strong>Results:</strong> Significant organic visibility gain, rich snippet results
-                                        in SERP, and lower bounce rates in 60 days.</p>
-                                </div>
-                                <div class="proj-actions layer-8-buttons">
-                                    <a href="#contact" class="proj-action-btn">
-                                        <i class="fas fa-paper-plane"></i> <span>Request Details</span>
-                                    </a>
-                                </div>
+                            <h3>SEO Growth Campaign</h3>
+                            <div class="proj-case-study">
+                                <p><strong>Overview:</strong> Full-funnel technical search audit and keyword
+                                    optimization for an e-commerce platform in India.</p>
+                                <p><strong>Problem:</strong> Low organic page indexation, duplicate titles, lack of
+                                    schema markup, and stagnant search rankings.</p>
+                                <p><strong>Solution:</strong> Re-coded robots.txt, established site sitemaps, integrated
+                                    detailed JSON-LD graphs, and fixed keyword gaps.</p>
+                                <p><strong>Results:</strong> Significant organic visibility gain, rich snippet results
+                                    in SERP, and lower bounce rates in 60 days.</p>
                             </div>
-                        </article>
+                            <div class="proj-actions layer-8-buttons">
+                                <a href="#contact" class="proj-action-btn">
+                                    <i class="fas fa-paper-plane"></i> <span>Request Details</span>
+                                </a>
+                            </div>
+                        </div>
+                    </article>
 
-                        <!-- Project 3 -->
-                        <article class="glass-card project-card layer-6-cards">
-                            <div class="proj-thumb layer-7-images">
-                                <div class="proj-thumb-overlay"><i class="fas fa-utensils"></i></div>
-                                <span class="proj-num">03</span>
-                                <span class="proj-badge"><i class="fas fa-award"></i> Featured Project</span>
+                    <!-- Project 3 -->
+                    <article class="glass-card project-card layer-6-cards">
+                        <div class="proj-thumb layer-7-images">
+                            <div class="proj-thumb-overlay"><i class="fas fa-utensils"></i></div>
+                            <span class="proj-num">03</span>
+                            <span class="proj-badge"><i class="fas fa-award"></i> Featured Project</span>
+                        </div>
+                        <div class="proj-body layer-10-reveal">
+                            <div class="proj-tags">
+                                <span class="proj-tag"><i class="fas fa-book-open"></i> Case Study</span>
+                                <span class="proj-tag"><i class="fas fa-code"></i> CSS Grid</span>
+                                <span class="proj-tag"><i class="fas fa-mobile-alt"></i> Responsive</span>
+                                <span class="proj-tag"><i class="fas fa-mouse-pointer"></i> Interactions</span>
                             </div>
-                            <div class="proj-body layer-10-reveal">
-                                <div class="proj-tags">
-                                    <span class="proj-tag"><i class="fas fa-book-open"></i> Case Study</span>
-                                    <span class="proj-tag"><i class="fas fa-code"></i> CSS Grid</span>
-                                    <span class="proj-tag"><i class="fas fa-mobile-alt"></i> Responsive</span>
-                                    <span class="proj-tag"><i class="fas fa-mouse-pointer"></i> Interactions</span>
-                                </div>
-                                <h3>Restaurant Branding Web Layout</h3>
-                                <div class="proj-case-study">
-                                    <p><strong>Overview:</strong> Responsive frontend showcase designed to present custom
-                                        menus and streamline table queries.</p>
-                                    <p><strong>Problem:</strong> Hard-coded layouts, lack of touch-friendly buttons on
-                                        mobile, and slow rendering of image cards.</p>
-                                    <p><strong>Solution:</strong> Rebuilt using fluid CSS Grid alignments, optimized layout
-                                        rendering times, and clean CTA button targets.</p>
-                                    <p><strong>Results:</strong> Smooth multi-viewport displays and a clean layout codebase
-                                        ready for backend integrations.</p>
-                                </div>
-                                <div class="proj-actions layer-8-buttons">
-                                    <a href="https://github.com/pratheeshclement-cmd" target="_blank"
-                                        rel="noopener noreferrer" class="proj-action-btn secondary">
-                                        <i class="fab fa-github"></i> <span>View Github</span>
-                                    </a>
-                                </div>
+                            <h3>Restaurant Branding Web Layout</h3>
+                            <div class="proj-case-study">
+                                <p><strong>Overview:</strong> Responsive frontend showcase designed to present custom
+                                    menus and streamline table queries.</p>
+                                <p><strong>Problem:</strong> Hard-coded layouts, lack of touch-friendly buttons on
+                                    mobile, and slow rendering of image cards.</p>
+                                <p><strong>Solution:</strong> Rebuilt using fluid CSS Grid alignments, optimized layout
+                                    rendering times, and clean CTA button targets.</p>
+                                <p><strong>Results:</strong> Smooth multi-viewport displays and a clean layout codebase
+                                    ready for backend integrations.</p>
                             </div>
-                        </article>
+                            <div class="proj-actions layer-8-buttons">
+                                <a href="https://github.com/pratheeshclement-cmd" target="_blank"
+                                    rel="noopener noreferrer" class="proj-action-btn secondary">
+                                    <i class="fab fa-github"></i> <span>View Github</span>
+                                </a>
+                            </div>
+                        </div>
+                    </article>
 
-                        <!-- Project 4 -->
-                        <article class="glass-card project-card layer-6-cards">
-                            <div class="proj-thumb layer-7-images">
-                                <div class="proj-thumb-overlay"><i class="fab fa-meta"></i></div>
-                                <span class="proj-num">04</span>
-                                <span class="proj-badge private"><i class="fas fa-lock"></i> Client Private</span>
+                    <!-- Project 4 -->
+                    <article class="glass-card project-card layer-6-cards">
+                        <div class="proj-thumb layer-7-images">
+                            <div class="proj-thumb-overlay"><i class="fab fa-meta"></i></div>
+                            <span class="proj-num">04</span>
+                            <span class="proj-badge private"><i class="fas fa-lock"></i> Client Private</span>
+                        </div>
+                        <div class="proj-body layer-10-reveal">
+                            <div class="proj-tags">
+                                <span class="proj-tag"><i class="fas fa-book-open"></i> Case Study</span>
+                                <span class="proj-tag"><i class="fab fa-facebook-f"></i> Meta Ads</span>
+                                <span class="proj-tag"><i class="fas fa-bullhorn"></i> Lead Gen</span>
+                                <span class="proj-tag"><i class="fas fa-chart-line"></i> Pixel Events</span>
                             </div>
-                            <div class="proj-body layer-10-reveal">
-                                <div class="proj-tags">
-                                    <span class="proj-tag"><i class="fas fa-book-open"></i> Case Study</span>
-                                    <span class="proj-tag"><i class="fab fa-facebook-f"></i> Meta Ads</span>
-                                    <span class="proj-tag"><i class="fas fa-bullhorn"></i> Lead Gen</span>
-                                    <span class="proj-tag"><i class="fas fa-chart-line"></i> Pixel Events</span>
-                                </div>
-                                <h3>Social Media B2B Conversion Funnel</h3>
-                                <div class="proj-case-study">
-                                    <p><strong>Overview:</strong> Meta Ads conversion campaign setup optimized for acquiring
-                                        targeted B2B corporate inquiries.</p>
-                                    <p><strong>Problem:</strong> Poor audience profiling leading to spam form submissions
-                                        and high cost-per-lead (CPL) ratios.</p>
-                                    <p><strong>Solution:</strong> Custom audience lookalikes setup, pixel custom events
-                                        tracking, and high-impact copy tests.</p>
-                                    <p><strong>Results:</strong> Reduced average CPL metrics, while generating pre-qualified
-                                        business leads.</p>
-                                </div>
-                                <div class="proj-actions layer-8-buttons">
-                                    <a href="#contact" class="proj-action-btn">
-                                        <i class="fas fa-paper-plane"></i> <span>Request Audit</span>
-                                    </a>
-                                </div>
+                            <h3>Social Media B2B Conversion Funnel</h3>
+                            <div class="proj-case-study">
+                                <p><strong>Overview:</strong> Meta Ads conversion campaign setup optimized for acquiring
+                                    targeted B2B corporate inquiries.</p>
+                                <p><strong>Problem:</strong> Poor audience profiling leading to spam form submissions
+                                    and high cost-per-lead (CPL) ratios.</p>
+                                <p><strong>Solution:</strong> Custom audience lookalikes setup, pixel custom events
+                                    tracking, and high-impact copy tests.</p>
+                                <p><strong>Results:</strong> Reduced average CPL metrics, while generating pre-qualified
+                                    business leads.</p>
                             </div>
-                        </article>
-                    </div>
+                            <div class="proj-actions layer-8-buttons">
+                                <a href="#contact" class="proj-action-btn">
+                                    <i class="fas fa-paper-plane"></i> <span>Request Audit</span>
+                                </a>
+                            </div>
+                        </div>
+                    </article>
+                </div>
 
-                    <div class="glass-card github-callout layer-6-cards">
-                        <h3>Curious for more?</h3>
-                        <p>I constantly commit source files, layout structures, and search configurations to my repository.</p>
-                        <a href="https://github.com/pratheeshclement-cmd" target="_blank" rel="noopener noreferrer"
-                            class="btn btn-primary">
-                            <i class="fab fa-github"></i> Explore Full GitHub Profile
-                        </a>
-                    </div>
+                <div class="glass-card github-callout layer-6-cards">
+                    <h3>Curious for more?</h3>
+                    <p>I constantly commit source files, layout structures, and search configurations to my repository.
+                    </p>
+                    <a href="https://github.com/pratheeshclement-cmd" target="_blank" rel="noopener noreferrer"
+                        class="btn btn-primary">
+                        <i class="fab fa-github"></i> Explore Full GitHub Profile
+                    </a>
+                </div>
             </div>
         </section>
 
@@ -982,25 +987,151 @@
                     <p class="sh-sub">The Core Skills and Technologies Powering My Work</p>
                 </div>
 
+                <!-- Top Interactive Cloud Tags Filter Bar -->
                 <div class="skills-cloud-container layer-3-bg">
-                    <div class="skill-tag layer-6-cards" style="--sd: 0ms;"><i class="fas fa-search"></i> SEO</div>
-                    <div class="skill-tag layer-6-cards" style="--sd: 100ms;"><i class="fas fa-brain"></i> AI</div>
+                    <div class="skill-tag active layer-6-cards" style="--sd: 0ms;"><i class="fas fa-th-large"></i> All
+                        Expertise</div>
+                    <div class="skill-tag layer-6-cards" style="--sd: 100ms;"><i class="fas fa-search"></i> Technical
+                        SEO</div>
                     <div class="skill-tag layer-6-cards" style="--sd: 200ms;"><i class="fas fa-code"></i> Web
                         Development</div>
-                    <div class="skill-tag layer-6-cards" style="--sd: 300ms;"><i class="fas fa-pencil-ruler"></i> UI/UX
-                    </div>
-                    <div class="skill-tag layer-6-cards" style="--sd: 400ms;"><i class="fab fa-facebook-f"></i> Meta Ads
-                    </div>
-                    <div class="skill-tag layer-6-cards" style="--sd: 500ms;"><i class="fab fa-google"></i> Google Ads
-                    </div>
-                    <div class="skill-tag layer-6-cards" style="--sd: 100ms;"><i class="fas fa-bullhorn"></i> Digital
+                    <div class="skill-tag layer-6-cards" style="--sd: 300ms;"><i class="fab fa-google"></i> Paid
+                        Advertising</div>
+                    <div class="skill-tag layer-6-cards" style="--sd: 400ms;"><i class="fas fa-bullhorn"></i> Digital
                         Marketing</div>
-                    <div class="skill-tag layer-6-cards" style="--sd: 200ms;"><i class="fas fa-robot"></i> Automation
+                    <div class="skill-tag layer-6-cards" style="--sd: 500ms;"><i class="fas fa-robot"></i> AI &amp;
+                        Automation</div>
+                    <div class="skill-tag layer-6-cards" style="--sd: 600ms;"><i class="fas fa-pencil-ruler"></i> UI/UX
+                        Design</div>
+                </div>
+
+                <!-- Apple-Style Showcase Cards Grid -->
+                <div class="skills-showcase-grid">
+                    <!-- Category 1: Technical SEO -->
+                    <div class="glass-card skill-showcase-card layer-6-cards" style="--sd: 0ms;">
+                        <div class="ssc-header">
+                            <div class="ssc-icon-box"><i class="fas fa-search"></i></div>
+                            <div class="ssc-title-meta">
+                                <h3>Technical SEO</h3>
+                                <span class="ssc-badge expert"><i class="fas fa-check-circle"></i> Expert</span>
+                            </div>
+                        </div>
+                        <p class="ssc-desc">Deep organic search architecture, JSON-LD schema graphs, page speed
+                            optimization, and SERP snippet dominance.</p>
+                        <div class="ssc-tags">
+                            <span class="ssc-chip">Schema Markup</span>
+                            <span class="ssc-chip">SEO Audits</span>
+                            <span class="ssc-chip">Keyword Research</span>
+                            <span class="ssc-chip">Core Web Vitals</span>
+                            <span class="ssc-chip">XML Sitemaps</span>
+                            <span class="ssc-chip">GA4 Analytics</span>
+                        </div>
                     </div>
-                    <div class="skill-tag layer-6-cards" style="--sd: 300ms;"><i class="fas fa-chart-line"></i>
-                        Analytics</div>
-                    <div class="skill-tag layer-6-cards" style="--sd: 400ms;"><i class="fas fa-network-wired"></i>
-                        Integrations</div>
+
+                    <!-- Category 2: Web Development -->
+                    <div class="glass-card skill-showcase-card layer-6-cards" style="--sd: 100ms;">
+                        <div class="ssc-header">
+                            <div class="ssc-icon-box"><i class="fas fa-code"></i></div>
+                            <div class="ssc-title-meta">
+                                <h3>Web Development</h3>
+                                <span class="ssc-badge proficient"><i class="fas fa-bolt"></i> Proficient</span>
+                            </div>
+                        </div>
+                        <p class="ssc-desc">Clean, dependency-free HTML5, CSS3 custom properties, and Vanilla JS
+                            engineered for 100/100 Lighthouse scores.</p>
+                        <div class="ssc-tags">
+                            <span class="ssc-chip">Semantic HTML5</span>
+                            <span class="ssc-chip">CSS Custom Vars</span>
+                            <span class="ssc-chip">Vanilla JS</span>
+                            <span class="ssc-chip">CSS Grid / Flexbox</span>
+                            <span class="ssc-chip">Responsive Design</span>
+                            <span class="ssc-chip">Performance Opt</span>
+                        </div>
+                    </div>
+
+                    <!-- Category 3: Paid Advertising -->
+                    <div class="glass-card skill-showcase-card layer-6-cards" style="--sd: 200ms;">
+                        <div class="ssc-header">
+                            <div class="ssc-icon-box"><i class="fab fa-google"></i></div>
+                            <div class="ssc-title-meta">
+                                <h3>Paid Advertising</h3>
+                                <span class="ssc-badge expert"><i class="fas fa-check-circle"></i> Expert</span>
+                            </div>
+                        </div>
+                        <p class="ssc-desc">High-ROAS Google Search &amp; PMax campaigns paired with Meta Ads custom
+                            lookalike retargeting funnels.</p>
+                        <div class="ssc-tags">
+                            <span class="ssc-chip">Google Search Ads</span>
+                            <span class="ssc-chip">Meta Ads Funnels</span>
+                            <span class="ssc-chip">Conversion Tracking</span>
+                            <span class="ssc-chip">Custom Audiences</span>
+                            <span class="ssc-chip">CPL Reduction</span>
+                            <span class="ssc-chip">Pixel Setup</span>
+                        </div>
+                    </div>
+
+                    <!-- Category 4: Digital Marketing -->
+                    <div class="glass-card skill-showcase-card layer-6-cards" style="--sd: 300ms;">
+                        <div class="ssc-header">
+                            <div class="ssc-icon-box"><i class="fas fa-bullhorn"></i></div>
+                            <div class="ssc-title-meta">
+                                <h3>Digital Marketing</h3>
+                                <span class="ssc-badge expert"><i class="fas fa-check-circle"></i> Expert</span>
+                            </div>
+                        </div>
+                        <p class="ssc-desc">End-to-end multi-channel acquisition strategy, conversion rate optimization,
+                            and actionable growth roadmaps.</p>
+                        <div class="ssc-tags">
+                            <span class="ssc-chip">Digital Strategy</span>
+                            <span class="ssc-chip">Lead Generation</span>
+                            <span class="ssc-chip">Conversion Rate Opt</span>
+                            <span class="ssc-chip">Content Funnels</span>
+                            <span class="ssc-chip">Growth Roadmaps</span>
+                            <span class="ssc-chip">Channel Analytics</span>
+                        </div>
+                    </div>
+
+                    <!-- Category 5: AI & Automation -->
+                    <div class="glass-card skill-showcase-card layer-6-cards" style="--sd: 400ms;">
+                        <div class="ssc-header">
+                            <div class="ssc-icon-box"><i class="fas fa-robot"></i></div>
+                            <div class="ssc-title-meta">
+                                <h3>AI &amp; Automation</h3>
+                                <span class="ssc-badge proficient"><i class="fas fa-bolt"></i> Proficient</span>
+                            </div>
+                        </div>
+                        <p class="ssc-desc">Event-driven Zapier triggers, server webhooks, custom AI concierge bots, and
+                            automated reporting systems.</p>
+                        <div class="ssc-tags">
+                            <span class="ssc-chip">AI Workflow Design</span>
+                            <span class="ssc-chip">Zapier Triggers</span>
+                            <span class="ssc-chip">API Webhooks</span>
+                            <span class="ssc-chip">AI Chat Agents</span>
+                            <span class="ssc-chip">Auto Reporting</span>
+                            <span class="ssc-chip">Doc Generation</span>
+                        </div>
+                    </div>
+
+                    <!-- Category 6: UI/UX Design -->
+                    <div class="glass-card skill-showcase-card layer-6-cards" style="--sd: 500ms;">
+                        <div class="ssc-header">
+                            <div class="ssc-icon-box"><i class="fas fa-pencil-ruler"></i></div>
+                            <div class="ssc-title-meta">
+                                <h3>UI/UX Design</h3>
+                                <span class="ssc-badge proficient"><i class="fas fa-bolt"></i> Proficient</span>
+                            </div>
+                        </div>
+                        <p class="ssc-desc">Modern glassmorphism, sleek dark modes, micro-interaction states, and
+                            accessible responsive typography.</p>
+                        <div class="ssc-tags">
+                            <span class="ssc-chip">Glassmorphism</span>
+                            <span class="ssc-chip">Dark Mode UI</span>
+                            <span class="ssc-chip">Micro-interactions</span>
+                            <span class="ssc-chip">Typography Systems</span>
+                            <span class="ssc-chip">Layout Ratios</span>
+                            <span class="ssc-chip">Color Theory</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -1365,7 +1496,8 @@
                                 <label for="fweburl"><i class="fas fa-globe"></i> Website URL (Optional)</label>
                             </div>
 
-                            <div class="form-checkbox-label" id="servicesRequiredGroup"><i class="fas fa-list-check"></i> Services Required</div>
+                            <div class="form-checkbox-label" id="servicesRequiredGroup"><i
+                                    class="fas fa-list-check"></i> Services Required</div>
                             <div class="form-checkbox-grid" role="group" aria-labelledby="servicesRequiredGroup">
                                 <label class="checkbox-wrap">
                                     <input type="checkbox" name="services" value="Website Development"> <i
@@ -1570,14 +1702,192 @@
         </div>
     </div>
 
+    <!-- ══════════════ AI CONCIERGE SYSTEM — DIGITAL ECOSYSTEM 5.0 ══════════════ -->
+
+
+
+    <!-- Toast Notification -->
+    <div id="ai-toast" role="status" aria-live="polite"></div>
+
+    <!-- Tour Progress Dots -->
+    <div id="ai-tour-progress" aria-hidden="true"></div>
+
+    <!-- ── Welcome Experience Overlay ── -->
+    <div id="ai-welcome-overlay" role="dialog" aria-modal="true" aria-label="Welcome to Pratheesh's Digital Ecosystem">
+        <div class="ai-welcome-card">
+            <button class="ai-welcome-close" id="ai-welcome-close" aria-label="Close welcome">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="ai-welcome-avatar-row">
+                <div class="ai-welcome-avatar">
+                    <img src="./asset/logo-profile.png" alt="Pratheesh Clement" loading="eager">
+                    <div class="ai-avatar-status"></div>
+                </div>
+                <div class="ai-welcome-identity">
+                    <h3>Pratheesh AI</h3>
+                    <span class="ai-badge">AI Concierge · Online</span>
+                </div>
+            </div>
+            <div class="ai-welcome-message">
+                <p>Welcome to my <strong>Digital Ecosystem.</strong></p>
+                <p>I'm <strong>Pratheesh AI</strong> — think of me as your personal guide throughout this experience.
+                </p>
+                <p>I'll help you explore my projects, skills, achievements, professional journey and services.</p>
+            </div>
+            <div class="ai-welcome-divider"></div>
+            <p class="ai-welcome-prompt">What would you like to do today?</p>
+            <div class="ai-welcome-btns">
+                <button class="ai-welcome-btn primary" id="ai-welcome-tour">
+                    <i class="fas fa-map-signs"></i> Take a Guided Tour
+                </button>
+                <button class="ai-welcome-btn glass" id="ai-welcome-explore">
+                    <i class="fas fa-folder-open"></i> Explore My Work
+                </button>
+                <button class="ai-welcome-btn glass" id="ai-welcome-ask">
+                    <i class="fas fa-comment-dots"></i> Ask Me Anything
+                </button>
+                <button class="ai-welcome-btn hire" id="ai-welcome-hire">
+                    <i class="fas fa-user-check"></i> Hire Me
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── Guided Tour Role Selector ── -->
+    <div id="ai-tour-modal" role="dialog" aria-modal="true" aria-label="Choose your visitor role">
+        <div class="ai-tour-card">
+            <div class="ai-tour-header">
+                <h3>Who are you today?</h3>
+                <p>I'll personalize your experience based on your role.</p>
+            </div>
+            <div class="ai-tour-roles">
+                <button class="ai-role-chip" data-role="recruiter"><i class="fas fa-user-tie"></i>Recruiter</button>
+                <button class="ai-role-chip" data-role="hiring"><i class="fas fa-briefcase"></i>Hiring Manager</button>
+                <button class="ai-role-chip" data-role="founder"><i class="fas fa-rocket"></i>Founder</button>
+                <button class="ai-role-chip" data-role="client"><i class="fas fa-handshake"></i>Client</button>
+                <button class="ai-role-chip" data-role="startup"><i class="fas fa-building"></i>Startup</button>
+                <button class="ai-role-chip" data-role="developer"><i class="fas fa-code"></i>Developer</button>
+                <button class="ai-role-chip" data-role="freelancer"><i
+                        class="fas fa-laptop-code"></i>Freelancer</button>
+                <button class="ai-role-chip" data-role="student"><i class="fas fa-graduation-cap"></i>Student</button>
+                <button class="ai-role-chip" data-role="exploring"><i class="fas fa-compass"></i>Just Exploring</button>
+            </div>
+            <button class="ai-tour-skip">Skip — I'll explore on my own</button>
+        </div>
+    </div>
+
+    <!-- ── AI Concierge Floating Panel ── -->
+    <div id="ai-panel-wrapper">
+        <!-- Expanded Chat Panel -->
+        <div id="ai-chat-panel" role="dialog" aria-label="Pratheesh AI Chat">
+            <div class="ai-panel-header">
+                <div class="ai-panel-avatar">
+                    <img src="./asset/logo-profile.png" alt="Pratheesh AI" loading="lazy">
+                    <div class="ai-panel-status-dot"></div>
+                </div>
+                <div class="ai-panel-info">
+                    <span class="ai-panel-name">Pratheesh AI</span>
+                    <span class="ai-panel-subtitle">Portfolio Concierge · Online</span>
+                </div>
+                <button class="ai-panel-close" id="ai-panel-close" aria-label="Close AI panel">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div id="ai-messages" role="log" aria-live="polite" aria-label="Conversation with Pratheesh AI"></div>
+            <div class="ai-quick-questions" role="group" aria-label="Quick questions">
+                <button class="ai-quick-q">Tell me about yourself</button>
+                <button class="ai-quick-q">Show your best project</button>
+                <button class="ai-quick-q">Why hire you?</button>
+                <button class="ai-quick-q">What services?</button>
+                <button class="ai-quick-q">Contact you</button>
+                <button class="ai-quick-q">Book a meeting</button>
+                <button class="ai-quick-q">Free audit?</button>
+                <button class="ai-quick-q">Download resume</button>
+            </div>
+            <div class="ai-input-area">
+                <textarea id="ai-input" placeholder="Ask Pratheesh AI anything..." aria-label="Message Pratheesh AI"
+                    rows="1"></textarea>
+                <button id="ai-send-btn" aria-label="Send message">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+        <!-- Minimized FAB -->
+        <button id="ai-fab" aria-label="Open Pratheesh AI Concierge" aria-expanded="false">
+            <div class="ai-fab-avatar">
+                <img src="./asset/logo-profile.png" alt="Pratheesh" loading="eager">
+                <div class="ai-fab-status"></div>
+            </div>
+            <div class="ai-fab-text">
+                <span class="ai-fab-name">Pratheesh AI</span>
+                <span class="ai-fab-role">Portfolio Concierge</span>
+            </div>
+            <i class="fas fa-chevron-up ai-fab-icon"></i>
+        </button>
+    </div>
+
+    <!-- ── Section Awareness Tip ── -->
+    <div id="ai-section-tip" role="status" aria-live="polite">
+        <div class="ai-section-tip-card">
+            <button class="ai-tip-dismiss" id="ai-tip-dismiss" aria-label="Dismiss tip">✕</button>
+            <div class="ai-tip-header">
+                <img src="./asset/logo-profile.png" alt="Pratheesh AI" loading="lazy">
+                <span>Pratheesh AI</span>
+            </div>
+            <p class="ai-section-tip-text" id="ai-tip-text"></p>
+            <div class="ai-tip-actions" id="ai-tip-actions"></div>
+        </div>
+    </div>
+
+    <!-- ── Exit Intent Overlay ── -->
+    <div id="ai-exit-intent" role="dialog" aria-modal="true" aria-label="Before you go">
+        <div class="ai-exit-card">
+            <span class="ai-exit-emoji">👋</span>
+            <h3>Before you go...</h3>
+            <p>You haven't finished exploring! There's still a lot Pratheesh can offer you.</p>
+            <div class="ai-exit-actions">
+                <button class="ai-exit-btn exit-primary" data-action="connect">
+                    <i class="fas fa-user-check"></i> Connect With Me
+                </button>
+                <button class="ai-exit-btn" data-action="resume">
+                    <i class="fab fa-linkedin"></i> View LinkedIn
+                </button>
+                <button class="ai-exit-btn" data-action="projects">
+                    <i class="fas fa-folder-open"></i> Featured Projects
+                </button>
+                <button class="ai-exit-btn" data-action="message">
+                    <i class="fas fa-comment-dots"></i> Send a Message
+                </button>
+            </div>
+            <button class="ai-exit-dismiss" id="ai-exit-dismiss">No thanks, I'll continue browsing</button>
+        </div>
+    </div>
+
+    <!-- ── Inactivity Nudge ── -->
+    <div id="ai-inactivity-nudge" role="status">
+        <div class="ai-nudge-card">
+            <button class="ai-nudge-dismiss" id="ai-nudge-dismiss" aria-label="Dismiss">✕</button>
+            <p>Still exploring? <strong>I can recommend a few things</strong> based on what you've viewed so far.</p>
+            <button class="ai-nudge-cta">
+                <i class="fas fa-sparkles"></i> Get Recommendations
+            </button>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════ -->
+
+    <!-- Lenis Smooth Scroll Engine (Apple / Tesla / Vercel Momentum Scrolling) -->
+    <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js"></script>
     <!-- Core Scripts -->
-    <script src="./js/transitions.js"></script>
+    <script src="./js/harmony-motion.js"></script>
     <script src="./js/animations.js"></script>
     <script src="./js/main.js"></script>
     <!-- Master Motion Orchestrator — 12-layer motion design architecture -->
-    <script src="./js/motion.js"></script>
+
     <!-- Meta Pixel Helper & Event Tracking Module -->
     <script src="./js/meta-pixel.js"></script>
+    <!-- AI Portfolio Concierge System — Digital Ecosystem 5.0 -->
+    <script src="./js/ai-concierge.js"></script>
 </body>
 
 </html>

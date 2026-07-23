@@ -1,0 +1,26 @@
+{
+  "technologies": [
+    { "name": "HTML5", "category": "Frontend", "icon": "fab fa-html5", "proficiency": "Expert" },
+    { "name": "CSS3", "category": "Frontend", "icon": "fab fa-css3-alt", "proficiency": "Expert" },
+    { "name": "JavaScript", "category": "Frontend", "icon": "fab fa-js-square", "proficiency": "Proficient" },
+    { "name": "Google Ads", "category": "Advertising", "icon": "fab fa-google", "proficiency": "Expert" },
+    { "name": "Meta Ads", "category": "Advertising", "icon": "fab fa-facebook-f", "proficiency": "Expert" },
+    { "name": "SEO", "category": "Marketing", "icon": "fas fa-search", "proficiency": "Expert" },
+    { "name": "GA4", "category": "Analytics", "icon": "fas fa-chart-line", "proficiency": "Proficient" },
+    { "name": "JSON-LD", "category": "Schema", "icon": "fas fa-code", "proficiency": "Expert" },
+    { "name": "Zapier", "category": "Automation", "icon": "fas fa-bolt", "proficiency": "Proficient" },
+    { "name": "GitHub", "category": "DevOps", "icon": "fab fa-github", "proficiency": "Proficient" },
+    { "name": "AI Tools", "category": "AI", "icon": "fas fa-robot", "proficiency": "Proficient" },
+    { "name": "Gemini API", "category": "AI", "icon": "fas fa-brain", "proficiency": "Proficient" }
+  ],
+  "ecosystemTools": [
+    { "name": "Productivity", "icon": "fas fa-tasks", "description": "Streamlined scheduling and task tracking workflows." },
+    { "name": "AI Tools", "icon": "fas fa-brain", "description": "Native machine learning models and content generators." },
+    { "name": "Learning Resources", "icon": "fas fa-graduation-cap", "description": "Curated dev assets and guides library." },
+    { "name": "Automation", "icon": "fas fa-bolt", "description": "Event-driven Zapier triggers and server webhooks." },
+    { "name": "Business Systems", "icon": "fas fa-network-wired", "description": "Unified client onboarding and lead sync." },
+    { "name": "Knowledge Management", "icon": "fas fa-folder-tree", "description": "Organized documentation folders and tags." },
+    { "name": "Future Projects", "icon": "fas fa-lightbulb", "description": "Upcoming SaaS utilities roadmap tracker." },
+    { "name": "Digital Marketing Resources", "icon": "fas fa-bullhorn", "description": "Ad audits checklists and calculators." }
+  ]
+}
