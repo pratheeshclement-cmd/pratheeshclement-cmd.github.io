@@ -34,7 +34,7 @@ To prevent large asset payloads from bottlenecking performance (achieving Lighth
 - **`logo-profile.png` (400x400)**: Used in Hero showcase and About containers.
 - **`logo-nav.png` (80x80)**: Used in the navigation header.
 - **`logo-footer.png` (120x120)**: Used for footer branding.
-- **Favicons & PWA Icons**: Root folder holds `Pratheesh.ico`, `pratheesh-32.png`, `Pratheesh48.png`, `apple-touch-icon.png`, `android-chrome-192x192.png`, and `android-chrome-512x512.png`.
+- **Favicons & PWA Icons**: Root folder holds `favicon.ico`, `favicon-48x48.png`, `apple-touch-icon.png`, `android-chrome-192x192.png`, `android-chrome-512x512.png`, and `manifest.webmanifest`.
 - **Display Optimization**: Uses optimized vector SVGs, logo PNG files, and explicit width/height dimensions to eliminate layout shifts and deliver rapid render states.
 
 ---

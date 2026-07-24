@@ -2,9 +2,9 @@
   "name": "Pratheesh Clement Portfolio",
   "short_name": "Pratheesh",
   "description": "Portfolio of Pratheesh Clement, digital marketing specialist and frontend developer.",
-  "id": "https://pratheeshclement-cmd.github.io/",
-  "start_url": "./index.html",
-  "scope": "./",
+  "id": "/",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#050816",
   "theme_color": "#050816",
@@ -18,31 +18,31 @@
   ],
   "icons": [
     {
-      "src": "./android-chrome-192x192.png",
+      "src": "/android-chrome-192x192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "./android-chrome-512x512.png",
+      "src": "/android-chrome-512x512.png",
       "sizes": "512x512",
       "type": "image/png"
     },
     {
-      "src": "./apple-touch-icon.png",
+      "src": "/apple-touch-icon.png",
       "sizes": "180x180",
       "type": "image/png"
     }
   ],
   "screenshots": [
     {
-      "src": "./asset/screenshot-desktop.jpg",
+      "src": "/asset/screenshot-desktop.jpg",
       "sizes": "1024x1024",
       "type": "image/jpeg",
       "form_factor": "wide",
       "label": "Desktop View of Pratheesh Clement Portfolio"
     },
     {
-      "src": "./asset/screenshot-mobile.jpg",
+      "src": "/asset/screenshot-mobile.jpg",
       "sizes": "1024x1024",
       "type": "image/jpeg",
       "form_factor": "narrow",

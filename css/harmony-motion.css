@@ -16,6 +16,15 @@
     --harmony-ease: cubic-bezier(0.22, 1, 0.36, 1);
     --harmony-emphasis: cubic-bezier(0.16, 1, 0.3, 1);
     --harmony-nav-base: 100px;
+
+    /* HarmonyOS 5 Transition Archetype Custom Properties */
+    --transition-fast: 150ms;
+    --transition-normal: 250ms;
+    --transition-long-take: 500ms;
+    --transition-ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --transition-asymmetric-enter: cubic-bezier(0.16, 1, 0.3, 1);
+    --transition-asymmetric-exit: cubic-bezier(0.4, 0, 1, 1);
+    --transition-tab-spacing: 32px;
 }
 
 /* Retire legacy cursor, particle, float, orbit, and parallax decoration. */
@@ -606,4 +615,102 @@ body.nav-menu-open {
 
 .skill-showcase-card[hidden] {
     display: none !important;
+}
+
+/* ===========================================================================
+   HARMONYOS 5 CORE TRANSITION ARCHETYPES (GPU-ACCELERATED)
+   =========================================================================== */
+
+/* Archetype 1: Long-Take Morphing (geometryTransition / Card Expansion) */
+.harmony-shared-ghost {
+    position: fixed;
+    z-index: 9999;
+    pointer-events: none;
+    will-change: transform, opacity;
+}
+
+/* Archetype 2: Left-Right Displacement Mask (PageTransitionEnter / Exit) */
+.harmony-page-enter-slide {
+    animation: harmony-slide-in-right var(--transition-long-take) var(--transition-ease) forwards;
+    will-change: transform, opacity;
+}
+
+.harmony-page-exit-slide {
+    animation: harmony-slide-out-left var(--transition-long-take) var(--transition-ease) forwards;
+    will-change: transform, opacity;
+}
+
+.harmony-depth-mask {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    opacity: 0;
+    transition: opacity var(--transition-long-take) linear;
+    pointer-events: none;
+}
+
+@keyframes harmony-slide-in-right {
+    from { transform: translate3d(100%, 0, 0); opacity: 0.8; }
+    to { transform: translate3d(0, 0, 0); opacity: 1; }
+}
+
+@keyframes harmony-slide-out-left {
+    from { transform: translate3d(0, 0, 0); opacity: 1; }
+    to { transform: translate3d(-30%, 0, 0); opacity: 0.4; }
+}
+
+/* Archetype 3: Left-Right Spaced Movement (SlideEffect / Tab Switch) */
+.harmony-tab-spaced-enter {
+    transform: translate3d(calc(100% + var(--transition-tab-spacing)), 0, 0);
+    opacity: 0;
+    will-change: transform, opacity;
+}
+
+.harmony-tab-spaced-exit {
+    transform: translate3d(calc(-100% - var(--transition-tab-spacing)), 0, 0);
+    opacity: 0;
+    will-change: transform, opacity;
+}
+
+/* Archetype 4: Component Lifecycle (TransitionEffect.asymmetric) */
+.harmony-asymmetric-enter {
+    animation: harmony-asymmetric-in var(--transition-normal) var(--transition-asymmetric-enter) forwards;
+    will-change: transform, opacity;
+}
+
+.harmony-asymmetric-exit {
+    animation: harmony-asymmetric-out var(--transition-fast) var(--transition-asymmetric-exit) forwards;
+    will-change: transform, opacity;
+}
+
+@keyframes harmony-asymmetric-in {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1.0); }
+}
+
+@keyframes harmony-asymmetric-out {
+    from { opacity: 1; transform: translate3d(0, 0, 0); }
+    to { opacity: 0; transform: translate3d(0, 12px, 0); }
+}
+
+/* Archetype 5: Modal / Sheet Transitions (bindSheet / Bottom Sheet) */
+.harmony-bottom-sheet {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 9500;
+    background: rgba(11, 15, 35, 0.92);
+    border-top-left-radius: 24px;
+    border-top-right-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    transform: translate3d(0, 100%, 0);
+    will-change: transform, opacity;
+}
+
+@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .harmony-bottom-sheet {
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+    }
 }
