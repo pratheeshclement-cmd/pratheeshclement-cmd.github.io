@@ -1,28 +1,5 @@
 /* ==========================================================================
-   PRATHEESH CLEMENT — SMART TRANSITION ENGINE  |  js/transitions.js
-   
-   ARCHITECTURE: Section-aware, performance-first orchestration system.
-   
-   WHAT THIS DOES:
-   1. IntersectionObserver — triggers .is-in-view on all animated elements
-   2. Section stagger setup — assigns --sd delay vars for wave reveals
-   3. Scroll engine — sets --scroll-center-pos per section (RAF, passive)
-   4. Avatar 3D tilt — mouse-tracking perspective transform
-   5. Service card spotlight — radial glow follows cursor
-   6. Magnetic buttons — subtle cursor pull on CTAs
-   7. Ripple effects — click ripple on all buttons
-   8. Nav active indicator — highlights current section link
-   9. Hero scroll-depth — fades hero content as you scroll away
-   10. Image parallax — slower scroll on images within cards
-   11. Hero entrance — triggers after loader completes
-   
-   PERFORMANCE RULES:
-   - All transforms use GPU-only properties (transform, opacity)
-   - No layout-triggering properties (top, left, height, width)
-   - All scroll handlers use requestAnimationFrame with ticking guard
-   - Passive event listeners throughout
-   - IntersectionObserver (no scroll-position checking for reveals)
-   - Touch detection gates hover-only effects
+   PRATHEESH CLEMENT — UNIFIED SECTION REVEAL & TRANSITION ENGINE
    ========================================================================== */
 
 (function () {
@@ -30,12 +7,12 @@
 
     const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    /* ── Bootstrap: wait for loader completion signal ──────────────────── */
     function bootstrap() {
         setupStaggerDelays();
+        initTitleWordStagger();
         initIntersectionReveal();
         initRippleEffect();
-        initHeroEntrance();
+        initImageGPUObserver();
     }
 
     if (document.body.classList.contains('cinematic-ready')) {
@@ -50,9 +27,7 @@
         readyObserver.observe(document.body, { attributes: true, attributeFilter: ['class'] });
     }
 
-    /* ─────────────────────────────────────────────────────────────────────
-       1. STAGGER DELAY SETUP
-       ───────────────────────────────────────────────────────────────────── */
+    /* ── 1. STAGGER DELAY CALCULATOR ───────────────────────────────────── */
     function setupStaggerDelays() {
         const setStagger = (selector, step, offset = 0) => {
             document.querySelectorAll(selector).forEach((el, i) => {
@@ -62,17 +37,17 @@
             });
         };
 
-        setStagger('.service-card', 80);
-        setStagger('.skill-tag', 55);
-        setStagger('.timeline-item', 120);
-        setStagger('.testimonial-card', 100);
-        setStagger('.metric-card', 90);
-        setStagger('.about-meta-item', 80);
+        setStagger('.service-card', 75);
+        setStagger('.project-card', 90);
+        setStagger('.skill-tag', 40);
+        setStagger('.timeline-item', 100);
+        setStagger('.testimonial-card', 85);
+        setStagger('.metric-card', 70);
+        setStagger('.about-meta-item', 70);
+        setStagger('.eco-card', 80);
     }
 
-    /* ─────────────────────────────────────────────────────────────────────
-       2. SINGLE VIEWPORT REVEAL OBSERVER
-       ───────────────────────────────────────────────────────────────────── */
+    /* ── 2. SINGLE-PASS VIEWPORT REVEAL OBSERVER ───────────────────────── */
     function initIntersectionReveal() {
         const SELECTOR = [
             '.section-header',
@@ -93,13 +68,15 @@
             '.audit-form-card',
             '.experience-layout',
             '.footer',
-            '.harmony-long-take'
+            '.harmony-reveal',
+            'p',
+            '.btn'
         ].join(', ');
 
         const elements = document.querySelectorAll(SELECTOR);
         if (!elements.length) return;
 
-        if (REDUCED_MOTION) {
+        if (REDUCED_MOTION || document.body.classList.contains('low-motion')) {
             elements.forEach(el => {
                 el.classList.add('is-in-view');
                 el.style.opacity = '1';
@@ -113,21 +90,70 @@
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         entry.target.classList.add('is-in-view');
+                        // Animate ONLY ONCE as required
                         observer.unobserve(entry.target);
                     }
                 });
             },
-            { threshold: 0.08, rootMargin: '0px 0px -30px 0px' }
+            { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
         );
 
         elements.forEach(el => observer.observe(el));
     }
 
-    /* ─────────────────────────────────────────────────────────────────────
-       3. RIPPLE EFFECT
-       ───────────────────────────────────────────────────────────────────── */
+    /* ── 3. HEADING & CHARACTER/WORD STAGGER REVEAL ────────────────────── */
+    function initTitleWordStagger() {
+        const titles = document.querySelectorAll('.section-title, .hero-title');
+        titles.forEach(title => {
+            if (title.dataset.staggerWrapped) return;
+            title.dataset.staggerWrapped = 'true';
+
+            let wordIndex = 0;
+            Array.from(title.childNodes).forEach(node => {
+                if (node.nodeType === Node.TEXT_NODE) {
+                    const text = node.textContent;
+                    if (!text.trim()) return;
+
+                    const frag = document.createDocumentFragment();
+                    text.split(/(\s+)/).forEach(part => {
+                        if (/^\s+$/.test(part)) {
+                            frag.appendChild(document.createTextNode(part));
+                        } else if (part) {
+                            const span = document.createElement('span');
+                            span.className = 'word-reveal';
+                            span.style.setProperty('--w-idx', String(wordIndex++));
+                            span.textContent = part;
+                            frag.appendChild(span);
+                        }
+                    });
+                    node.replaceWith(frag);
+                } else if (node.nodeType === Node.ELEMENT_NODE) {
+                    node.classList.add('word-reveal');
+                    node.style.setProperty('--w-idx', String(wordIndex++));
+                }
+            });
+        });
+    }
+
+    /* ── 4. IMAGE GPU LAZY-LOAD REVEAL OBSERVER ───────────────────────── */
+    function initImageGPUObserver() {
+        const images = document.querySelectorAll('img');
+        images.forEach(img => {
+            if (!img.classList.contains('gpu-image-reveal')) {
+                img.classList.add('gpu-image-reveal');
+            }
+
+            if (img.complete && img.naturalHeight !== 0) {
+                img.classList.add('loaded');
+            } else {
+                img.addEventListener('load', () => img.classList.add('loaded'), { once: true });
+            }
+        });
+    }
+
+    /* ── 5. BUTTON CLICK RIPPLE EFFECT ────────────────────────────────── */
     function initRippleEffect() {
-        document.querySelectorAll('.btn, .contact-link-card').forEach(btn => {
+        document.querySelectorAll('.btn, .contact-link-card, .cookie-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const rect = btn.getBoundingClientRect();
                 const size = Math.max(rect.width, rect.height);
@@ -141,52 +167,10 @@
                 ripple.style.top = `${y}px`;
 
                 btn.appendChild(ripple);
-                setTimeout(() => ripple.remove(), 700);
+                window.setTimeout(() => ripple.remove(), 700);
             });
         });
-    }
-
-    /* ─────────────────────────────────────────────────────────────────────
-       4. HERO ENTRANCE
-       ───────────────────────────────────────────────────────────────────── */
-    function initHeroEntrance() {
-        const heroTitle = document.querySelector('.hero-title');
-        if (heroTitle && !REDUCED_MOTION) {
-            wrapWordsInTitle(heroTitle);
-            setTimeout(() => {
-                heroTitle.classList.add('words-visible');
-            }, 300);
-        }
-
-        document.querySelectorAll('.section-title').forEach(title => {
-            wrapWordsInTitle(title);
-        });
-    }
-
-    function wrapWordsInTitle(el) {
-        if (el.dataset.wordsWrapped) return;
-        el.dataset.wordsWrapped = 'true';
-
-        Array.from(el.childNodes).forEach(node => {
-            if (node.nodeType !== Node.TEXT_NODE) return;
-            const text = node.textContent;
-            if (!text.trim()) return;
-
-            const frag = document.createDocumentFragment();
-            text.split(/(\s+)/).forEach(part => {
-                if (/^\s+$/.test(part)) {
-                    frag.appendChild(document.createTextNode(part));
-                } else if (part) {
-                    const span = document.createElement('span');
-                    span.className = 'word-reveal';
-                    span.textContent = part;
-                    frag.appendChild(span);
-                }
-            });
-            node.replaceWith(frag);
-        });
-
-        el.querySelectorAll('.highlight').forEach(h => h.classList.add('word-reveal'));
     }
 
 })();
+

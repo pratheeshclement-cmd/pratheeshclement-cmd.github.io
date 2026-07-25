@@ -16,6 +16,13 @@
    * @param {boolean} [isCustom=false] - Whether event is standard ('track') or custom ('trackCustom').
    */
   function trackMetaEvent(eventName, params = {}, isCustom = false) {
+    const rawConsent = localStorage.getItem('pratheesh_cookie_consent');
+    if (rawConsent) {
+      try {
+        const consent = JSON.parse(rawConsent);
+        if (!consent.marketing) return;
+      } catch (e) {}
+    }
     if (typeof window.fbq === 'function') {
       try {
         if (isCustom) {

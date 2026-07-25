@@ -474,10 +474,37 @@
                 }
                 requestAnimationFrame(raf);
 
+                const progressBar = document.getElementById('scroll-progress-bar');
+                const backToTopBtn = document.getElementById('back-to-top-btn');
+                const nav = document.getElementById('nav');
+
                 lenis.on('scroll', ({ scroll, limit, velocity }) => {
                     const scrollVelocity = Math.abs(velocity || 0);
                     document.documentElement.style.setProperty('--scroll-velocity', Math.min(1, scrollVelocity * 0.1).toFixed(3));
+
+                    if (progressBar && limit > 0) {
+                        const progress = Math.min(1, Math.max(0, scroll / limit));
+                        progressBar.style.transform = `scaleX(${progress})`;
+                    }
+
+                    if (backToTopBtn) {
+                        backToTopBtn.classList.toggle('visible', scroll > 380);
+                    }
+
+                    if (nav) {
+                        nav.classList.toggle('scrolled', scroll > 20);
+                    }
                 });
+
+                if (backToTopBtn) {
+                    backToTopBtn.addEventListener('click', () => {
+                        if (typeof lenis.scrollTo === 'function') {
+                            lenis.scrollTo(0, { duration: 0.8 });
+                        } else {
+                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                        }
+                    });
+                }
 
                 window.lenis = lenis;
             }

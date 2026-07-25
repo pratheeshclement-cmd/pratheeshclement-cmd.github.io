@@ -1,28 +1,26 @@
 /* ==========================================================================
    PRATHEESH CLEMENT — MASTER MOTION ORCHESTRATOR  |  js/motion.js
-
-   Orchestrates viewport-triggered entries, spotlight effects, 3D tilts,
-   magnetic springs, and the premium pinned horizontal scroll for projects.
-   Highly optimized, RAF-bound, 60 FPS transition engine.
    ========================================================================== */
 
 (function () {
     'use strict';
 
-    /* ── Config & Device Detection ──────────────────────────────────────── */
     const IS_TOUCH   = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
     const IS_REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const IS_MOBILE  = window.matchMedia('(max-width: 1024px)').matches;
 
-    /* ── Bootstrap: wait for cinematic-ready loader signal ──────────────── */
     const init = () => {
+        initDeviceCapabilityCheck();
         assignServiceNumbers();
         injectSectionParticles();
         initNavScrolled();
         initScrollVelocityEngine();
         initBackgroundMorph();
-        initSectionCinematicEntry();
         initGPUClassAssignment();
+        if (!IS_REDUCED) {
+            initMagneticButtons();
+            initSpotlightTracking();
+            initAvatarTilt();
+        }
     };
 
     if (document.body.classList.contains('cinematic-ready')) {
@@ -37,32 +35,23 @@
         obs.observe(document.body, { attributes: true, attributeFilter: ['class'] });
     }
 
-    /* ══════════════════════════════════════════════════════════════════════
-       1. STAGGER DELAY ASSIGNER
-       Calculates and sets staggered animation delay variables
-       ══════════════════════════════════════════════════════════════════════ */
-    function assignStaggerDelays(selector, step, start = 0) {
-        document.querySelectorAll(selector).forEach((el, i) => {
-            if (!el.style.getPropertyValue('--sd')) {
-                el.style.setProperty('--sd', `${start + i * step}ms`);
-            }
-        });
+    /* ── 0. LOW-END DEVICE HARDWARE ADAPTATION ──────────────────────────── */
+    function initDeviceCapabilityCheck() {
+        const concurrency = navigator.hardwareConcurrency || 4;
+        const memory = navigator.deviceMemory || 4;
+        if (concurrency <= 2 || memory <= 2) {
+            document.body.classList.add('low-motion');
+        }
     }
 
-    /* ══════════════════════════════════════════════════════════════════════
-       2. ASSIGN SERVICE CARD NUMBERS
-       Injects index digits for pseudo-element badges
-       ══════════════════════════════════════════════════════════════════════ */
+    /* ── 1. SERVICE CARD INDEX NUMBERS ─────────────────────────────────── */
     function assignServiceNumbers() {
         document.querySelectorAll('.service-card').forEach((card, i) => {
             card.setAttribute('data-num', String(i + 1).padStart(2, '0'));
         });
     }
 
-    /* ══════════════════════════════════════════════════════════════════════
-       3. SUBDUED SECTION PARTICLE INJECTION
-       Injects a minimal number (3) of slow-drifting background dots
-       ══════════════════════════════════════════════════════════════════════ */
+    /* ── 2. SUBDUED SECTION PARTICLES ──────────────────────────────────── */
     function injectSectionParticles() {
         if (IS_REDUCED) return;
 
@@ -73,11 +62,9 @@
         ];
 
         const sections = document.querySelectorAll('[data-scene]');
-        const particlesPerSection = 3; // Reduced to minimize distraction
-
         sections.forEach(section => {
             const frag = document.createDocumentFragment();
-            for (let i = 0; i < particlesPerSection; i++) {
+            for (let i = 0; i < 3; i++) {
                 const p = document.createElement('span');
                 p.className = 'm-particle' + (Math.random() > 0.6 ? ' blink' : '');
                 const size = 1.2 + Math.random() * 2;
@@ -95,17 +82,14 @@
         });
     }
 
-    /* ══════════════════════════════════════════════════════════════════════
-       4. NAV SCROLLED CLASS
-       Adds scrolled style indicator on nav header on slide
-       ══════════════════════════════════════════════════════════════════════ */
+    /* ── 3. NAV SCROLLED CLASS ─────────────────────────────────────────── */
     function initNavScrolled() {
         const nav = document.getElementById('nav');
         if (!nav) return;
 
         let ticking = false;
         const update = () => {
-            nav.classList.toggle('scrolled', window.scrollY > 60);
+            nav.classList.toggle('scrolled', window.scrollY > 20);
             ticking = false;
         };
         window.addEventListener('scroll', () => {
@@ -117,10 +101,7 @@
         update();
     }
 
-    /* ══════════════════════════════════════════════════════════════════════
-       5. SCROLL VELOCITY ENGINE
-       Derives real-time scroll velocity for blur / rotation skews
-       ══════════════════════════════════════════════════════════════════════ */
+    /* ── 4. SCROLL VELOCITY ENGINE ─────────────────────────────────────── */
     function initScrollVelocityEngine() {
         let lastScrollY = window.scrollY;
         let lastTime    = performance.now();
@@ -151,10 +132,7 @@
         }, { passive: true });
     }
 
-    /* ══════════════════════════════════════════════════════════════════════
-       6. BACKGROUND MORPH SYSTEM
-       Crossfades active background gradient on section change
-       ══════════════════════════════════════════════════════════════════════ */
+    /* ── 5. BACKGROUND MORPH SYSTEM ────────────────────────────────────── */
     function initBackgroundMorph() {
         const morphMap = {
             home:         'rgba(5,  8,  22, 1)',
@@ -189,28 +167,7 @@
         sections.forEach(s => observer.observe(s));
     }
 
-    /* ══════════════════════════════════════════════════════════════════════
-       7. SECTION CINEMATIC ENTRY
-       Stagger timings for viewport entrance
-       ══════════════════════════════════════════════════════════════════════ */
-    function initSectionCinematicEntry() {
-        assignStaggerDelays('.service-card',        65,   0);
-        assignStaggerDelays('.project-card',        100,  0);
-        assignStaggerDelays('.skill-showcase-card', 75,   0);
-        assignStaggerDelays('.skill-tag',           35,   0);
-        assignStaggerDelays('.timeline-item',       90,   0);
-        assignStaggerDelays('.testimonial-card',    75,   0);
-        assignStaggerDelays('.metric-card',         60,   0);
-        assignStaggerDelays('.contact-link-card',   80,   0);
-        assignStaggerDelays('.eco-features li',     50,   100);
-        assignStaggerDelays('.audit-points li',     70,   300);
-        assignStaggerDelays('.form-field',          55,   80);
-        assignStaggerDelays('.hero-chip',           60,   600);
-    }
-
-    /* ══════════════════════════════════════════════════════════════════════
-       8. GPU COMPOSITING CLASS ASSIGNMENT
-       ══════════════════════════════════════════════════════════════════════ */
+    /* ── 6. GPU COMPOSITING PROMOTION ──────────────────────────────────── */
     function initGPUClassAssignment() {
         const GPU_SELECTOR = [
             '.glass-card',
@@ -225,6 +182,7 @@
             '.project-card',
             '.timeline-card',
             '.testimonial-card',
+            '.btn'
         ].join(', ');
 
         document.querySelectorAll(GPU_SELECTOR).forEach(el => {
@@ -232,7 +190,77 @@
         });
     }
 
+    /* ── 7. MAGNETIC BUTTON HOVER PHYSICS ─────────────────────────────── */
+    function initMagneticButtons() {
+        const buttons = document.querySelectorAll('.btn-primary, .btn-secondary, .contact-link-card');
+        buttons.forEach(btn => {
+            const handleMove = (e) => {
+                if (e.pointerType === 'touch') return;
+                const rect = btn.getBoundingClientRect();
+                const x = e.clientX - rect.left - rect.width / 2;
+                const y = e.clientY - rect.top - rect.height / 2;
+                btn.style.transform = `translate3d(${x * 0.2}px, ${y * 0.2}px, 0) scale(1.02)`;
+            };
 
+            const handleReset = () => {
+                btn.style.transform = '';
+            };
+
+            btn.addEventListener('pointermove', handleMove, { passive: true });
+            btn.addEventListener('pointerleave', handleReset, { passive: true });
+            btn.addEventListener('pointercancel', handleReset, { passive: true });
+        });
+    }
+
+    /* ── 8. CARD SPOTLIGHT CURSOR/POINTER TRACKING ───────────────────── */
+    function initSpotlightTracking() {
+        const cards = document.querySelectorAll('.glass-card, .project-card, .service-card, .testimonial-card');
+        cards.forEach(card => {
+            const updateCoords = (clientX, clientY) => {
+                const rect = card.getBoundingClientRect();
+                const x = clientX - rect.left;
+                const y = clientY - rect.top;
+                card.style.setProperty('--mouse-x', `${x}px`);
+                card.style.setProperty('--mouse-y', `${y}px`);
+            };
+
+            card.addEventListener('pointermove', (e) => {
+                updateCoords(e.clientX, e.clientY);
+            }, { passive: true });
+
+            card.addEventListener('touchmove', (e) => {
+                if (e.touches && e.touches[0]) {
+                    updateCoords(e.touches[0].clientX, e.touches[0].clientY);
+                }
+            }, { passive: true });
+        });
+    }
+
+    /* ── 9. AVATAR 3D PERSPECTIVE TILT ───────────────────────────────── */
+    function initAvatarTilt() {
+        const avatarBox = document.querySelector('.avatar-box, .hero-profile-wrapper');
+        if (!avatarBox) return;
+
+        const handleTilt = (clientX, clientY) => {
+            const rect = avatarBox.getBoundingClientRect();
+            const x = (clientX - rect.left) / rect.width - 0.5;
+            const y = (clientY - rect.top) / rect.height - 0.5;
+            avatarBox.style.transform = `perspective(1000px) rotateY(${x * 12}deg) rotateX(${-y * 12}deg) scale3d(1.02, 1.02, 1.02)`;
+        };
+
+        const handleReset = () => {
+            avatarBox.style.transform = '';
+        };
+
+        avatarBox.addEventListener('pointermove', (e) => {
+            if (e.pointerType === 'touch') return;
+            handleTilt(e.clientX, e.clientY);
+        }, { passive: true });
+
+        avatarBox.addEventListener('pointerleave', handleReset, { passive: true });
+        avatarBox.addEventListener('pointercancel', handleReset, { passive: true });
+    }
 
 })();
+
 

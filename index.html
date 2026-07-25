@@ -199,6 +199,9 @@
 </head>
 
 <body>
+    <!-- Top Scroll Progress Bar (HarmonyOS Scroll Engine) -->
+    <div id="scroll-progress-bar" aria-hidden="true"></div>
+
     <!-- Premium Cinematic Loader -->
     <div id="loader" class="loader-overlay cinematic-loader">
         <div class="loader-backdrop-glow"></div>
@@ -1875,6 +1878,131 @@
         </div>
     </div>
 
+    <!-- ── Floating Back to Top Button ── -->
+    <button id="back-to-top-btn" class="back-to-top-btn" aria-label="Back to top" title="Back to top">
+        <i class="fas fa-arrow-up" aria-hidden="true"></i>
+    </button>
+
+    <!-- ── GDPR Cookie Consent Banner ── -->
+    <div id="cookie-consent-banner" class="cookie-banner" role="region" aria-label="Cookie consent banner" hidden>
+        <div class="cookie-banner-content">
+            <div class="cookie-banner-text">
+                <div class="cookie-banner-header">
+                    <i class="fas fa-shield-halved cookie-icon" aria-hidden="true"></i>
+                    <h2 class="cookie-title">We Value Your Privacy</h2>
+                </div>
+                <p class="cookie-description">
+                    We use cookies and similar technologies to enhance your browsing experience, analyze website traffic, personalize content, and serve targeted ads. Choose your preferences below or accept all cookies.
+                </p>
+                <div class="cookie-legal-links">
+                    <a href="#contact" class="cookie-link">Privacy Policy</a>
+                    <span class="cookie-sep">•</span>
+                    <a href="#contact" class="cookie-link">Cookie Policy</a>
+                    <span class="cookie-sep">•</span>
+                    <a href="#contact" class="cookie-link">Terms & Conditions</a>
+                </div>
+            </div>
+            <div class="cookie-banner-actions">
+                <button id="cookie-accept-all" class="cookie-btn cookie-btn-accept">Accept All</button>
+                <button id="cookie-reject-all" class="cookie-btn cookie-btn-reject">Reject All</button>
+                <button id="cookie-customize" class="cookie-btn cookie-btn-customize">Customize</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── GDPR Cookie Consent Modal ── -->
+    <div id="cookie-consent-modal" class="cookie-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="cookie-modal-title" hidden>
+        <div class="cookie-modal-card">
+            <div class="cookie-modal-header">
+                <h2 id="cookie-modal-title" class="cookie-modal-heading">
+                    <i class="fas fa-sliders cookie-modal-icon" aria-hidden="true"></i> Cookie Preferences
+                </h2>
+                <button id="cookie-modal-close" class="cookie-modal-close-btn" aria-label="Close modal">✕</button>
+            </div>
+            <div class="cookie-modal-body">
+                <p class="cookie-modal-intro">
+                    Customize your cookie settings below. Essential cookies are required for core site functionality and cannot be disabled.
+                </p>
+                <div class="cookie-category-list">
+                    <!-- Necessary -->
+                    <div class="cookie-category-item">
+                        <div class="cookie-cat-header">
+                            <div class="cookie-cat-info">
+                                <h3>Necessary Cookies</h3>
+                                <span class="cookie-badge cookie-badge-required">Always Active</span>
+                            </div>
+                            <label class="cookie-switch">
+                                <input type="checkbox" id="cookie-toggle-necessary" checked disabled aria-label="Necessary Cookies (Always Active)">
+                                <span class="cookie-slider"></span>
+                            </label>
+                        </div>
+                        <p>Required for fundamental website security, page navigation, and user authentication features.</p>
+                    </div>
+                    <!-- Analytics -->
+                    <div class="cookie-category-item">
+                        <div class="cookie-cat-header">
+                            <div class="cookie-cat-info">
+                                <h3>Analytics Cookies</h3>
+                                <span class="cookie-badge">Optional</span>
+                            </div>
+                            <label class="cookie-switch">
+                                <input type="checkbox" id="cookie-toggle-analytics" aria-label="Analytics Cookies">
+                                <span class="cookie-slider"></span>
+                            </label>
+                        </div>
+                        <p>Allows us to aggregate user interaction data (Google Analytics) to measure page speed and improve site performance.</p>
+                    </div>
+                    <!-- Marketing -->
+                    <div class="cookie-category-item">
+                        <div class="cookie-cat-header">
+                            <div class="cookie-cat-info">
+                                <h3>Marketing Cookies</h3>
+                                <span class="cookie-badge">Optional</span>
+                            </div>
+                            <label class="cookie-switch">
+                                <input type="checkbox" id="cookie-toggle-marketing" aria-label="Marketing Cookies">
+                                <span class="cookie-slider"></span>
+                            </label>
+                        </div>
+                        <p>Enables Meta Pixel and targeted ad measurement so you receive relevant content and campaign insights.</p>
+                    </div>
+                    <!-- Preferences -->
+                    <div class="cookie-category-item">
+                        <div class="cookie-cat-header">
+                            <div class="cookie-cat-info">
+                                <h3>Preferences Cookies</h3>
+                                <span class="cookie-badge">Optional</span>
+                            </div>
+                            <label class="cookie-switch">
+                                <input type="checkbox" id="cookie-toggle-preferences" aria-label="Preferences Cookies">
+                                <span class="cookie-slider"></span>
+                            </label>
+                        </div>
+                        <p>Remembers custom user choices like theme colors, font scaling, and motion preferences across sessions.</p>
+                    </div>
+                    <!-- Functional -->
+                    <div class="cookie-category-item">
+                        <div class="cookie-cat-header">
+                            <div class="cookie-cat-info">
+                                <h3>Functional Cookies</h3>
+                                <span class="cookie-badge">Optional</span>
+                            </div>
+                            <label class="cookie-switch">
+                                <input type="checkbox" id="cookie-toggle-functional" aria-label="Functional Cookies">
+                                <span class="cookie-slider"></span>
+                            </label>
+                        </div>
+                        <p>Powers rich interactive widgets, AI concierge assistant state, and media embed performance.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="cookie-modal-footer">
+                <button id="cookie-save-preferences" class="cookie-btn cookie-btn-accept">Save Preferences</button>
+                <button id="cookie-modal-accept-all" class="cookie-btn cookie-btn-customize">Accept All</button>
+            </div>
+        </div>
+    </div>
+
     <!-- ══════════════════════════════════════════════════════ -->
 
     <!-- Lenis Smooth Scroll Engine (Apple / Tesla / Vercel Momentum Scrolling) -->
@@ -1882,6 +2010,8 @@
     <!-- Core Scripts -->
     <script src="./js/TransitionManager.js"></script>
     <script src="./js/harmony-motion.js"></script>
+    <script src="./js/transitions.js"></script>
+    <script src="./js/motion.js"></script>
     <script src="./js/animations.js"></script>
     <script src="./js/main.js"></script>
     <!-- Master Motion Orchestrator — 12-layer motion design architecture -->

@@ -1,11 +1,3 @@
-/* ===========================================================================
-   PRATHEESH AI — CORE UI INTERACTIONS
-
-   Scroll, active navigation, route transitions, and progress live exclusively
-   in harmony-motion.js. This module retains only menu, form, filters, linked
-   ecosystem content, and control-panel behavior.
-   =========================================================================== */
-
 (function () {
     'use strict';
 
@@ -16,6 +8,7 @@
         initEcosystemHighlights();
         initSkillsFilter();
         initSettingsDrawer();
+        initCookieConsent();
     }, { once: true });
 
     function initMobileMenu() {
@@ -216,17 +209,38 @@
         const close = () => {
             drawer.classList.remove('open');
             drawer.setAttribute('aria-hidden', 'true');
-            fab.focus({ preventScroll: true });
         };
-        const toggle = () => {
+
+        const toggle = (e) => {
+            if (e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
             const open = drawer.classList.toggle('open');
             drawer.setAttribute('aria-hidden', String(!open));
             if (open) closeButton?.focus({ preventScroll: true });
         };
 
-        fab.addEventListener('click', toggle);
+        let lastTriggerTime = 0;
+        const handleFabTrigger = (e) => {
+            const now = Date.now();
+            if (now - lastTriggerTime < 250) return;
+            lastTriggerTime = now;
+            toggle(e);
+        };
+
+        fab.addEventListener('pointerdown', handleFabTrigger);
+        fab.addEventListener('click', handleFabTrigger);
+
         closeButton?.addEventListener('click', close);
         backdrop?.addEventListener('click', close);
+
+        document.addEventListener('pointerdown', (event) => {
+            if (drawer.classList.contains('open') && !drawer.contains(event.target) && !fab.contains(event.target)) {
+                close();
+            }
+        });
+
         document.addEventListener('keydown', (event) => {
             if (event.key === 'Escape' && drawer.classList.contains('open')) close();
         });
@@ -268,5 +282,162 @@
         highMotion?.addEventListener('click', () => setMotionMode(false));
         lowMotion?.addEventListener('click', () => setMotionMode(true));
         if (localStorage.getItem('settings-low-motion') === 'true') setMotionMode(true);
+    }
+
+    function initCookieConsent() {
+        const STORAGE_KEY = 'pratheesh_cookie_consent';
+        const banner = document.getElementById('cookie-consent-banner');
+        const modal = document.getElementById('cookie-consent-modal');
+        if (!banner || !modal) return;
+
+        const btnAcceptAll = document.getElementById('cookie-accept-all');
+        const btnRejectAll = document.getElementById('cookie-reject-all');
+        const btnCustomize = document.getElementById('cookie-customize');
+        const modalClose = document.getElementById('cookie-modal-close');
+        const modalSave = document.getElementById('cookie-save-preferences');
+        const modalAcceptAll = document.getElementById('cookie-modal-accept-all');
+
+        const toggleAnalytics = document.getElementById('cookie-toggle-analytics');
+        const toggleMarketing = document.getElementById('cookie-toggle-marketing');
+        const togglePreferences = document.getElementById('cookie-toggle-preferences');
+        const toggleFunctional = document.getElementById('cookie-toggle-functional');
+
+        const savedConsent = localStorage.getItem(STORAGE_KEY);
+        let consentState = savedConsent ? JSON.parse(savedConsent) : null;
+
+        function updateBannerOffset() {
+            if (banner && !banner.hidden) {
+                const bannerHeight = Math.max(140, Math.round(banner.getBoundingClientRect().height));
+                document.documentElement.style.setProperty('--cookie-banner-height', `${bannerHeight}px`);
+                document.body.classList.add('cookie-banner-active');
+            } else {
+                document.body.classList.remove('cookie-banner-active');
+            }
+        }
+
+        function applyScripts(consent) {
+            if (!consent) return;
+
+            // 1. Analytics Consent -> Google Analytics GA4
+            if (consent.analytics && !window.gaLoaded) {
+                window.gaLoaded = true;
+                const gaScript = document.createElement('script');
+                gaScript.async = true;
+                gaScript.src = 'https://www.googletagmanager.com/gtag/js?id=G-MEASUREMENT_ID';
+                document.head.appendChild(gaScript);
+
+                window.dataLayer = window.dataLayer || [];
+                function gtag() { window.dataLayer.push(arguments); }
+                window.gtag = gtag;
+                gtag('js', new Date());
+                gtag('config', 'G-MEASUREMENT_ID', { anonymize_ip: true });
+            }
+
+            // 2. Marketing Consent -> Meta Pixel
+            if (consent.marketing && typeof window.fbq === 'function') {
+                try {
+                    window.fbq('init', '983425767341384');
+                    window.fbq('track', 'PageView');
+                } catch (e) {
+                    console.warn('Meta Pixel Consent Init Error:', e);
+                }
+            }
+        }
+
+        function saveConsent(state) {
+            consentState = Object.assign({ necessary: true, analytics: false, marketing: false, preferences: false, functional: false }, state);
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(consentState));
+            applyScripts(consentState);
+
+            banner.classList.remove('show');
+            window.setTimeout(() => {
+                banner.hidden = true;
+                document.body.classList.remove('cookie-banner-active');
+            }, 400);
+            closeModal();
+        }
+
+        function openModal() {
+            if (consentState) {
+                if (toggleAnalytics) toggleAnalytics.checked = !!consentState.analytics;
+                if (toggleMarketing) toggleMarketing.checked = !!consentState.marketing;
+                if (togglePreferences) togglePreferences.checked = !!consentState.preferences;
+                if (toggleFunctional) toggleFunctional.checked = !!consentState.functional;
+            }
+            modal.hidden = false;
+            requestAnimationFrame(() => modal.classList.add('open'));
+            modalClose?.focus();
+            trapFocus(modal);
+        }
+
+        function closeModal() {
+            modal.classList.remove('open');
+            window.setTimeout(() => { modal.hidden = true; }, 400);
+            removeFocusTrap();
+        }
+
+        let focusTrapHandler = null;
+
+        function trapFocus(element) {
+            const focusables = Array.from(element.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'));
+            if (!focusables.length) return;
+            const first = focusables[0];
+            const last = focusables[focusables.length - 1];
+
+            focusTrapHandler = (e) => {
+                if (e.key === 'Tab') {
+                    if (e.shiftKey && document.activeElement === first) {
+                        e.preventDefault();
+                        last.focus();
+                    } else if (!e.shiftKey && document.activeElement === last) {
+                        e.preventDefault();
+                        first.focus();
+                    }
+                } else if (e.key === 'Escape') {
+                    closeModal();
+                }
+            };
+            element.addEventListener('keydown', focusTrapHandler);
+        }
+
+        function removeFocusTrap() {
+            if (focusTrapHandler && modal) {
+                modal.removeEventListener('keydown', focusTrapHandler);
+            }
+        }
+
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+
+        if (!consentState) {
+            banner.hidden = false;
+            window.setTimeout(() => {
+                banner.classList.add('show');
+                updateBannerOffset();
+            }, 600);
+        } else {
+            applyScripts(consentState);
+        }
+
+        btnAcceptAll?.addEventListener('click', () => saveConsent({ necessary: true, analytics: true, marketing: true, preferences: true, functional: true }));
+        btnRejectAll?.addEventListener('click', () => saveConsent({ necessary: true, analytics: false, marketing: false, preferences: false, functional: false }));
+        btnCustomize?.addEventListener('click', openModal);
+
+        modalClose?.addEventListener('click', closeModal);
+        modalAcceptAll?.addEventListener('click', () => saveConsent({ necessary: true, analytics: true, marketing: true, preferences: true, functional: true }));
+        modalSave?.addEventListener('click', () => {
+            saveConsent({
+                necessary: true,
+                analytics: toggleAnalytics ? toggleAnalytics.checked : false,
+                marketing: toggleMarketing ? toggleMarketing.checked : false,
+                preferences: togglePreferences ? togglePreferences.checked : false,
+                functional: toggleFunctional ? toggleFunctional.checked : false,
+            });
+        });
+
+        window.addEventListener('resize', updateBannerOffset, { passive: true });
     }
 })();
