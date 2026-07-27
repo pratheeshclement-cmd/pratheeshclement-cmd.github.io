@@ -10,6 +10,11 @@ const ContactScene: React.FC<{ id: string }> = ({ id }) => {
   const sectionRef = useRef<HTMLElement>(null);
   useCinematicSceneTransition(sectionRef, 'blur-clear');
 
+  const scrollTo = (href: string) => {
+    const el = document.querySelector(href);
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
+  };
+
   return (
     <section id={id} ref={sectionRef} className="scene" aria-label="Contact section">
       <div className="scene-inner">
@@ -25,7 +30,7 @@ const ContactScene: React.FC<{ id: string }> = ({ id }) => {
           </p>
         </div>
 
-        <div className="grid-2" style={{ alignItems: 'flex-start' }}>
+        <div className="grid-2" style={{ alignItems: 'flex-start', marginBottom: 80 }}>
 
           {/* Contact details */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
@@ -123,15 +128,149 @@ const ContactScene: React.FC<{ id: string }> = ({ id }) => {
           </GlassCard>
         </div>
 
-        {/* Footer */}
-        <div style={{ marginTop: 80, paddingTop: 32, borderTop: '1px solid var(--bg-tertiary)', textAlign: 'center' }}>
-          <p style={{ fontSize: '0.85rem', color: 'var(--text-tertiary)' }}>
-            © {new Date().getFullYear()} {IDENTITY.name} · Built with React, GSAP & Three.js · Deployed on GitHub Pages
-          </p>
-          <p style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', marginTop: 4 }}>
-            <em>"{IDENTITY.tagline}"</em>
-          </p>
-        </div>
+        {/* ── Premium High-End Glassmorphic Footer ──────────────────── */}
+        <footer style={{ paddingTop: 48, borderTop: '1px solid var(--bg-tertiary)' }}>
+          <GlassCard style={{ padding: '40px 32px', marginBottom: 32 }}>
+            <div className="grid-4" style={{ gap: 32, alignItems: 'flex-start' }}>
+
+              {/* Col 1: Brand & Identity */}
+              <div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
+                  <img
+                    src="/assets/pratheesh4k1.jpeg"
+                    alt="Pratheesh Clement"
+                    style={{ width: 40, height: 40, borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--accent-primary)' }}
+                  />
+                  <div>
+                    <div style={{ fontSize: '1.05rem', fontWeight: 700, color: 'var(--text-primary)', fontFamily: 'var(--font-display)' }}>
+                      Pratheesh Clement
+                    </div>
+                    <div style={{ fontSize: '0.75rem', color: 'var(--accent-primary)', fontWeight: 600 }}>
+                      Architect of Digital Ecosystems
+                    </div>
+                  </div>
+                </div>
+
+                <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: 20 }}>
+                  "{IDENTITY.tagline}"
+                </p>
+
+                <div style={{ display: 'flex', gap: 10 }}>
+                  {[
+                    { href: IDENTITY.social.github, icon: Github, label: 'GitHub' },
+                    { href: IDENTITY.social.linkedin, icon: Linkedin, label: 'LinkedIn' },
+                    { href: IDENTITY.social.instagram, icon: Instagram, label: 'Instagram' },
+                  ].map(({ href, icon: Icon, label }) => (
+                    <a
+                      key={label}
+                      href={href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={label}
+                      style={{
+                        width: 34, height: 34, borderRadius: '50%',
+                        background: 'var(--bg-secondary)', border: '1px solid var(--bg-tertiary)',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        color: 'var(--text-secondary)', textDecoration: 'none',
+                        transition: 'all 0.2s ease',
+                      }}
+                      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent-primary)'; (e.currentTarget as HTMLElement).style.transform = 'translateY(-2px)'; }}
+                      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)'; (e.currentTarget as HTMLElement).style.transform = ''; }}
+                    >
+                      <Icon size={16} />
+                    </a>
+                  ))}
+                </div>
+              </div>
+
+              {/* Col 2: Quick Links */}
+              <div>
+                <div style={{ fontSize: '0.78rem', color: 'var(--text-tertiary)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 16 }}>
+                  Quick Navigation
+                </div>
+                <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
+                  {[
+                    { label: 'About Pratheesh', href: '#scene-about' },
+                    { label: 'Technical Matrix', href: '#scene-skills' },
+                    { label: 'Featured Case Studies', href: '#scene-projects' },
+                    { label: 'Career & Experience', href: '#scene-experience' },
+                    { label: 'Services Offered', href: '#scene-services' },
+                    { label: 'Get in Touch', href: '#scene-contact' },
+                  ].map(link => (
+                    <li key={link.href}>
+                      <a
+                        href={link.href}
+                        onClick={e => { e.preventDefault(); scrollTo(link.href); }}
+                        style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', textDecoration: 'none', transition: 'color 0.2s ease' }}
+                        onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent-primary)')}
+                        onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-secondary)')}
+                      >
+                        {link.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Col 3: Case Studies */}
+              <div>
+                <div style={{ fontSize: '0.78rem', color: 'var(--text-tertiary)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 16 }}>
+                  Case Studies
+                </div>
+                <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
+                  {[
+                    'SEO Growth Campaign',
+                    'Restaurant Web Layout',
+                    'B2B Social Lead Funnel',
+                    'Portfolio X Universe',
+                  ].map(title => (
+                    <li key={title}>
+                      <a
+                        href="#scene-projects"
+                        onClick={e => { e.preventDefault(); scrollTo('#scene-projects'); }}
+                        style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', textDecoration: 'none', transition: 'color 0.2s ease' }}
+                        onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent-primary)')}
+                        onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-secondary)')}
+                      >
+                        {title}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Col 4: Inquiries & Contact */}
+              <div>
+                <div style={{ fontSize: '0.78rem', color: 'var(--text-tertiary)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 16 }}>
+                  Direct Inquiries
+                </div>
+                <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.7, marginBottom: 12 }}>
+                  <strong>Email:</strong> {IDENTITY.contact.email}<br />
+                  <strong>Phone:</strong> {IDENTITY.contact.phone}<br />
+                  <strong>Location:</strong> Vadalur, Tamil Nadu (IST)
+                </div>
+                <span className="pill" style={{ fontSize: '0.72rem', background: 'rgba(16, 185, 129, 0.1)', color: 'var(--accent-mint)', borderColor: 'rgba(16, 185, 129, 0.3)' }}>
+                  Response within 24 hours
+                </span>
+              </div>
+
+            </div>
+          </GlassCard>
+
+          {/* Bottom Bar */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16, padding: '16px 0', fontSize: '0.8rem', color: 'var(--text-tertiary)' }}>
+            <div>
+              © {new Date().getFullYear()} {IDENTITY.name} (Mariya Pratheesh) · All rights reserved.
+            </div>
+
+            <div style={{ display: 'flex', gap: 20 }}>
+              <a href="#scene-hero" onClick={e => { e.preventDefault(); scrollTo('#scene-hero'); }} style={{ color: 'var(--text-tertiary)', textDecoration: 'none' }}>Privacy Policy</a>
+              <a href="#scene-hero" onClick={e => { e.preventDefault(); scrollTo('#scene-hero'); }} style={{ color: 'var(--text-tertiary)', textDecoration: 'none' }}>Terms of Service</a>
+              <a href="#scene-hero" onClick={e => { e.preventDefault(); scrollTo('#scene-hero'); }} style={{ color: 'var(--text-tertiary)', textDecoration: 'none' }}>Cookie Preferences</a>
+            </div>
+          </div>
+        </footer>
+
       </div>
     </section>
   );

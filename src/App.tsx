@@ -111,8 +111,8 @@ export const App: React.FC = () => {
         <AIConcierge />
       </Suspense>
 
-      {/* Cookie Consent Banner */}
-      <ConsentBanner />
+      {/* Cookie Consent Banner — displays center screen after loading finishes */}
+      <ConsentBanner bootDone={bootDone} />
     </>
   );
 };
