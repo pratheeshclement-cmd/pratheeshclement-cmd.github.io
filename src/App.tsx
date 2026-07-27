@@ -1,139 +1,111 @@
-import React, { useState, useEffect } from 'react';
+import React, { Suspense, useState, useEffect } from 'react';
 import Lenis from 'lenis';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-import { Navbar } from './components/Navbar';
-import { BootSequence } from './components/BootSequence';
-import { HeroSection } from './components/HeroSection';
-import { AboutSection } from './components/AboutSection';
-import { SkillsSection } from './components/SkillsSection';
-import { ExperienceCertificationsSection } from './components/ExperienceCertificationsSection';
-import { ProjectsSection } from './components/ProjectsSection';
-import { ServicesPricingSection } from './components/ServicesPricingSection';
-import { TestimonialsFAQSection } from './components/TestimonialsFAQSection';
-import { ContactFooterSection } from './components/ContactFooterSection';
-import { AIConciergeWidget } from './components/AIConciergeWidget';
+// Layout
+import { Navbar }            from './components/layout/Navbar';
+import { AmbientBackground } from './components/layout/AmbientBackground';
+import { CursorLighting }    from './components/layout/CursorLighting';
+import { ConsentBanner }     from './utils/ConsentBanner';
+
+// Scenes — lazy for code splitting
+const BootScene         = React.lazy(() => import('./components/scenes/BootScene'));
+const HeroScene         = React.lazy(() => import('./components/scenes/HeroScene'));
+const AboutScene        = React.lazy(() => import('./components/scenes/AboutScene'));
+const SkillsScene       = React.lazy(() => import('./components/scenes/SkillsScene'));
+const ProjectsScene     = React.lazy(() => import('./components/scenes/ProjectsScene'));
+const ExperienceScene   = React.lazy(() => import('./components/scenes/ExperienceScene'));
+const ServicesScene     = React.lazy(() => import('./components/scenes/ServicesScene'));
+const TestimonialsScene = React.lazy(() => import('./components/scenes/TestimonialsScene'));
+const ContactScene      = React.lazy(() => import('./components/scenes/ContactScene'));
+const AIConcierge       = React.lazy(() => import('./components/ai/AIConcierge'));
 
 gsap.registerPlugin(ScrollTrigger);
 
 export const App: React.FC = () => {
-  const [booting, setBooting] = useState(true);
+  const [bootDone, setBootDone]   = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
-  const [isDarkTheme, setIsDarkTheme] = useState(false);
-  const [aiOpen, setAiOpen] = useState(false);
+  const [theme, setTheme]         = useState<'light' | 'dark'>('light');
 
+  // ── Lenis smooth scroll & GSAP ticker ──────────────────────────────
   useEffect(() => {
-    // Custom Cursor tracking
-    const cursor = document.getElementById('cursor-dot');
-    const handleMouseMove = (e: MouseEvent) => {
-      if (cursor) {
-        gsap.to(cursor, { x: e.clientX - 10, y: e.clientY - 10, duration: 0.2, ease: 'power2.out' });
-      }
-    };
-    window.addEventListener('mousemove', handleMouseMove);
-
-    // Initialize Lenis smooth scroll
     const lenis = new Lenis({
       duration: 1.2,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
-      lerp: 0.08
     });
 
-    function raf(time: number) {
-      lenis.raf(time);
-      requestAnimationFrame(raf);
-    }
-    requestAnimationFrame(raf);
-
-    lenis.on('scroll', (e: { progress: number }) => {
+    const onScroll = (e: { progress: number }) => {
       setScrollProgress(e.progress);
       ScrollTrigger.update();
-    });
+    };
+    lenis.on('scroll', onScroll);
 
-    gsap.ticker.add((time) => lenis.raf(time * 1000));
+    const tick = (time: number) => lenis.raf(time * 1000);
+    gsap.ticker.add(tick);
     gsap.ticker.lagSmoothing(0, 0);
 
-    // GSAP ScrollTrigger Master Parallax Camera Engine
-    const sections = document.querySelectorAll('section');
-    sections.forEach((sec) => {
-      gsap.fromTo(
-        sec,
-        { opacity: 0.8, y: 30 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 1,
-          ease: 'power2.out',
-          scrollTrigger: {
-            trigger: sec,
-            start: 'top 85%',
-            end: 'top 30%',
-            scrub: 1
-          }
-        }
-      );
-    });
-
     return () => {
+      lenis.off('scroll', onScroll);
+      gsap.ticker.remove(tick);
       lenis.destroy();
-      window.removeEventListener('mousemove', handleMouseMove);
     };
   }, []);
 
-  const handleToggleTheme = () => {
-    setIsDarkTheme(prev => {
-      const next = !prev;
-      if (next) {
-        document.body.classList.add('dark-theme');
-      } else {
-        document.body.classList.remove('dark-theme');
-      }
+  // ── Theme toggle ────────────────────────────────────────────────────
+  const toggleTheme = () => {
+    setTheme(prev => {
+      const next = prev === 'light' ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', next);
       return next;
     });
   };
 
   return (
     <>
-      {/* Custom Invert Cursor Dot */}
-      <div id="cursor-dot" className="cursor-dot" />
+      {/* Accessibility skip link */}
+      <a className="skip-link" href="#main-content">Skip to content</a>
 
-      {/* Boot Intro Sequence */}
-      {booting && <BootSequence onComplete={() => setBooting(false)} />}
+      {/* Fixed ambient background layer */}
+      <AmbientBackground />
 
-      {/* Ambient Background Light Orbs */}
-      <div className="ambient-orb orb-1" />
-      <div className="ambient-orb orb-2" />
-      <div className="ambient-orb orb-3" />
+      {/* Custom cursor (desktop only) */}
+      <CursorLighting />
 
-      {/* Floating Glass Navbar */}
+      {/* Boot sequence — fixed overlay */}
+      <Suspense fallback={null}>
+        {!bootDone && <BootScene id="scene-boot" onLeave={() => setBootDone(true)} />}
+      </Suspense>
+
+      {/* Floating glass navbar */}
       <Navbar
         scrollProgress={scrollProgress}
-        isDarkTheme={isDarkTheme}
-        onToggleTheme={handleToggleTheme}
+        theme={theme}
+        onToggleTheme={toggleTheme}
       />
 
-      {/* Main Continuous Scene Scroll Container */}
-      <main id="main-content" style={{ position: 'relative', zIndex: 2 }}>
-        <HeroSection
-          onOpenAI={() => setAiOpen(true)}
-          onExploreClick={() => {
-            const el = document.getElementById('about');
-            if (el) el.scrollIntoView({ behavior: 'smooth' });
-          }}
-        />
-        <AboutSection />
-        <SkillsSection />
-        <ExperienceCertificationsSection />
-        <ProjectsSection />
-        <ServicesPricingSection />
-        <TestimonialsFAQSection />
-        <ContactFooterSection />
+      {/* ── Main cinematic scroll world ──────────────────────────────── */}
+      <main id="main-content" role="main">
+        <Suspense fallback={null}>
+          <HeroScene         id="scene-hero" />
+          <AboutScene        id="scene-about" />
+          <SkillsScene       id="scene-skills" />
+          <ProjectsScene     id="scene-projects" />
+          <ExperienceScene   id="scene-experience" />
+          <ServicesScene     id="scene-services" />
+          <TestimonialsScene id="scene-testimonials" />
+          <ContactScene      id="scene-contact" />
+        </Suspense>
       </main>
 
-      {/* Persistent AI Concierge Assistant Widget */}
-      <AIConciergeWidget />
+      {/* Persistent AI Concierge */}
+      <Suspense fallback={null}>
+        <AIConcierge />
+      </Suspense>
+
+      {/* Cookie Consent Banner */}
+      <ConsentBanner />
     </>
   );
 };
