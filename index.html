@@ -1,75 +1,900 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/png" href="/asset/pratheesh favicon.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    
-    <!-- Primary Meta Tags -->
-    <title>PORTFOLIO OS X | Pratheesh Clement - Software Engineer & Digital Technologist</title>
-    <meta name="title" content="PORTFOLIO OS X | Pratheesh Clement - Software Engineer & Digital Technologist" />
-    <meta name="description" content="Experience PORTFOLIO OS X — The luxury, spatial digital platform of Pratheesh Clement. Showcasing Frontend Engineering, AI Innovation, UI Craftsmanship, Technical SEO, and Digital Marketing." />
-    <meta name="keywords" content="Pratheesh Clement, Portfolio OS X, Web Developer, Frontend Engineer, React Developer, TypeScript, SEO Specialist, Digital Marketing, Google Analytics, BCA, Puducherry, Vadalur" />
-    <meta name="author" content="Pratheesh Clement" />
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pratheesh Clement | Digital Marketing Specialist & AI Enthusiast</title>
 
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website" />
-    <meta property="og:title" content="PORTFOLIO OS X | Pratheesh Clement" />
-    <meta property="og:description" content="A next-generation spatial web OS portfolio showcasing engineering craftsmanship, AI integration, and digital marketing strategies." />
-    <meta property="og:image" content="/asset/pratheesh4k1.jpeg" />
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="Pratheesh Clement is a Digital Marketing Specialist, UI/UX Designer, SEO Consultant, and AI Enthusiast building modern digital experiences.">
+  <meta name="keywords" content="Pratheesh Clement, Digital Marketing, SEO Specialist, UI UX Designer, Frontend Developer, AI Enthusiast, Vadalur">
+  <link rel="canonical" href="https://pratheeshclement-cmd.github.io/">
 
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    
-    <!-- JSON-LD Structured Data -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Person",
-      "name": "Mariya Pratheesh C",
-      "alternateName": "Pratheesh Clement",
-      "jobTitle": "Web Developer & Digital Marketing Specialist",
-      "email": "pratheesh.clement@gmail.com",
-      "telephone": "+91-86678-76102",
-      "address": {
-        "@type": "PostalAddress",
-        "addressLocality": "Vadalur",
-        "addressRegion": "Tamil Nadu",
-        "addressCountry": "India"
-      },
-      "almaMater": [
-        {
-          "@type": "EducationalOrganization",
-          "name": "Pope John Paul II College of Education",
-          "description": "Bachelor of Computer Application (BCA) - 2024"
-        }
-      ],
-      "hasCredential": [
-        {
-          "@type": "EducationalOccupationalCredential",
-          "name": "Fundamentals of Digital Marketing",
-          "recognizedBy": "Google Digital Garage",
-          "credentialCategory": "Certification",
-          "identifier": "453421024"
-        },
-        {
-          "@type": "EducationalOccupationalCredential",
-          "name": "Honours Diploma in Computer Application (HDCA)",
-          "recognizedBy": "CSC Computer Software College",
-          "credentialCategory": "Diploma"
-        }
-      ],
-      "knowsAbout": [
-        "React", "TypeScript", "HTML5", "CSS3", "JavaScript ES6+",
-        "SEO", "SEM", "Google Analytics", "Social Media Marketing", "Content Strategy", "QAD ERP"
-      ]
+  <!-- Open Graph -->
+  <meta property="og:title" content="Pratheesh Clement | Digital Marketing Specialist & AI Enthusiast">
+  <meta property="og:description" content="Sacrifice is the brilliant move. Digital Marketing, SEO, UI/UX Design, and AI Solutions.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://pratheeshclement-cmd.github.io/">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Pratheesh Clement | Digital Marketing Specialist & AI Enthusiast">
+  <meta name="twitter:description" content="Sacrifice is the brilliant move. Digital Marketing, SEO, UI/UX Design, and AI Solutions.">
+
+  <!-- JSON-LD Person Schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Pratheesh Clement",
+    "alternateName": "Mariya Pratheesh",
+    "jobTitle": "Digital Marketing Specialist & AI Enthusiast",
+    "url": "https://pratheeshclement-cmd.github.io/",
+    "email": "pratheesh.clement@gmail.com",
+    "telephone": "+918667876102",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Vadalur",
+      "addressRegion": "Tamil Nadu",
+      "addressCountry": "India"
+    },
+    "sameAs": [
+      "https://github.com/pratheeshclement-cmd",
+      "https://www.linkedin.com/in/mariya-pratheesh-5b8a9b316/",
+      "https://www.instagram.com/pratheeeesh/",
+      "https://www.facebook.com/profile.php?id=61576255974969"
+    ]
+  }
+  </script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- CDNs -->
+  <!-- GSAP & ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <!-- Three.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <!-- Lenis Smooth Scroll -->
+  <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.29/bundled/lenis.min.js"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    /* ===================================================================
+       PORTFOLIO X - BRIGHT & PREMIUM DESIGN SYSTEM
+       =================================================================== */
+    :root {
+      --bg-primary: #F8FAFC;
+      --bg-secondary: #F1F5F9;
+      --bg-tertiary: #E2E8F0;
+      --accent-primary: #3B82F6;
+      --accent-secondary: #0EA5E9;
+      --accent-tertiary: #8B5CF6;
+      --accent-mint: #10B981;
+      --text-primary: #0F172A;
+      --text-secondary: #475569;
+      --text-tertiary: #94A3B8;
+      
+      --glass-bg: rgba(255, 255, 255, 0.35);
+      --glass-border: rgba(255, 255, 255, 0.6);
+      --glass-highlight: rgba(255, 255, 255, 0.8);
+      --glass-shadow: 0 8px 32px rgba(59, 130, 246, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
+      --hover-shadow: 0 20px 60px rgba(59, 130, 246, 0.15), 0 8px 24px rgba(0, 0, 0, 0.06);
+
+      --font-display: 'Space Grotesk', sans-serif;
+      --font-body: 'Inter', sans-serif;
     }
-    </script>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: var(--font-body);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    html, body {
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      overflow-x: hidden;
+      width: 100vw;
+    }
+
+    /* Custom Cursor */
+    .cursor-dot {
+      width: 20px;
+      height: 20px;
+      background: white;
+      border-radius: 50%;
+      position: fixed;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: 9999;
+      mix-blend-mode: difference;
+      transition: transform 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+    .cursor-dot.hovered {
+      transform: scale(3);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+    }
+
+    /* Background Orbs */
+    .ambient-orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(120px);
+      opacity: 0.18;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .orb-1 { width: 500px; height: 500px; background: var(--accent-primary); top: -100px; left: -100px; }
+    .orb-2 { width: 600px; height: 600px; background: var(--accent-secondary); bottom: -100px; right: -100px; }
+    .orb-3 { width: 450px; height: 450px; background: var(--accent-tertiary); top: 40%; left: 40%; }
+
+    /* Three.js Background Canvas */
+    #bg-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* 3D Viewport & World */
+    #viewport {
+      position: relative;
+      width: 100vw;
+      z-index: 2;
+      perspective: 1200px;
+      transform-style: preserve-3d;
+    }
+
+    #world {
+      width: 100%;
+      transform-style: preserve-3d;
+    }
+
+    section {
+      min-height: 100vh;
+      width: 100%;
+      padding: 120px 24px;
+      max-width: 1280px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+      contain: layout style paint;
+    }
+
+    /* Glass Formula */
+    .glass {
+      background: var(--glass-bg);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      border: 1px solid var(--glass-border);
+      box-shadow: inset 0 1px 1px var(--glass-highlight), var(--glass-shadow);
+      border-radius: 24px;
+      transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+    .glass:hover {
+      border-color: rgba(255, 255, 255, 0.9);
+      background: rgba(255, 255, 255, 0.5);
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.9), var(--hover-shadow);
+    }
+
+    /* Typography Classes */
+    h1, h2, h3, h4 {
+      font-family: var(--font-display);
+      color: var(--text-primary);
+    }
+
+    .char {
+      display: inline-block;
+      will-change: transform, opacity;
+    }
+
+    .text-gradient {
+      background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-tertiary) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* Skill Pills */
+    .pill {
+      background: rgba(59, 130, 246, 0.08);
+      border: 1px solid rgba(59, 130, 246, 0.2);
+      color: var(--accent-primary);
+      padding: 6px 14px;
+      border-radius: 9999px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+    .pill:hover {
+      background: rgba(59, 130, 246, 0.2);
+      transform: scale(1.05);
+    }
+
+    /* Magnetic Buttons */
+    .btn-magnetic {
+      background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+      color: white;
+      border: none;
+      padding: 14px 28px;
+      border-radius: 9999px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
+      transition: box-shadow 0.3s ease;
+      will-change: transform;
+    }
+    .btn-magnetic:hover {
+      box-shadow: 0 15px 35px rgba(59, 130, 246, 0.45);
+    }
+
+    /* AI Concierge Widget */
+    #ai-widget {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 9000;
+    }
+    .ai-orb {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-tertiary) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 10px 30px rgba(59, 130, 246, 0.4);
+      transition: transform 0.3s ease;
+    }
+    .ai-orb:hover { transform: scale(1.1); }
+
+    .ai-panel {
+      position: absolute;
+      bottom: 80px;
+      right: 0;
+      width: 380px;
+      height: 520px;
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .ai-panel.open { display: flex; }
+
+    /* Boot Overlay */
+    #scene-00 {
+      position: fixed;
+      inset: 0;
+      background: #000000;
+      z-index: 99999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: white;
+    }
+    .boot-dot {
+      width: 16px;
+      height: 16px;
+      background: var(--accent-primary);
+      border-radius: 50%;
+      box-shadow: 0 0 30px var(--accent-primary);
+      margin-bottom: 20px;
+    }
+
+    @media (max-width: 768px) {
+      section { padding: 80px 16px; }
+      h1 { font-size: 2.8rem !important; }
+      h2 { font-size: 2rem !important; }
+      .ai-panel { width: calc(100vw - 32px); right: -8px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Custom Cursor -->
+  <div className="cursor-dot" id="cursor"></div>
+
+  <!-- Ambient Glow Orbs -->
+  <div class="ambient-orb orb-1"></div>
+  <div class="ambient-orb orb-2"></div>
+  <div class="ambient-orb orb-3"></div>
+
+  <!-- Three.js Canvas -->
+  <canvas id="bg-canvas"></canvas>
+
+  <!-- SCENE 00: BOOT SEQUENCE -->
+  <div id="scene-00">
+    <div class="boot-dot" id="boot-dot"></div>
+    <div id="boot-text" style="font-family: monospace; font-size: 0.9rem; color: #94A3B8;">Initializing Portfolio X...</div>
+  </div>
+
+  <!-- MAIN 3D VIEWPORT -->
+  <div id="viewport">
+    <div id="world">
+
+      <!-- SCENE 01: HERO -->
+      <section id="scene-01">
+        <div style="text-align: center; margin: 0 auto; max-width: 900px;">
+          <div style="display: flex; justify-content: center; gap: 10px; margin-bottom: 24px;">
+            <span class="pill"><i data-lucide="sparkles" size="14"></i> Digital Marketing Specialist</span>
+            <span class="pill" style="color: var(--accent-tertiary); border-color: rgba(139, 92, 246, 0.3); background: rgba(139, 92, 246, 0.08);"><i data-lucide="cpu" size="14"></i> AI Enthusiast</span>
+          </div>
+
+          <h1 id="hero-name" style="font-size: 5rem; font-weight: 700; letter-spacing: -0.02em; line-height: 1.05; margin-bottom: 24px;">
+            PRATHEESH CLEMENT
+          </h1>
+
+          <div class="glass" style="display: inline-block; padding: 12px 28px; margin-bottom: 32px;">
+            <p style="font-size: 1.1rem; color: var(--text-secondary); font-style: italic;">
+              "Sacrifice is the brilliant move"
+            </p>
+          </div>
+
+          <p style="font-size: 1.15rem; color: var(--text-secondary); max-width: 680px; margin: 0 auto 40px; line-height: 1.7;">
+            Creating digital ecosystems that combine outstanding user experiences with measurable business growth across Web Engineering, Technical SEO, and AI Automation.
+          </p>
+
+          <div>
+            <button class="btn-magnetic" id="btn-begin">
+              Begin Journey <i data-lucide="arrow-down" size="18"></i>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCENE 02: ABOUT -->
+      <section id="scene-02">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 48px; align-items: center;">
+          <div>
+            <span class="pill" style="margin-bottom: 16px;"><i data-lucide="user" size="14"></i> About Pratheesh</span>
+            <h2 class="split-heading" style="font-size: 3rem; margin-bottom: 24px;">The Story</h2>
+            <p style="font-size: 1.05rem; color: var(--text-secondary); line-height: 1.8; margin-bottom: 20px;">
+              Pratheesh Clement is a multidisciplinary digital professional specializing in Digital Marketing, UI/UX Design, SEO, Web Development, Branding, and AI-powered solutions. His work focuses on creating digital ecosystems that combine outstanding user experiences with measurable business growth.
+            </p>
+            <p style="font-size: 1rem; color: var(--text-secondary); line-height: 1.8;">
+              With expertise spanning website design, search engine optimization, Meta advertising, conversion optimization, and performance engineering, he approaches every project from both a strategic and technical perspective.
+            </p>
+          </div>
+
+          <div class="glass" id="about-card" style="padding: 40px;">
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
+              <i data-lucide="compass" size="24" color="var(--accent-primary)"></i>
+              <h3 style="font-size: 1.3rem;">Career Origins</h3>
+            </div>
+            <p style="font-size: 0.95rem; color: var(--text-secondary); line-height: 1.8; font-style: italic;">
+              "My journey into the digital world began with curiosity rather than a predefined career path. I was fascinated by how websites, branding, marketing, and technology could influence the way people interact with businesses. That curiosity evolved into a passion for learning UI/UX design, web development, search engine optimization, and artificial intelligence."
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCENE 03: SKILLS -->
+      <section id="scene-03">
+        <div style="text-align: center; margin-bottom: 50px;">
+          <span class="pill" style="margin-bottom: 16px;"><i data-lucide="cpu" size="14"></i> Technical Matrix</span>
+          <h2 class="split-heading" style="font-size: 3rem;">Technical Arsenal</h2>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px;">
+          <div class="glass" style="padding: 32px;">
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
+              <i data-lucide="code" size="24" color="var(--accent-primary)"></i>
+              <h3 style="font-size: 1.2rem;">Frontend & Development</h3>
+            </div>
+            <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+              <span class="pill">HTML5</span><span class="pill">CSS3</span><span class="pill">JavaScript</span>
+              <span class="pill">TypeScript</span><span class="pill">React</span><span class="pill">Next.js</span>
+              <span class="pill">Node.js</span><span class="pill">Express</span><span class="pill">Vite</span>
+              <span class="pill">Git / GitHub</span>
+            </div>
+          </div>
+
+          <div class="glass" style="padding: 32px;">
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
+              <i data-lucide="layout" size="24" color="var(--accent-tertiary)"></i>
+              <h3 style="font-size: 1.2rem;">Design & Creative</h3>
+            </div>
+            <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+              <span class="pill">UI Design</span><span class="pill">UX Design</span><span class="pill">Figma</span>
+              <span class="pill">Photoshop</span><span class="pill">Illustrator</span><span class="pill">After Effects</span>
+              <span class="pill">Premiere Pro</span>
+            </div>
+          </div>
+
+          <div class="glass" style="padding: 32px;">
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
+              <i data-lucide="trending-up" size="24" color="var(--accent-secondary)"></i>
+              <h3 style="font-size: 1.2rem;">Marketing & SEO</h3>
+            </div>
+            <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+              <span class="pill">Digital Marketing</span><span class="pill">Technical SEO</span>
+              <span class="pill">Content Strategy</span><span class="pill">Google Ads</span>
+              <span class="pill">Meta Ads</span><span class="pill">Google Analytics</span>
+              <span class="pill">Meta Pixel</span>
+            </div>
+          </div>
+
+          <div class="glass" style="padding: 32px;">
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
+              <i data-lucide="bot" size="24" color="var(--accent-mint)"></i>
+              <h3 style="font-size: 1.2rem;">AI & Automation</h3>
+            </div>
+            <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+              <span class="pill">Prompt Engineering</span><span class="pill">AI Workflows</span>
+              <span class="pill">OpenAI API</span><span class="pill">Gemini</span><span class="pill">Claude</span>
+            </div>
+          </div>
+
+          <div class="glass" style="padding: 32px;">
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
+              <i data-lucide="database" size="24" color="var(--accent-primary)"></i>
+              <h3 style="font-size: 1.2rem;">Database & Cloud</h3>
+            </div>
+            <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+              <span class="pill">MongoDB</span><span class="pill">MySQL</span><span class="pill">PostgreSQL</span>
+              <span class="pill">Firebase</span><span class="pill">Supabase</span><span class="pill">Docker</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCENE 04: SERVICES -->
+      <section id="scene-04">
+        <div style="margin-bottom: 50px;">
+          <span class="pill" style="margin-bottom: 16px;"><i data-lucide="layers" size="14"></i> Services</span>
+          <h2 class="split-heading" style="font-size: 3rem;">What I Build</h2>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 20px;">
+          <div class="glass service-card" style="padding: 32px; display: flex; align-items: center; justify-content: space-between;">
+            <div style="display: flex; align-items: center; gap: 24px;">
+              <span style="font-size: 2rem; font-weight: 700; color: var(--accent-primary); font-family: var(--font-display);">01</span>
+              <div>
+                <h3 style="font-size: 1.3rem; margin-bottom: 6px;">Digital Marketing Strategy</h3>
+                <p style="font-size: 0.95rem; color: var(--text-secondary);">End-to-end campaign planning, conversion optimization, and measurable ROI growth.</p>
+              </div>
+            </div>
+            <i data-lucide="target" size="32" color="var(--accent-primary)"></i>
+          </div>
+
+          <div class="glass service-card" style="padding: 32px; display: flex; align-items: center; justify-content: space-between;">
+            <div style="display: flex; align-items: center; gap: 24px;">
+              <span style="font-size: 2rem; font-weight: 700; color: var(--accent-secondary); font-family: var(--font-display);">02</span>
+              <div>
+                <h3 style="font-size: 1.3rem; margin-bottom: 6px;">SEO & Technical Optimization</h3>
+                <p style="font-size: 0.95rem; color: var(--text-secondary);">On-page, off-page, technical SEO audits, and search rankings expansion.</p>
+              </div>
+            </div>
+            <i data-lucide="search" size="32" color="var(--accent-secondary)"></i>
+          </div>
+
+          <div class="glass service-card" style="padding: 32px; display: flex; align-items: center; justify-content: space-between;">
+            <div style="display: flex; align-items: center; gap: 24px;">
+              <span style="font-size: 2rem; font-weight: 700; color: var(--accent-tertiary); font-family: var(--font-display);">03</span>
+              <div>
+                <h3 style="font-size: 1.3rem; margin-bottom: 6px;">Web Design & Frontend Engineering</h3>
+                <p style="font-size: 0.95rem; color: var(--text-secondary);">Premium, responsive, high-performance web applications and interface experiences.</p>
+              </div>
+            </div>
+            <i data-lucide="globe" size="32" color="var(--accent-tertiary)"></i>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCENE 05: PROJECTS -->
+      <section id="scene-05">
+        <div style="margin-bottom: 50px;">
+          <span class="pill" style="margin-bottom: 16px;"><i data-lucide="folder-kanban" size="14"></i> Case Studies</span>
+          <h2 class="split-heading" style="font-size: 3rem;">Selected Works</h2>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 32px;">
+          <div class="glass project-card" style="padding: 32px; display: flex; flex-direction: column; justify-content: space-between; min-height: 420px; cursor: pointer;">
+            <div>
+              <div style={{ height: '180px', borderRadius: '16px', background: 'linear-gradient(135deg, rgba(59,130,246,0.15) 0%, rgba(14,165,233,0.15) 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px' }}>
+                <i data-lucide="globe" size={48} color="var(--accent-primary)"></i>
+              </div>
+              <span class="pill" style="margin-bottom: 12px;">SEO + Web Development</span>
+              <h3 style="font-size: 1.4rem; margin-bottom: 10px;">NexGen Digital Presence</h3>
+              <p style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.6;">Rebuilt web presence with technical SEO architecture, achieving 340% organic visibility growth in 6 months.</p>
+            </div>
+            <div style="display: flex; gap: 6px; margin-top: 16px;">
+              <span class="pill">React</span><span class="pill">Next.js</span><span class="pill">Technical SEO</span>
+            </div>
+          </div>
+
+          <div class="glass project-card" style="padding: 32px; display: flex; flex-direction: column; justify-content: space-between; min-height: 420px; cursor: pointer;">
+            <div>
+              <div style={{ height: '180px', borderRadius: '16px', background: 'linear-gradient(135deg, rgba(139,92,246,0.15) 0%, rgba(16,185,129,0.15) 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px' }}>
+                <i data-lucide="cpu" size={48} color="var(--accent-tertiary)"></i>
+              </div>
+              <span class="pill" style="margin-bottom: 12px;">AI + Automation</span>
+              <h3 style="font-size: 1.4rem; margin-bottom: 10px;">AI Workflow Automation</h3>
+              <p style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.6;">Automation pipeline connecting CRM data with AI content strategies. Reduced manual operations by 60%.</p>
+            </div>
+            <div style="display: flex; gap: 6px; margin-top: 16px;">
+              <span class="pill">OpenAI</span><span class="pill">Node.js</span><span class="pill">Supabase</span>
+            </div>
+          </div>
+
+          <div class="glass project-card" style="padding: 32px; display: flex; flex-direction: column; justify-content: space-between; min-height: 420px; cursor: pointer;">
+            <div>
+              <div style={{ height: '180px', borderRadius: '16px', background: 'linear-gradient(135deg, rgba(14,165,233,0.15) 0%, rgba(59,130,246,0.15) 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px' }}>
+                <i data-lucide="shopping-bag" size={48} color="var(--accent-secondary)"></i>
+              </div>
+              <span class="pill" style="margin-bottom: 12px;">Meta Ads + UI Redesign</span>
+              <h3 style="font-size: 1.4rem; margin-bottom: 10px;">E-Commerce Conversion Engine</h3>
+              <p style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.6;">Redesigned purchase funnel and launched targeted Meta Ad campaigns, increasing ROAS by 4.5x.</p>
+            </div>
+            <div style="display: flex; gap: 6px; margin-top: 16px;">
+              <span class="pill">Meta Pixel</span><span class="pill">Figma</span><span class="pill">React</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCENE 06: TIMELINE -->
+      <section id="scene-06">
+        <div style="text-align: center; margin-bottom: 50px;">
+          <span class="pill" style="margin-bottom: 16px;"><i data-lucide="briefcase" size="14"></i> Experience</span>
+          <h2 class="split-heading" style="font-size: 3rem;">Career Story</h2>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 24px; max-width: 800px; margin: 0 auto; width: 100%;">
+          <div class="glass" style="padding: 32px; display: flex; gap: 20px;">
+            <i data-lucide="building" size={32} color="var(--accent-primary)"></i>
+            <div>
+              <span class="pill" style="margin-bottom: 8px;">CURRENT ROLE</span>
+              <h3 style="font-size: 1.3rem; margin-bottom: 4px;">JBHL PVT LTD</h3>
+              <div style="fontSize: 0.9rem; color: var(--accent-primary); fontWeight: 600; margin-bottom: 10px;">Digital Marketer</div>
+              <p style="fontSize: 0.9rem; color: var(--text-secondary); line-height: 1.6;">Leading digital marketing initiatives, technical SEO strategy, online brand growth, and conversion campaigns.</p>
+            </div>
+          </div>
+
+          <div class="glass" style="padding: 32px; display: flex; gap: 20px;">
+            <i data-lucide="package" size={32} color="var(--accent-mint)"></i>
+            <div>
+              <span class="pill" style="margin-bottom: 8px;">INDUSTRIAL EXPERIENCE</span>
+              <h3 style="font-size: 1.3rem; margin-bottom: 4px;">Nexteer Automotive India PVT LTD</h3>
+              <div style="fontSize: 0.9rem; color: var(--accent-mint); fontWeight: 600; margin-bottom: 10px;">Store Associate (Chennai)</div>
+              <p style="fontSize: 0.9rem; color: var(--text-secondary); line-height: 1.6;">Handled warehouse layouts, tracked raw materials inventory, managed parts supplies, and collaborated with floor supervisors to prevent production halts. Acquired operational discipline and quality control focus.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCENE 07: CERTIFICATIONS -->
+      <section id="scene-07">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 32px;">
+          <div class="glass" style="padding: 36px;">
+            <i data-lucide="award" size={36} color="var(--accent-mint)" style="margin-bottom: 16px;"></i>
+            <span class="pill" style="margin-bottom: 12px; color: var(--accent-mint); border-color: rgba(16,185,129,0.3); background: rgba(16,185,129,0.1);">VERIFIED CERTIFICATE</span>
+            <h3 style="font-size: 1.4rem; margin-bottom: 8px;">Google Skillshop</h3>
+            <div style="font-size: 0.95rem; font-weight: 600; color: var(--text-primary); margin-bottom: 12px;">Fundamentals of Digital Marketing</div>
+            <div style="font-family: monospace; font-size: 0.85rem; color: var(--text-tertiary); margin-bottom: 16px; background: rgba(0,0,0,0.05); padding: 6px 12px; border-radius: 8px; display: inline-block;">
+              Completion ID: 453421024
+            </div>
+            <p style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.6;">Verified by IAB Europe & The Open University. Covers search engine ranking basics, content strategies, analytics, mobile outreach, and display networks.</p>
+          </div>
+
+          <div class="glass" style="padding: 36px;">
+            <i data-lucide="graduation-cap" size={36} color="var(--accent-primary)" style="margin-bottom: 16px;"></i>
+            <span class="pill" style="margin-bottom: 12px;">HIGHER EDUCATION</span>
+            <h3 style="font-size: 1.4rem; margin-bottom: 8px;">Bachelor of Computer Applications</h3>
+            <div style="font-size: 0.95rem; font-weight: 600; color: var(--text-primary); margin-bottom: 12px;">BCA Degree</div>
+            <p style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.6;">Foundational computer science degree covering software engineering, database architecture, algorithms, and web programming technologies.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCENE 08: VALUES -->
+      <section id="scene-08">
+        <div style="text-align: center; margin-bottom: 40px;">
+          <span class="pill" style="margin-bottom: 16px;"><i data-lucide="heart" size="14"></i> Culture</span>
+          <h2 class="split-heading" style="font-size: 3rem;">Core Principles</h2>
+        </div>
+
+        <div style="display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-bottom: 48px;">
+          <span class="pill" style="font-size: 1rem; padding: 10px 20px;">1. Continuous Learning</span>
+          <span class="pill" style="font-size: 1rem; padding: 10px 20px;">2. User-Centered Thinking</span>
+          <span class="pill" style="font-size: 1rem; padding: 10px 20px;">3. Innovation</span>
+          <span class="pill" style="font-size: 1rem; padding: 10px 20px;">4. Quality</span>
+          <span class="pill" style="font-size: 1rem; padding: 10px 20px;">5. Integrity</span>
+          <span class="pill" style="font-size: 1rem; padding: 10px 20px;">6. Collaboration</span>
+          <span class="pill" style="font-size: 1rem; padding: 10px 20px;">7. Excellence</span>
+        </div>
+      </section>
+
+      <!-- SCENE 09: CONTACT -->
+      <section id="scene-09">
+        <div style="text-align: center; max-width: 900px; margin: 0 auto; width: 100%;">
+          <h2 class="split-heading" style="font-size: 4rem; line-height: 1.1; margin-bottom: 32px;">
+            Let's Build the <span class="text-gradient">Future</span>
+          </h2>
+
+          <div class="glass" style="padding: 48px; margin-bottom: 48px; text-align: left;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px;">
+              <div>
+                <div style="font-size: 0.8rem; color: var(--text-tertiary); font-weight: 600; margin-bottom: 4px;">EMAIL</div>
+                <a href="mailto:pratheesh.clement@gmail.com" style="font-size: 1.05rem; font-weight: 700; color: var(--text-primary); text-decoration: none;">pratheesh.clement@gmail.com</a>
+              </div>
+              <div>
+                <div style="font-size: 0.8rem; color: var(--text-tertiary); font-weight: 600; margin-bottom: 4px;">PHONE / WHATSAPP</div>
+                <a href="tel:+918667876102" style="font-size: 1.05rem; font-weight: 700; color: var(--text-primary); text-decoration: none;">+91 8667876102</a>
+              </div>
+              <div>
+                <div style="font-size: 0.8rem; color: var(--text-tertiary); font-weight: 600; margin-bottom: 4px;">LOCATION</div>
+                <div style="font-size: 1.05rem; font-weight: 700; color: var(--text-primary);">Vadalur, Tamil Nadu, India</div>
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 12px; margin-top: 32px; flex-wrap: wrap;">
+              <a href="https://github.com/pratheeshclement-cmd" target="_blank" class="pill" style="text-decoration: none;"><i data-lucide="github" size="16"></i> GitHub</a>
+              <a href="https://www.linkedin.com/in/mariya-pratheesh-5b8a9b316/" target="_blank" class="pill" style="text-decoration: none;"><i data-lucide="linkedin" size="16"></i> LinkedIn</a>
+              <a href="https://www.instagram.com/pratheeeesh/" target="_blank" class="pill" style="text-decoration: none;"><i data-lucide="instagram" size="16"></i> Instagram</a>
+            </div>
+          </div>
+
+          <p style="font-size: 0.85rem; color: var(--text-tertiary);">
+            © 2026 Pratheesh Clement. Crafted with curiosity.
+          </p>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <!-- PERSISTENT AI CONCIERGE WIDGET -->
+  <div id="ai-widget">
+    <div class="ai-panel glass" id="ai-panel">
+      <div style="padding: 16px 20px; border-bottom: 1px solid rgba(255,255,255,0.4); display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.2);">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <div style="width: 8px; height: 8px; border-radius: 50%; background: var(--accent-mint);"></div>
+          <span style="font-weight: 700; font-size: 0.9rem;">Portfolio AI</span>
+        </div>
+        <button id="ai-close" style="background: none; border: none; cursor: pointer; color: var(--text-secondary);"><i data-lucide="x" size="18"></i></button>
+      </div>
+
+      <div id="ai-messages" style="flex: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; font-size: 0.85rem;">
+        <div class="glass" style="padding: 10px 14px; background: rgba(59,130,246,0.1); border-color: rgba(59,130,246,0.2);">
+          Hello! I am Pratheesh Clement's Portfolio AI. Ask me about his skills, experience, projects, or certifications!
+        </div>
+      </div>
+
+      <div style="padding: 12px; border-top: 1px solid rgba(255,255,255,0.4); display: flex; gap: 8px;">
+        <input type="text" id="ai-input" placeholder="Type a message..." style="flex: 1; background: rgba(255,255,255,0.4); border: 1px solid rgba(255,255,255,0.6); padding: 8px 12px; border-radius: 9999px; outline: none; font-size: 0.85rem;">
+        <button id="ai-send" class="btn-magnetic" style="padding: 8px 16px; font-size: 0.85rem;"><i data-lucide="send" size="14"></i></button>
+      </div>
+    </div>
+
+    <div class="ai-orb" id="ai-orb">
+      <i data-lucide="sparkles" size="28"></i>
+    </div>
+  </div>
+
+  <!-- SCRIPT ENGINE -->
+  <script>
+    // 1. Initialize Icons
+    lucide.createIcons();
+
+    // 2. Lenis Smooth Scroll
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smoothWheel: true,
+      lerp: 0.08
+    });
+
+    function raf(time) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+    requestAnimationFrame(raf);
+
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add((time) => lenis.raf(time * 1000));
+    gsap.ticker.lagSmoothing(0, 0);
+
+    // 3. Three.js Background Canvas
+    const canvas = document.getElementById('bg-canvas');
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+
+    // Particles
+    const particleCount = 800;
+    const geometry = new THREE.BufferGeometry();
+    const positions = new Float32Array(particleCount * 3);
+    const colors = new Float32Array(particleCount * 3);
+
+    const palette = [
+      new THREE.Color(0x3B82F6),
+      new THREE.Color(0x0EA5E9),
+      new THREE.Color(0x8B5CF6),
+      new THREE.Color(0xFFFFFF)
+    ];
+
+    for (let i = 0; i < particleCount; i++) {
+      positions[i * 3] = (Math.random() - 0.5) * 20;
+      positions[i * 3 + 1] = (Math.random() - 0.5) * 20;
+      positions[i * 3 + 2] = (Math.random() - 0.5) * 20;
+
+      const c = palette[Math.floor(Math.random() * palette.length)];
+      colors[i * 3] = c.r;
+      colors[i * 3 + 1] = c.g;
+      colors[i * 3 + 2] = c.b;
+    }
+
+    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+    const material = new THREE.PointsMaterial({
+      size: 0.06,
+      vertexColors: true,
+      transparent: true,
+      opacity: 0.6
+    });
+
+    const particles = new THREE.Points(geometry, material);
+    scene.add(particles);
+
+    camera.position.z = 8;
+
+    let mouseX = 0, mouseY = 0;
+    document.addEventListener('mousemove', (e) => {
+      mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+      mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+    });
+
+    function animateThree() {
+      requestAnimationFrame(animateThree);
+      particles.rotation.y += 0.001;
+      particles.rotation.x += 0.0005;
+
+      particles.position.x += (mouseX * 0.5 - particles.position.x) * 0.05;
+      particles.position.y += (-mouseY * 0.5 - particles.position.y) * 0.05;
+
+      renderer.render(scene, camera);
+    }
+    animateThree();
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    // 4. Custom Cursor System
+    const cursor = document.getElementById('cursor');
+    document.addEventListener('mousemove', (e) => {
+      gsap.to(cursor, { x: e.clientX - 10, y: e.clientY - 10, duration: 0.2, ease: "power2.out" });
+    });
+
+    document.querySelectorAll('a, button, .glass, .pill').forEach(el => {
+      el.addEventListener('mouseenter', () => cursor.classList.add('hovered'));
+      el.addEventListener('mouseleave', () => cursor.classList.remove('hovered'));
+    });
+
+    // 5. Magnetic Buttons
+    document.querySelectorAll('.btn-magnetic').forEach(btn => {
+      btn.addEventListener('mousemove', (e) => {
+        const rect = btn.getBoundingClientRect();
+        const dx = (e.clientX - (rect.left + rect.width / 2)) * 0.3;
+        const dy = (e.clientY - (rect.top + rect.height / 2)) * 0.3;
+        gsap.to(btn, { x: dx, y: dy, duration: 0.3 });
+      });
+      btn.addEventListener('mouseleave', () => {
+        gsap.to(btn, { x: 0, y: 0, duration: 0.6, ease: "elastic.out(1, 0.3)" });
+      });
+    });
+
+    // 6. SCENE 00 (Boot Sequence)
+    const bootTimeline = gsap.timeline({
+      onComplete: () => {
+        gsap.to('#scene-00', { opacity: 0, duration: 0.8, onComplete: () => {
+          document.getElementById('scene-00').style.display = 'none';
+        }});
+      }
+    });
+
+    bootTimeline
+      .to('#boot-dot', { scale: 1.5, repeat: 2, yoyo: true, duration: 0.4 })
+      .to('#boot-dot', { scale: 12, opacity: 0, duration: 0.6 })
+      .to('#boot-text', { opacity: 0, duration: 0.3 }, "-=0.3");
+
+    // 7. Scroll-Driven 3D Scene Camera Animations (GSAP ScrollTrigger)
+    gsap.utils.toArray('section').forEach((sec, i) => {
+      // Split heading character reveal
+      const heading = sec.querySelector('.split-heading');
+      if (heading) {
+        const text = heading.innerText;
+        heading.innerHTML = text.split('').map(c => `<span class="char">${c === ' ' ? '&nbsp;' : c}</span>`).join('');
+        
+        gsap.fromTo(heading.querySelectorAll('.char'), 
+          { y: 60, opacity: 0, rotateX: -90 },
+          { 
+            y: 0, opacity: 1, rotateX: 0, stagger: 0.03, duration: 0.8, ease: "power3.out",
+            scrollTrigger: { trigger: sec, start: "top 75%" }
+          }
+        );
+      }
+    });
+
+    document.getElementById('btn-begin').addEventListener('click', () => {
+      lenis.scrollTo('#scene-02');
+    });
+
+    // 8. AI Concierge Response Engine
+    const aiOrb = document.getElementById('ai-orb');
+    const aiPanel = document.getElementById('ai-panel');
+    const aiClose = document.getElementById('ai-close');
+    const aiInput = document.getElementById('ai-input');
+    const aiSend = document.getElementById('ai-send');
+    const aiMessages = document.getElementById('ai-messages');
+
+    aiOrb.addEventListener('click', () => aiPanel.classList.toggle('open'));
+    aiClose.addEventListener('click', () => aiPanel.classList.remove('open'));
+
+    function sendAIMessage() {
+      const text = aiInput.value.trim();
+      if (!text) return;
+
+      const userDiv = document.createElement('div');
+      userDiv.className = 'glass';
+      userDiv.style.cssText = 'padding: 10px 14px; align-self: flex-end; background: rgba(255,255,255,0.6);';
+      userDiv.innerText = text;
+      aiMessages.appendChild(userDiv);
+      aiInput.value = '';
+
+      setTimeout(() => {
+        const q = text.toLowerCase();
+        let reply = "I am Pratheesh Clement's AI assistant. He specializes in Digital Marketing, SEO, React/TypeScript web engineering, and AI automation. Feel free to reach out to him directly at pratheesh.clement@gmail.com!";
+
+        if (q.includes('skill') || q.includes('stack')) {
+          reply = "Pratheesh's skills span Frontend (React, Next.js, TS), Marketing (Google Ads, Meta Ads, SEO), Design (Figma, Photoshop), and AI Prompt Engineering.";
+        } else if (q.includes('experience') || q.includes('work') || q.includes('history')) {
+          reply = "Pratheesh is currently a Digital Marketer at JBHL PVT LTD, and previously worked as a Store Associate at Nexteer Automotive India PVT LTD in Chennai.";
+        } else if (q.includes('contact') || q.includes('email') || q.includes('phone')) {
+          reply = "You can contact Pratheesh via Email (pratheesh.clement@gmail.com) or Phone/WhatsApp (+91 8667876102). He is based in Vadalur, Tamil Nadu.";
+        } else if (q.includes('project') || q.includes('work')) {
+          reply = "Pratheesh's featured projects include: 1. NexGen Digital Presence (340% SEO growth), 2. AI Workflow Automation System (60% ops reduction), 3. E-Commerce Conversion Engine (4.5x ROAS).";
+        } else if (q.includes('cert') || q.includes('google')) {
+          reply = "Pratheesh holds the Google Skillshop Fundamentals of Digital Marketing Certification (Completion ID: 453421024), verified by IAB Europe & The Open University.";
+        }
+
+        const aiDiv = document.createElement('div');
+        aiDiv.className = 'glass';
+        aiDiv.style.cssText = 'padding: 10px 14px; background: rgba(59,130,246,0.1); border-color: rgba(59,130,246,0.2);';
+        aiDiv.innerText = reply;
+        aiMessages.appendChild(aiDiv);
+        aiMessages.scrollTop = aiMessages.scrollHeight;
+      }, 500);
+    }
+
+    aiSend.addEventListener('click', sendAIMessage);
+    aiInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') sendAIMessage(); });
+  </script>
+</body>
 </html>
