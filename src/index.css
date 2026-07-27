@@ -238,3 +238,216 @@ h1, h2, h3, h4 {
   .cursor-dot { display: none; }
   section { padding: 80px 20px; }
 }
+
+/* ===================================================================
+   SCENE LAYOUT SYSTEM
+   =================================================================== */
+
+.scene {
+  min-height: 100vh;
+  width: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+.scene-inner {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 120px 32px;
+}
+
+@media (max-width: 768px) {
+  .scene-inner { padding: 100px 20px; }
+}
+
+/* ── Section heading marker ───────────────────────────────────── */
+.section-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent-primary);
+  background: rgba(59, 130, 246, 0.08);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  padding: 5px 14px;
+  border-radius: var(--radius-full);
+  margin-bottom: 20px;
+}
+
+/* ── SplitText character wrapper ─────────────────────────────── */
+.char {
+  display: inline-block;
+  will-change: transform, opacity;
+}
+
+/* ── Parallax depth layers ───────────────────────────────────── */
+.parallax-bg   { will-change: transform; transform: translateZ(-80px) scale(1.08); }
+.parallax-mid  { will-change: transform; transform: translateZ(-40px) scale(1.04); }
+.parallax-near { will-change: transform; }
+
+/* ── Text gradient utility ───────────────────────────────────── */
+.text-gradient-blue {
+  background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-purple {
+  background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-tertiary) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Grid layouts ────────────────────────────────────────────── */
+.grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 32px; }
+.grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
+
+/* ── Floating glass card micro-animation ─────────────────────── */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-8px); }
+}
+.glass-float { animation: float 5s ease-in-out infinite; }
+
+/* ── Service card horizontal row ─────────────────────────────── */
+.service-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 28px 32px;
+  cursor: pointer;
+}
+.service-row:hover .service-icon {
+  transform: rotate(8deg) scale(1.1);
+  transition: transform 0.3s ease;
+}
+
+/* ── Timeline line ────────────────────────────────────────────── */
+.timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  position: relative;
+}
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 23px;
+  top: 28px;
+  bottom: 28px;
+  width: 2px;
+  background: linear-gradient(to bottom, var(--accent-primary), var(--accent-tertiary));
+  border-radius: 2px;
+}
+.timeline-item {
+  display: flex;
+  gap: 24px;
+  padding: 20px 0;
+  position: relative;
+}
+.timeline-dot {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Scroll progress ─────────────────────────────────────────── */
+.scroll-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent-primary), var(--accent-tertiary));
+  z-index: 9999;
+  transform-origin: left;
+  pointer-events: none;
+}
+
+/* ── Modal overlay ───────────────────────────────────────────── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(12px);
+  z-index: 5000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.modal-content {
+  width: min(760px, 100%);
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+/* ── FAQ Accordion ───────────────────────────────────────────── */
+.faq-item {
+  border-bottom: 1px solid var(--bg-tertiary);
+  overflow: hidden;
+}
+.faq-question {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 0;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--text-primary);
+  background: none;
+  border: none;
+  width: 100%;
+  text-align: left;
+  font-family: var(--font-display);
+  transition: color 0.2s ease;
+}
+.faq-question:hover { color: var(--accent-primary); }
+.faq-answer {
+  overflow: hidden;
+  height: 0;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  line-height: 1.7;
+  transition: height 0.3s ease;
+}
+
+/* ── Project card hover glow ─────────────────────────────────── */
+.project-card-glow {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+.project-card-glow::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, transparent 40%, var(--accent-primary), transparent 60%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+.project-card-glow:hover::after { opacity: 1; }
+.project-card-glow:hover { transform: translateY(-4px); }
