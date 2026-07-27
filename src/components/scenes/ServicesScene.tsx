@@ -7,6 +7,7 @@ import { SERVICES } from '../../data/services';
 import { Service } from '../../types';
 import { useMagneticHover } from '../../hooks/useMagneticHover';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
+import { useCinematicSceneTransition } from '../../hooks/useScrollTimeline';
 
 const ServiceRow: React.FC<{ service: Service; index: number }> = ({ service, index }) => {
   const cardRef = useRef<HTMLDivElement>(null);
@@ -30,9 +31,7 @@ const ServiceRow: React.FC<{ service: Service; index: number }> = ({ service, in
 
   return (
     <div ref={cardRef} style={{ opacity: reduced ? 1 : 0 }}>
-      <GlassCard
-        style={{ cursor: 'pointer' }}
-      >
+      <GlassCard style={{ cursor: 'pointer' }}>
         <div
           className="service-row"
           ref={magRef}
@@ -72,31 +71,36 @@ const ServiceRow: React.FC<{ service: Service; index: number }> = ({ service, in
   );
 };
 
-const ServicesScene: React.FC<{ id: string }> = ({ id }) => (
-  <section id={id} className="scene" aria-label="Services section">
-    <div className="scene-inner">
-      <div style={{ marginBottom: 56 }}>
-        <span className="section-label">
-          <Icons.Layers size={13} />
-          What I Build
-        </span>
-        <SplitText
-          text="Services"
-          tag="h2"
-          style={{ fontSize: 'clamp(2rem, 5vw, 3rem)', lineHeight: 1.1 }}
-        />
-        <p style={{ fontSize: '1rem', color: 'var(--text-secondary)', maxWidth: 560, marginTop: 16, lineHeight: 1.7 }}>
-          End-to-end digital solutions — from strategy to deployment.
-        </p>
-      </div>
+const ServicesScene: React.FC<{ id: string }> = ({ id }) => {
+  const sectionRef = useRef<HTMLElement>(null);
+  useCinematicSceneTransition(sectionRef);
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-        {SERVICES.map((svc, i) => (
-          <ServiceRow key={svc.id} service={svc} index={i} />
-        ))}
+  return (
+    <section id={id} ref={sectionRef} className="scene" aria-label="Services section">
+      <div className="scene-inner">
+        <div style={{ marginBottom: 56 }}>
+          <span className="section-label">
+            <Icons.Layers size={13} />
+            What I Build
+          </span>
+          <SplitText
+            text="Services"
+            tag="h2"
+            style={{ fontSize: 'clamp(2rem, 5vw, 3rem)', lineHeight: 1.1 }}
+          />
+          <p style={{ fontSize: '1rem', color: 'var(--text-secondary)', maxWidth: 560, marginTop: 16, lineHeight: 1.7 }}>
+            End-to-end digital solutions — from strategy to deployment.
+          </p>
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+          {SERVICES.map((svc, i) => (
+            <ServiceRow key={svc.id} service={svc} index={i} />
+          ))}
+        </div>
       </div>
-    </div>
-  </section>
-);
+    </section>
+  );
+};
 
 export default ServicesScene;

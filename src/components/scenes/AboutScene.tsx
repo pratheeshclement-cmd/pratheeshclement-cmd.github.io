@@ -3,9 +3,11 @@ import { User, Compass } from 'lucide-react';
 import { SplitText } from '../ui/SplitText';
 import { GlassCard } from '../ui/GlassCard';
 import { IDENTITY } from '../../data/identity';
+import { useCinematicSceneTransition } from '../../hooks/useScrollTimeline';
 
 const AboutScene: React.FC<{ id: string }> = ({ id }) => {
   const sectionRef = useRef<HTMLElement>(null);
+  useCinematicSceneTransition(sectionRef);
 
   return (
     <section id={id} ref={sectionRef} className="scene" aria-label="About section">

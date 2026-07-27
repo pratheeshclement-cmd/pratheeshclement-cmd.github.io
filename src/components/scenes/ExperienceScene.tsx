@@ -6,6 +6,7 @@ import { GlassCard } from '../ui/GlassCard';
 import { EXPERIENCE } from '../../data/experience';
 import { ExperienceItem } from '../../types';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
+import { useCinematicSceneTransition } from '../../hooks/useScrollTimeline';
 
 const TimelineCard: React.FC<{ item: ExperienceItem; index: number }> = ({ item, index }) => {
   const ref = useRef<HTMLDivElement>(null);
@@ -76,30 +77,35 @@ const TimelineCard: React.FC<{ item: ExperienceItem; index: number }> = ({ item,
   );
 };
 
-const ExperienceScene: React.FC<{ id: string }> = ({ id }) => (
-  <section id={id} className="scene" aria-label="Experience and certifications section">
-    <div className="scene-inner">
-      <div style={{ textAlign: 'center', marginBottom: 56 }}>
-        <span className="section-label">
-          <Icons.Briefcase size={13} />
-          Experience & Credentials
-        </span>
-        <SplitText
-          text="Career Journey"
-          tag="h2"
-          style={{ fontSize: 'clamp(2rem, 5vw, 3rem)', lineHeight: 1.1 }}
-        />
-      </div>
+const ExperienceScene: React.FC<{ id: string }> = ({ id }) => {
+  const sectionRef = useRef<HTMLElement>(null);
+  useCinematicSceneTransition(sectionRef);
 
-      <div style={{ maxWidth: 760, margin: '0 auto' }}>
-        <div className="timeline">
-          {EXPERIENCE.map((item, i) => (
-            <TimelineCard key={item.id} item={item} index={i} />
-          ))}
+  return (
+    <section id={id} ref={sectionRef} className="scene" aria-label="Experience and certifications section">
+      <div className="scene-inner">
+        <div style={{ textAlign: 'center', marginBottom: 56 }}>
+          <span className="section-label">
+            <Icons.Briefcase size={13} />
+            Experience & Credentials
+          </span>
+          <SplitText
+            text="Career Journey"
+            tag="h2"
+            style={{ fontSize: 'clamp(2rem, 5vw, 3rem)', lineHeight: 1.1 }}
+          />
+        </div>
+
+        <div style={{ maxWidth: 760, margin: '0 auto' }}>
+          <div className="timeline">
+            {EXPERIENCE.map((item, i) => (
+              <TimelineCard key={item.id} item={item} index={i} />
+            ))}
+          </div>
         </div>
       </div>
-    </div>
-  </section>
-);
+    </section>
+  );
+};
 
 export default ExperienceScene;

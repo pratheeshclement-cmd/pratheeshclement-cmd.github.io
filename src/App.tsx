@@ -4,10 +4,11 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 // Layout
-import { Navbar }            from './components/layout/Navbar';
-import { AmbientBackground } from './components/layout/AmbientBackground';
-import { CursorLighting }    from './components/layout/CursorLighting';
-import { ConsentBanner }     from './utils/ConsentBanner';
+import { Navbar }                 from './components/layout/Navbar';
+import { AmbientBackground }      from './components/layout/AmbientBackground';
+import { CinematicParticleCanvas } from './components/layout/CinematicParticleCanvas';
+import { CursorLighting }         from './components/layout/CursorLighting';
+import { ConsentBanner }          from './utils/ConsentBanner';
 
 // Scenes — lazy for code splitting
 const BootScene         = React.lazy(() => import('./components/scenes/BootScene'));
@@ -69,6 +70,9 @@ export const App: React.FC = () => {
 
       {/* Fixed ambient background layer */}
       <AmbientBackground />
+
+      {/* Floating ambient particle canvas layer */}
+      <CinematicParticleCanvas />
 
       {/* Custom cursor (desktop only) */}
       <CursorLighting />

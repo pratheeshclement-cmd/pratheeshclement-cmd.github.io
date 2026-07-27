@@ -8,6 +8,7 @@ import { GlassCard } from '../ui/GlassCard';
 import { SKILLS } from '../../data/skills';
 import { SkillCategory } from '../../types';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
+import { useCinematicSceneTransition } from '../../hooks/useScrollTimeline';
 
 const LEVEL_COLORS: Record<string, string> = {
   Expert: 'var(--accent-mint)',
@@ -66,31 +67,36 @@ const SkillCard: React.FC<{ cat: SkillCategory; index: number }> = ({ cat, index
   );
 };
 
-const SkillsScene: React.FC<{ id: string }> = ({ id }) => (
-  <section id={id} className="scene" aria-label="Skills section">
-    <div className="scene-inner">
-      <div style={{ textAlign: 'center', marginBottom: 56 }}>
-        <span className="section-label">
-          <Cpu size={13} />
-          Technical Matrix
-        </span>
-        <SplitText
-          text="Technical Arsenal"
-          tag="h2"
-          style={{ fontSize: 'clamp(2rem, 5vw, 3rem)', lineHeight: 1.1 }}
-        />
-        <p style={{ fontSize: '1rem', color: 'var(--text-secondary)', maxWidth: 560, margin: '16px auto 0', lineHeight: 1.7 }}>
-          Six domains — each working together as one unified digital ecosystem.
-        </p>
-      </div>
+const SkillsScene: React.FC<{ id: string }> = ({ id }) => {
+  const sectionRef = useRef<HTMLElement>(null);
+  useCinematicSceneTransition(sectionRef);
 
-      <div className="grid-3">
-        {SKILLS.map((cat, i) => (
-          <SkillCard key={cat.id} cat={cat} index={i} />
-        ))}
+  return (
+    <section id={id} ref={sectionRef} className="scene" aria-label="Skills section">
+      <div className="scene-inner">
+        <div style={{ textAlign: 'center', marginBottom: 56 }}>
+          <span className="section-label">
+            <Cpu size={13} />
+            Technical Matrix
+          </span>
+          <SplitText
+            text="Technical Arsenal"
+            tag="h2"
+            style={{ fontSize: 'clamp(2rem, 5vw, 3rem)', lineHeight: 1.1 }}
+          />
+          <p style={{ fontSize: '1rem', color: 'var(--text-secondary)', maxWidth: 560, margin: '16px auto 0', lineHeight: 1.7 }}>
+            Six domains — each working together as one unified digital ecosystem.
+          </p>
+        </div>
+
+        <div className="grid-3">
+          {SKILLS.map((cat, i) => (
+            <SkillCard key={cat.id} cat={cat} index={i} />
+          ))}
+        </div>
       </div>
-    </div>
-  </section>
-);
+    </section>
+  );
+};
 
 export default SkillsScene;
