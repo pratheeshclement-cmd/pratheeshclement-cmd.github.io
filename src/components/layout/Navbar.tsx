@@ -47,14 +47,19 @@ export const Navbar: React.FC<NavbarProps> = ({ scrollProgress, theme, onToggleT
         style={{ padding: '12px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderRadius: 'var(--radius-full)' }}
         aria-label="Main navigation"
       >
-        {/* Logo */}
+        {/* Logo with profile avatar */}
         <a
           href="#scene-hero"
           onClick={e => { e.preventDefault(); scrollTo('#scene-hero'); }}
-          style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '1rem', color: 'var(--text-primary)', textDecoration: 'none', letterSpacing: '-0.02em' }}
+          style={{ display: 'flex', alignItems: 'center', gap: 10, fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '1rem', color: 'var(--text-primary)', textDecoration: 'none', letterSpacing: '-0.02em' }}
           aria-label="Pratheesh Clement — go to top"
         >
-          PC<span style={{ color: 'var(--accent-primary)' }}>.</span>
+          <img
+            src="/assets/pratheesh4k1.jpeg"
+            alt="PC Avatar"
+            style={{ width: 28, height: 28, borderRadius: '50%', objectFit: 'cover', border: '1.5px solid var(--accent-primary)' }}
+          />
+          <span>PC<span style={{ color: 'var(--accent-primary)' }}>.</span></span>
         </a>
 
         {/* Nav links */}

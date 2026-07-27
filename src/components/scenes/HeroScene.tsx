@@ -74,6 +74,37 @@ const HeroScene: React.FC<{ id: string }> = ({ id }) => {
 
       {/* Content */}
       <div className="scene-inner" style={{ position: 'relative', zIndex: 1, textAlign: 'center' }}>
+        {/* Profile Avatar Badge with Glowing Pulse Ring */}
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 20 }}>
+          <GlassCard tilt style={{ padding: 6, borderRadius: 9999, display: 'inline-flex', alignItems: 'center', gap: 12, paddingRight: 18 }}>
+            <div style={{
+              position: 'relative',
+              width: 52,
+              height: 52,
+              borderRadius: '50%',
+              overflow: 'hidden',
+              border: '2px solid var(--accent-primary)',
+              boxShadow: '0 0 16px rgba(59, 130, 246, 0.4)',
+            }}>
+              <img
+                src="/assets/pratheesh4k1.jpeg"
+                alt="Pratheesh Clement"
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              />
+              <div style={{
+                position: 'absolute', bottom: 2, right: 2,
+                width: 10, height: 10, borderRadius: '50%',
+                background: 'var(--accent-mint)',
+                boxShadow: '0 0 8px var(--accent-mint)',
+              }} />
+            </div>
+            <div style={{ textAlign: 'left' }}>
+              <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-primary)' }}>{IDENTITY.name}</div>
+              <div style={{ fontSize: '0.75rem', color: 'var(--accent-primary)', fontWeight: 600 }}>{IDENTITY.title}</div>
+            </div>
+          </GlassCard>
+        </div>
+
         {/* Badges */}
         <div ref={badgesRef} style={{ display: 'flex', justifyContent: 'center', gap: 10, marginBottom: 28, opacity: 0 }}>
           <span className="pill">

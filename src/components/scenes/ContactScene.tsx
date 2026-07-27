@@ -76,12 +76,30 @@ const ContactScene: React.FC<{ id: string }> = ({ id }) => (
           </GlassCard>
         </div>
 
-        {/* CTA glass card */}
-        <GlassCard style={{ padding: 40, textAlign: 'center' }}>
-          <h3 style={{ fontSize: '1.6rem', fontFamily: 'var(--font-display)', marginBottom: 16, lineHeight: 1.2 }}>
-            Ready to start a project?
+        {/* CTA glass card with Pratheesh Photo */}
+        <GlassCard tilt style={{ padding: 36, textAlign: 'center' }}>
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 20 }}>
+            <div style={{
+              position: 'relative',
+              width: 96,
+              height: 96,
+              borderRadius: '50%',
+              overflow: 'hidden',
+              border: '3px solid var(--accent-primary)',
+              boxShadow: '0 0 25px rgba(59, 130, 246, 0.35)',
+            }}>
+              <img
+                src="/assets/pratheesh4k2.jpeg"
+                alt="Pratheesh Clement"
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              />
+            </div>
+          </div>
+
+          <h3 style={{ fontSize: '1.6rem', fontFamily: 'var(--font-display)', marginBottom: 12, lineHeight: 1.2 }}>
+            Direct Contact with Pratheesh
           </h3>
-          <p style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', lineHeight: 1.7, marginBottom: 32 }}>
+          <p style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', lineHeight: 1.7, marginBottom: 28 }}>
             Whether you need a digital marketing strategy, SEO overhaul, web development, or AI automation — let's talk.
           </p>
 
