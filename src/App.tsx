@@ -2,6 +2,7 @@ import React, { Suspense, useState, useEffect } from 'react';
 import Lenis from 'lenis';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useTheme } from './hooks/useTheme';
 
 // Layout
 import { Navbar }                 from './components/layout/Navbar';
@@ -25,9 +26,9 @@ const AIConcierge       = React.lazy(() => import('./components/ai/AIConcierge')
 gsap.registerPlugin(ScrollTrigger);
 
 export const App: React.FC = () => {
-  const [bootDone, setBootDone]   = useState(false);
+  const [bootDone, setBootDone] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
-  const [theme, setTheme]         = useState<'light' | 'dark'>('light');
+  const { theme, toggleTheme } = useTheme('light');
 
   // ── Lenis smooth scroll & GSAP ticker ──────────────────────────────
   useEffect(() => {
@@ -53,15 +54,6 @@ export const App: React.FC = () => {
       lenis.destroy();
     };
   }, []);
-
-  // ── Theme toggle ────────────────────────────────────────────────────
-  const toggleTheme = () => {
-    setTheme(prev => {
-      const next = prev === 'light' ? 'dark' : 'light';
-      document.documentElement.setAttribute('data-theme', next);
-      return next;
-    });
-  };
 
   return (
     <>

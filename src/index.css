@@ -33,7 +33,9 @@
   --radius-full: 9999px;
 }
 
-/* Dark Theme Tokens (Optional Toggle) */
+/* Dark Theme Tokens (Full Multi-Theme Support) */
+:root[data-theme="dark"],
+html[data-theme="dark"],
 body.dark-theme {
   --bg-primary: #090D16;
   --bg-secondary: #111827;
@@ -43,11 +45,17 @@ body.dark-theme {
   --text-secondary: #CBD5E1;
   --text-tertiary: #64748B;
   
-  --glass-bg: rgba(17, 24, 39, 0.55);
-  --glass-border: rgba(255, 255, 255, 0.12);
-  --glass-highlight: rgba(255, 255, 255, 0.15);
+  --glass-bg: rgba(17, 24, 39, 0.65);
+  --glass-border: rgba(255, 255, 255, 0.15);
+  --glass-highlight: rgba(255, 255, 255, 0.2);
   --glass-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
-  --hover-shadow: 0 25px 65px rgba(0, 0, 0, 0.8), 0 0 35px rgba(59, 130, 246, 0.2);
+  --hover-shadow: 0 25px 65px rgba(0, 0, 0, 0.8), 0 0 35px rgba(59, 130, 246, 0.3);
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color 0.4s ease, color 0.4s ease;
 }
 
 * {

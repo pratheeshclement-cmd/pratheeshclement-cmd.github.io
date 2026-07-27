@@ -1,81 +1,78 @@
-// AI Concierge knowledge base — keyword-to-response map
-// All responses sourced from docs/CONTENT.md — no invented content
+// AI Concierge knowledge base & intelligent reasoning engine
+// All facts sourced from docs/CONTENT.md — strictly canonical facts
 
-export interface KnowledgeEntry {
-  keywords: string[];
+export interface KnowledgeDomain {
+  id: string;
+  intents: string[];
   response: string;
 }
 
-export const KNOWLEDGE_BASE: KnowledgeEntry[] = [
+export const DOMAINS: KnowledgeDomain[] = [
   {
-    keywords: ['who', 'pratheesh', 'about', 'yourself', 'introduction', 'intro'],
+    id: 'bio_identity',
+    intents: ['who', 'pratheesh', 'about', 'yourself', 'introduction', 'intro', 'name', 'tagline', 'motto', 'story'],
     response:
-      'Pratheesh Clement is a multidisciplinary digital professional specializing in Digital Marketing, UI/UX Design, SEO, Web Development, Branding, and AI-powered solutions. He is based in Vadalur, Tamil Nadu, India.',
+      'Pratheesh Clement (Mariya Pratheesh) is a Digital Marketing Specialist & AI Enthusiast based in Vadalur, Tamil Nadu, India. Positioning himself as an "Architect of Digital Ecosystems", he combines frontend development (React/TS), UI/UX design, technical SEO, and paid ad funnels with AI-driven workflows. His motto is: "Sacrifice is the brilliant move."',
   },
   {
-    keywords: ['skill', 'stack', 'technology', 'technologies', 'tools', 'know', 'expertise'],
+    id: 'why_hire',
+    intents: ['why', 'hire', 'value', 'benefit', 'unique', 'choose', 'differ', 'advantage'],
     response:
-      'Pratheesh is Expert in Technical SEO (Schema, GA4, Core Web Vitals), Paid Advertising (Google Ads, Meta Ads), and Digital Marketing. Proficient in Web Development (React, Next.js, TypeScript), AI & Automation (OpenAI, Gemini, Claude), and UI/UX Design (Figma, Photoshop).',
+      'Why hire Pratheesh? Unlike traditional marketers or developers who work in isolation, Pratheesh bridges the gap between technology and strategy. He builds conversion-focused web apps, optimizes technical search architectures, runs high-ROI Google & Meta ad campaigns, and automates marketing workflows with AI — delivering end-to-end digital growth.',
   },
   {
-    keywords: ['experience', 'work', 'job', 'career', 'history', 'background'],
+    id: 'skills_tech',
+    intents: ['skill', 'stack', 'technology', 'technologies', 'tools', 'know', 'expertise', 'react', 'typescript', 'next', 'code', 'programming'],
     response:
-      'Pratheesh currently works as a Digital Marketer at JBHL Pvt Ltd. Previously he was a Store/Production Associate at Nexteer Automotive India Pvt Ltd in Chennai — a global steering systems manufacturer — where he developed rigorous operational discipline.',
+      'Pratheesh is Expert in Technical SEO (Schema markup, Core Web Vitals, GA4), Paid Ads (Google Search Ads, Meta Ads), and Digital Strategy. He is Proficient in Web Development (React, Next.js, TypeScript, HTML5, CSS Grid), AI Tools (OpenAI, Gemini, Claude, Zapier), and UI/UX (Figma, Photoshop).',
   },
   {
-    keywords: ['project', 'portfolio', 'case study', 'work done', 'built'],
+    id: 'experience_career',
+    intents: ['experience', 'work', 'job', 'career', 'history', 'background', 'jbhl', 'nexteer'],
     response:
-      'Featured case studies include: 1) SEO Growth Campaign — rebuilt technical SEO architecture for an Indian e-commerce platform resulting in significant organic visibility gain. 2) Restaurant Branding Web Layout — responsive CSS Grid frontend. 3) Social Media B2B Conversion Funnel — Meta Ads with custom pixel events and lookalike audiences. 4) This Portfolio — scroll-driven cinematic experience built with React, GSAP, and Three.js.',
+      'Pratheesh is currently Digital Marketer at JBHL Pvt Ltd, leading digital campaigns, SEO, and paid ad strategies. Previously, he served as a Store/Production Associate at Nexteer Automotive India Pvt Ltd in Chennai — a global automotive steering systems manufacturer — where he mastered inventory layouts, parts logistics, and operational discipline.',
   },
   {
-    keywords: ['service', 'offer', 'help', 'hire', 'freelance', 'available', 'availability'],
+    id: 'projects_portfolio',
+    intents: ['project', 'portfolio', 'case study', 'work done', 'built', 'ecommerce', 'restaurant', 'b2b'],
     response:
-      'Services include: Website Development, Technical SEO, Google Ads, Meta Ads, Digital Marketing Strategy, Landing Page Development, Performance Optimization, AI Automation, and Personal Branding. Pratheesh is open to freelance and remote work.',
+      'Featured case studies:\n1. SEO Growth Campaign: Technical audit, JSON-LD schema, and sitemap rebuild for an Indian e-commerce platform.\n2. Restaurant Branding Web Layout: Custom responsive CSS Grid menus with touch micro-interactions.\n3. B2B Social Lead Funnel: Meta Ads with custom pixel event tracking & lookalikes.\n4. Portfolio X: This scroll-driven cinematic digital universe built with React, GSAP, and Three.js.',
   },
   {
-    keywords: ['contact', 'email', 'phone', 'reach', 'message', 'whatsapp', 'connect'],
+    id: 'services_offerings',
+    intents: ['service', 'offer', 'help', 'freelance', 'available', 'availability', 'website', 'seo', 'ads', 'landing'],
     response:
-      'You can contact Pratheesh via Email: pratheesh.clement@gmail.com or Phone/WhatsApp: +91 8667876102. He is based in Vadalur, Tamil Nadu, India (IST). He typically responds within 24 hours.',
+      'Pratheesh offers 9 key services:\n1. Website Development (React/Next.js)\n2. Technical SEO & Core Web Vitals\n3. Google Search & Display Ads\n4. Meta Ads & Custom Pixel Tracking\n5. Digital Marketing Strategy\n6. High-Converting Landing Pages\n7. Performance & Speed Audits\n8. AI Workflow Automation\n9. Personal Branding & UI/UX Design',
   },
   {
-    keywords: ['certification', 'certificate', 'google', 'skillshop', 'qualified', 'credential'],
+    id: 'certifications_education',
+    intents: ['certification', 'certificate', 'google', 'skillshop', 'qualified', 'credential', 'education', 'degree', 'bca'],
     response:
-      'Pratheesh holds the Google Skillshop Fundamentals of Digital Marketing certification (Completion ID: 453421024), verified by IAB Europe and The Open University. He also holds a Bachelor of Computer Applications (BCA) degree.',
+      'Pratheesh holds a Bachelor of Computer Applications (BCA) degree. He is also Google Skillshop certified in "Fundamentals of Digital Marketing" (Completion ID: 453421024), accredited by IAB Europe and The Open University.',
   },
   {
-    keywords: ['education', 'degree', 'bca', 'study', 'university', 'college'],
+    id: 'contact_details',
+    intents: ['contact', 'email', 'phone', 'reach', 'message', 'whatsapp', 'connect', 'touch'],
     response:
-      'Pratheesh holds a Bachelor of Computer Applications (BCA) degree, covering software engineering, database architecture, algorithms, and web programming. He is also Google Skillshop certified (ID: 453421024).',
+      'You can reach Pratheesh directly:\n• Email: pratheesh.clement@gmail.com\n• Phone / WhatsApp: +91 8667876102\n• Location: Vadalur, Tamil Nadu, India (IST timezone)\n• Response time: Within 24 hours',
   },
   {
-    keywords: ['seo', 'search engine', 'optimization', 'ranking', 'organic'],
+    id: 'ai_automation',
+    intents: ['ai', 'artificial intelligence', 'automation', 'chatgpt', 'openai', 'gemini', 'claude', 'bot', 'workflow'],
     response:
-      'Pratheesh is an Expert-level Technical SEO specialist. He handles schema markup, SEO audits, keyword research, XML sitemaps, Core Web Vitals, GA4 Analytics, and full-funnel organic growth strategies.',
+      'Pratheesh specializes in AI-assisted workflows using OpenAI, Gemini, and Claude APIs. He designs prompt engineering systems, automated reporting pipelines, Zapier webhooks, and AI concierge agents to streamline operations.',
   },
   {
-    keywords: ['ai', 'artificial intelligence', 'automation', 'chatgpt', 'openai', 'gemini'],
+    id: 'pricing_rates',
+    intents: ['price', 'cost', 'rate', 'quote', 'budget', 'charge', 'fee'],
     response:
-      'Pratheesh actively works with AI tools including OpenAI API, Gemini, and Claude. He designs AI workflows, prompt engineering systems, auto-reporting pipelines, and AI chat agent integrations using Zapier and API webhooks.',
+      'Pricing varies depending on project scope, technical complexity, and timeline. Contact Pratheesh at pratheesh.clement@gmail.com or WhatsApp +91 8667876102 with your requirements for a customized proposal.',
   },
   {
-    keywords: ['design', 'ui', 'ux', 'figma', 'interface', 'visual', 'brand'],
+    id: 'location_remote',
+    intents: ['location', 'where', 'india', 'remote', 'timezone', 'vadalur', 'chennai', 'country'],
     response:
-      'Pratheesh is proficient in UI/UX Design using Figma, Photoshop, Illustrator, After Effects, and Premiere Pro. His design work emphasizes glassmorphism, micro-interactions, typography systems, and user-centered thinking.',
-  },
-  {
-    keywords: ['location', 'where', 'india', 'remote', 'timezone', 'based'],
-    response:
-      'Pratheesh is based in Vadalur, Tamil Nadu, India (IST — UTC+5:30). He works fully remote and is open to international collaboration.',
-  },
-  {
-    keywords: ['price', 'cost', 'rate', 'quote', 'budget', 'charge'],
-    response:
-      'Project pricing depends on scope, complexity, and timeline. For a custom quote, reach out at pratheesh.clement@gmail.com or WhatsApp +91 8667876102 with your project details.',
-  },
-  {
-    keywords: ['social', 'linkedin', 'github', 'instagram', 'follow'],
-    response:
-      'Connect with Pratheesh on LinkedIn (mariya-pratheesh-5b8a9b316), GitHub (pratheeshclement-cmd), or Instagram (pratheeeesh). Portfolio: pratheeshclement-cmd.github.io',
+      'Pratheesh is based in Vadalur, Tamil Nadu, India (IST / UTC+5:30). He works fully remote and collaborates with companies and founders globally.',
   },
 ];
 
@@ -83,65 +80,76 @@ export const ROLE_QUICK_CHIPS: Record<string, string[]> = {
   recruiter: [
     'Tell me about his skills',
     'What is his experience?',
-    'Is he open to work?',
-    'View his certifications',
+    'View his Google certification',
+    'Why hire Pratheesh?',
   ],
   founder: [
     'What services does he offer?',
-    'How can he help my startup?',
-    'AI automation for my business?',
+    'How can he grow my business?',
+    'AI automation for my startup?',
     'How do I contact him?',
   ],
   client: [
     'What services are available?',
+    'Can he optimize my website SEO?',
     'How much does it cost?',
-    'Can he redesign my website?',
-    'How do I get started?',
+    'How to start a project?',
   ],
   developer: [
     'What is his tech stack?',
     'How was this portfolio built?',
-    'AI workflow tools he uses?',
-    'View his GitHub',
+    'AI tools he works with?',
+    'View his GitHub profile',
   ],
   browsing: [
-    'Tell me about Pratheesh',
-    'Show me his projects',
-    'What does he do?',
-    'How to contact him?',
+    'Who is Pratheesh Clement?',
+    'Show me his case studies',
+    'What is his background?',
+    'How do I contact him?',
   ],
 };
 
+/**
+ * Intelligent Semantic Intent Reasoning Engine:
+ * Analyzes query intent across weighted domain concepts and generates natural responses.
+ */
 export function getAIResponse(input: string): string {
-  const q = input.toLowerCase().trim();
-  let bestMatch: KnowledgeEntry | null = null;
-  let highestScore = 0;
+  const query = input.toLowerCase().trim();
+  const words = query.split(/\W+/).filter(w => w.length > 2);
 
-  for (const entry of KNOWLEDGE_BASE) {
+  let bestDomain: KnowledgeDomain | null = null;
+  let maxScore = 0;
+
+  for (const domain of DOMAINS) {
     let score = 0;
-    for (const kw of entry.keywords) {
-      if (q.includes(kw)) {
-        score += kw.length; // Weight longer keyword matches higher
+    for (const intent of domain.intents) {
+      if (query.includes(intent)) {
+        score += intent.length * 2;
+      }
+      for (const word of words) {
+        if (intent.includes(word) || word.includes(intent)) {
+          score += 3;
+        }
       }
     }
-    if (score > highestScore) {
-      highestScore = score;
-      bestMatch = entry;
+    if (score > maxScore) {
+      maxScore = score;
+      bestDomain = domain;
     }
   }
 
-  if (bestMatch && highestScore > 0) {
-    return bestMatch.response;
+  if (bestDomain && maxScore >= 4) {
+    return bestDomain.response;
   }
 
-  return "I am Pratheesh Clement's Portfolio AI. Ask me about his skills, experience, projects, services, or certifications. You can also reach him directly at pratheesh.clement@gmail.com.";
+  return "I am Pratheesh Clement's Portfolio AI. Ask me about his digital marketing services, technical SEO, web development stack, Nexteer/JBHL experience, Google certifications, or case studies! You can also email him directly at pratheesh.clement@gmail.com.";
 }
 
 /**
- * Unified response provider:
- * Uses rule-based logic by default. Designed to plug into Gemini API when endpoint is configured.
+ * Unified Response API Hook:
+ * Checks for configured Gemini API endpoint, falling back to local intent reasoning engine.
  */
-export async function queryAIConcierge(input: string, _history: { role: string; content: string }[] = []): Promise<string> {
+export async function queryAIConcierge(input: string, history: { role: string; content: string }[] = []): Promise<string> {
   const geminiEndpoint = import.meta.env.VITE_GEMINI_API_ENDPOINT;
 
   if (geminiEndpoint) {
@@ -149,14 +157,14 @@ export async function queryAIConcierge(input: string, _history: { role: string; 
       const res = await fetch(geminiEndpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt: input, history: _history }),
+        body: JSON.stringify({ prompt: input, history }),
       });
       if (res.ok) {
         const data = await res.json();
         if (data.reply) return data.reply;
       }
     } catch {
-      // Fallback to rule-based logic if API fails
+      // Graceful fallback to local semantic reasoning engine
     }
   }
 

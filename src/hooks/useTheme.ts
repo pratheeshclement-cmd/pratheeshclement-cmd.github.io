@@ -1,23 +1,20 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { Theme } from '../types';
 
-/**
- * useTheme
- * Returns the current theme and a toggle function.
- * Setting a theme adds `data-theme` on the <html> element so CSS custom
- * properties can be overridden for the dark palette defined in index.css.
- */
 export function useTheme(initial: Theme = 'light') {
-  const [theme, setTheme] = useState<Theme>(initial);
+  const [theme, setTheme] = useState<Theme>(() => {
+    const saved = localStorage.getItem('px-theme');
+    return (saved as Theme) || initial;
+  });
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    document.body.classList.toggle('dark-theme', theme === 'dark');
+    localStorage.setItem('px-theme', theme);
+  }, [theme]);
 
   const toggleTheme = useCallback(() => {
-    setTheme(prev => {
-      const next: Theme = prev === 'light' ? 'dark' : 'light';
-      document.documentElement.setAttribute('data-theme', next);
-      // Sync with body class for backwards-compat with .dark-theme CSS
-      document.body.classList.toggle('dark-theme', next === 'dark');
-      return next;
-    });
+    setTheme(prev => (prev === 'light' ? 'dark' : 'light'));
   }, []);
 
   return { theme, toggleTheme };
