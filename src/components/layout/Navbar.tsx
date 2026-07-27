@@ -85,8 +85,9 @@ export const Navbar: React.FC<NavbarProps> = ({ scrollProgress, theme, onToggleT
           </button>
 
           <a
-            href="#"
-            aria-label="Download Resume (PDF)"
+            href="/resume/MariyaPratheesh.docx"
+            download="MariyaPratheesh_Resume.docx"
+            aria-label="Download Resume"
             className="btn-primary"
             style={{ padding: '8px 16px', fontSize: '0.85rem', textDecoration: 'none' }}
           >

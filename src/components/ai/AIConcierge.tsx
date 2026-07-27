@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import gsap from 'gsap';
 import { MessageCircle, X, Send, Bot } from 'lucide-react';
 import { AIMessage, UserRole } from '../../types';
-import { ROLE_QUICK_CHIPS, getAIResponse } from '../../data/aiKnowledgeBase';
+import { ROLE_QUICK_CHIPS, queryAIConcierge } from '../../data/aiKnowledgeBase';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
 
 const ROLES: { id: UserRole; label: string; emoji: string }[] = [
@@ -86,7 +86,7 @@ const AIConcierge: React.FC = () => {
     // Simulated 600ms response delay for realism
     await new Promise(resolve => setTimeout(resolve, 600));
 
-    const answer = getAIResponse(text);
+    const answer = await queryAIConcierge(text, msgs.map(m => ({ role: m.role, content: m.content })));
     const botMsg: AIMessage = { id: `m-${Date.now() + 1}`, role: 'assistant', content: answer, timestamp: Date.now() };
     setMsgs(prev => [...prev, botMsg]);
     setTyping(false);

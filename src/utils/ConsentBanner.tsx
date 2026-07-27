@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { X, Cookie } from 'lucide-react';
+import { initAnalytics } from './analytics';
 
 const CONSENT_KEY = 'portfolio-consent-v1';
 
@@ -39,6 +40,13 @@ export const ConsentBanner: React.FC = () => {
   const [visible, setVisible] = useState(!consent.decided);
   const [showDetails, setShowDetails] = useState(false);
 
+  useEffect(() => {
+    // If user already consented in a previous session, initialize analytics
+    if (consent.decided) {
+      initAnalytics(consent);
+    }
+  }, []);
+
   const accept = (all: boolean) => {
     const next: ConsentState = {
       analytics:  all,
@@ -49,11 +57,8 @@ export const ConsentBanner: React.FC = () => {
     saveConsent(next);
     setConsent(next);
     setVisible(false);
-
-    // Dynamically inject analytics if accepted
-    if (all) {
-      window.dispatchEvent(new CustomEvent('consent-granted', { detail: next }));
-    }
+    initAnalytics(next);
+    window.dispatchEvent(new CustomEvent('consent-granted', { detail: next }));
   };
 
   const saveCustom = (partial: Partial<ConsentState>) => {

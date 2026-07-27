@@ -114,10 +114,51 @@ export const ROLE_QUICK_CHIPS: Record<string, string[]> = {
 
 export function getAIResponse(input: string): string {
   const q = input.toLowerCase().trim();
+  let bestMatch: KnowledgeEntry | null = null;
+  let highestScore = 0;
+
   for (const entry of KNOWLEDGE_BASE) {
-    if (entry.keywords.some(kw => q.includes(kw))) {
-      return entry.response;
+    let score = 0;
+    for (const kw of entry.keywords) {
+      if (q.includes(kw)) {
+        score += kw.length; // Weight longer keyword matches higher
+      }
+    }
+    if (score > highestScore) {
+      highestScore = score;
+      bestMatch = entry;
     }
   }
+
+  if (bestMatch && highestScore > 0) {
+    return bestMatch.response;
+  }
+
   return "I am Pratheesh Clement's Portfolio AI. Ask me about his skills, experience, projects, services, or certifications. You can also reach him directly at pratheesh.clement@gmail.com.";
+}
+
+/**
+ * Unified response provider:
+ * Uses rule-based logic by default. Designed to plug into Gemini API when endpoint is configured.
+ */
+export async function queryAIConcierge(input: string, _history: { role: string; content: string }[] = []): Promise<string> {
+  const geminiEndpoint = import.meta.env.VITE_GEMINI_API_ENDPOINT;
+
+  if (geminiEndpoint) {
+    try {
+      const res = await fetch(geminiEndpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: input, history: _history }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.reply) return data.reply;
+      }
+    } catch {
+      // Fallback to rule-based logic if API fails
+    }
+  }
+
+  return getAIResponse(input);
 }
