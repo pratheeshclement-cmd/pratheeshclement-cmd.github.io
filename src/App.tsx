@@ -3,6 +3,8 @@ import Lenis from 'lenis';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useTheme } from './hooks/useTheme';
+import { camera } from './engine/CameraController';
+import { animeEngine } from './engine/AnimeMasterEngine';
 
 // Layout
 import { Navbar }                 from './components/layout/Navbar';
@@ -30,16 +32,21 @@ export const App: React.FC = () => {
   const [scrollProgress, setScrollProgress] = useState(0);
   const { theme, toggleTheme } = useTheme('light');
 
-  // ── Lenis smooth scroll & GSAP ticker ──────────────────────────────
+  // ── Mount 3D Virtual Camera & Lenis Smooth Scroll ──────────────────
   useEffect(() => {
+    camera.mount('camera-perspective', 'main-world');
+
     const lenis = new Lenis({
       duration: 1.2,
       easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
     });
 
-    const onScroll = (e: { progress: number }) => {
+    const onScroll = (e: { progress: number; velocity: number }) => {
       setScrollProgress(e.progress);
+      // Update Virtual Camera 3D flight & scrub master Anime.js timeline
+      camera.updateCamera(e.progress, e.velocity);
+      animeEngine.scrubScroll(e.progress);
       ScrollTrigger.update();
     };
     lenis.on('scroll', onScroll);
@@ -49,6 +56,7 @@ export const App: React.FC = () => {
     gsap.ticker.lagSmoothing(0, 0);
 
     return () => {
+      camera.unmount();
       lenis.off('scroll', onScroll);
       gsap.ticker.remove(tick);
       lenis.destroy();
@@ -58,7 +66,7 @@ export const App: React.FC = () => {
   return (
     <>
       {/* Accessibility skip link */}
-      <a className="skip-link" href="#main-content">Skip to content</a>
+      <a className="skip-link" href="#main-world">Skip to content</a>
 
       {/* Fixed ambient background layer */}
       <AmbientBackground />
@@ -66,7 +74,7 @@ export const App: React.FC = () => {
       {/* Floating ambient particle canvas layer */}
       <CinematicParticleCanvas />
 
-      {/* Custom cursor (desktop only) */}
+      {/* Custom cursor lighting */}
       <CursorLighting />
 
       {/* Boot sequence — fixed overlay */}
@@ -81,19 +89,22 @@ export const App: React.FC = () => {
         onToggleTheme={toggleTheme}
       />
 
-      {/* ── Main cinematic scroll world ──────────────────────────────── */}
-      <main id="main-content" role="main">
-        <Suspense fallback={null}>
-          <HeroScene         id="scene-hero" />
-          <AboutScene        id="scene-about" />
-          <SkillsScene       id="scene-skills" />
-          <ProjectsScene     id="scene-projects" />
-          <ExperienceScene   id="scene-experience" />
-          <ServicesScene     id="scene-services" />
-          <TestimonialsScene id="scene-testimonials" />
-          <ContactScene      id="scene-contact" />
-        </Suspense>
-      </main>
+      {/* ── 3D Virtual Camera Perspective Container ───────────────────── */}
+      <div id="camera-perspective" style={{ width: '100%', minHeight: '100vh', overflowX: 'hidden' }}>
+        {/* ── Main 3D Scroll World Space ──────────────────────────────── */}
+        <main id="main-world" role="main">
+          <Suspense fallback={null}>
+            <HeroScene         id="scene-hero" />
+            <AboutScene        id="scene-about" />
+            <SkillsScene       id="scene-skills" />
+            <ProjectsScene     id="scene-projects" />
+            <ExperienceScene   id="scene-experience" />
+            <ServicesScene     id="scene-services" />
+            <TestimonialsScene id="scene-testimonials" />
+            <ContactScene      id="scene-contact" />
+          </Suspense>
+        </main>
+      </div>
 
       {/* Persistent AI Concierge */}
       <Suspense fallback={null}>
