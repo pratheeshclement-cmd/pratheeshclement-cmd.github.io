@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import gsap from 'gsap';
+import anime from 'animejs';
 import { Sparkles, ShieldCheck } from 'lucide-react';
 import { SceneProps } from '../../types';
 import { IDENTITY } from '../../data/identity';
@@ -10,66 +10,84 @@ interface BootSceneProps extends Partial<SceneProps> {
 
 const BootScene: React.FC<BootSceneProps> = ({ onLeave }) => {
   const [progress, setProgress] = useState(0);
-  const bgImageRef  = useRef<HTMLImageElement>(null);
-  const cardRef     = useRef<HTMLDivElement>(null);
-  const scanLineRef = useRef<HTMLDivElement>(null);
+  const bgImageRef     = useRef<HTMLImageElement>(null);
+  const cardRef        = useRef<HTMLDivElement>(null);
+  const scanLineRef    = useRef<HTMLDivElement>(null);
   const progressBarRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // 5-second total timeline animation
-    const timelineObj = { value: 0 };
+    // 1. Anime.js Ken Burns background zoom
+    if (bgImageRef.current) {
+      anime({
+        targets: bgImageRef.current,
+        scale: [1.18, 1.0],
+        opacity: [0.8, 0.95],
+        duration: 5000,
+        easing: 'linear',
+      });
+    }
 
-    const tl = gsap.timeline({
-      onComplete: () => {
-        // Disassembly transition: zoom image in, fade overlay out smoothly
-        gsap.to(bgImageRef.current, { scale: 1.25, opacity: 0, duration: 0.8, ease: 'power2.inOut' });
-        gsap.to('#boot-overlay', {
+    // 2. Anime.js Holographic scan line loop
+    if (scanLineRef.current) {
+      anime({
+        targets: scanLineRef.current,
+        top: ['-10%', '110%'],
+        duration: 2500,
+        loop: true,
+        easing: 'linear',
+      });
+    }
+
+    // 3. Anime.js Center Card Assembly Sequence
+    if (cardRef.current) {
+      anime({
+        targets: cardRef.current,
+        translateY: [60, 0],
+        scale: [0.9, 1.0],
+        opacity: [0, 1],
+        duration: 1000,
+        easing: 'easeOutQuart',
+        delay: 200,
+      });
+    }
+
+    // 4. Anime.js Progress Bar & Counter
+    const counterObj = { value: 0 };
+    anime({
+      targets: counterObj,
+      value: 100,
+      round: 1,
+      duration: 4600,
+      easing: 'easeInOutCubic',
+      update: () => {
+        setProgress(counterObj.value);
+        if (progressBarRef.current) {
+          progressBarRef.current.style.width = `${counterObj.value}%`;
+        }
+      },
+      complete: () => {
+        // Flying Camera Exit Transition into Hero Section
+        anime({
+          targets: bgImageRef.current,
+          scale: 1.3,
           opacity: 0,
-          scale: 1.05,
-          duration: 0.8,
-          ease: 'power3.inOut',
-          onComplete: onLeave,
+          duration: 800,
+          easing: 'easeInQuint',
+        });
+
+        anime({
+          targets: '#boot-overlay',
+          opacity: 0,
+          scale: 1.08,
+          duration: 800,
+          easing: 'easeInQuint',
+          complete: onLeave,
         });
       },
     });
 
-    // 1. Ken Burns background zoom over 5 seconds
-    gsap.fromTo(
-      bgImageRef.current,
-      { scale: 1.18, opacity: 0.85 },
-      { scale: 1.0, opacity: 0.95, duration: 5.0, ease: 'none' }
-    );
-
-    // 2. Scanline sweeping loop across photo
-    gsap.fromTo(
-      scanLineRef.current,
-      { top: '-10%' },
-      { top: '110%', duration: 2.5, repeat: 1, ease: 'linear' }
-    );
-
-    // 3. Center card assembly
-    tl.fromTo(cardRef.current,
-      { opacity: 0, y: 40, scale: 0.92, filter: 'blur(10px)' },
-      { opacity: 1, y: 0, scale: 1, filter: 'blur(0px)', duration: 0.9, ease: 'power3.out' }
-    );
-
-    // 4. Progress counter from 0 to 100 over 4.8s
-    tl.to(timelineObj, {
-      value: 100,
-      duration: 4.0,
-      ease: 'power1.inOut',
-      onUpdate: () => setProgress(Math.floor(timelineObj.value)),
-    }, '-=0.4');
-
-    // 5. Progress bar fill
-    gsap.fromTo(progressBarRef.current,
-      { width: '0%' },
-      { width: '100%', duration: 4.5, ease: 'power1.inOut' }
-    );
-
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
-        tl.kill();
         onLeave();
       }
     };
@@ -93,7 +111,7 @@ const BootScene: React.FC<BootSceneProps> = ({ onLeave }) => {
         overflow: 'hidden',
       }}
     >
-      {/* Full-screen high-res portrait image background with cinematic lighting */}
+      {/* Full-screen 9:16 high-res portrait image background */}
       <img
         ref={bgImageRef}
         src="/assets/pratheesh4k2.jpeg"
@@ -110,7 +128,7 @@ const BootScene: React.FC<BootSceneProps> = ({ onLeave }) => {
         }}
       />
 
-      {/* Holographic scanner line */}
+      {/* Holographic laser scan line */}
       <div
         ref={scanLineRef}
         style={{
@@ -125,12 +143,12 @@ const BootScene: React.FC<BootSceneProps> = ({ onLeave }) => {
         }}
       />
 
-      {/* Vignette and radial lighting overlays */}
+      {/* Vignette & radial lighting overlay */}
       <div
         style={{
           position: 'absolute',
           inset: 0,
-          background: 'radial-gradient(circle at center, rgba(9, 13, 22, 0.3) 0%, rgba(9, 13, 22, 0.85) 80%)',
+          background: 'radial-gradient(circle at center, rgba(9, 13, 22, 0.2) 0%, rgba(9, 13, 22, 0.85) 80%)',
           zIndex: 1,
           pointerEvents: 'none',
         }}
@@ -202,7 +220,7 @@ const BootScene: React.FC<BootSceneProps> = ({ onLeave }) => {
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, marginBottom: 20 }}>
           <span className="pill" style={{ background: 'rgba(59, 130, 246, 0.25)', border: '1px solid rgba(59, 130, 246, 0.5)', color: '#93C5FD', fontSize: '0.78rem' }}>
             <Sparkles size={12} />
-            Initializing Cinematic Universe
+            Anime.js Master Motion System
           </span>
           <span className="pill" style={{ background: 'rgba(16, 185, 129, 0.25)', border: '1px solid rgba(16, 185, 129, 0.5)', color: '#6EE7B7', fontSize: '0.78rem' }}>
             <ShieldCheck size={12} />
@@ -224,6 +242,7 @@ const BootScene: React.FC<BootSceneProps> = ({ onLeave }) => {
             ref={progressBarRef}
             style={{
               height: '100%',
+              width: '0%',
               background: 'linear-gradient(90deg, #3B82F6, #8B5CF6, #10B981)',
               borderRadius: 999,
               boxShadow: '0 0 15px var(--accent-primary)',
@@ -233,7 +252,7 @@ const BootScene: React.FC<BootSceneProps> = ({ onLeave }) => {
 
         {/* Percentage text */}
         <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: 'rgba(255, 255, 255, 0.7)', fontFamily: 'var(--font-mono)' }}>
-          <span>Loading Spatial Engine...</span>
+          <span>Loading Spatial Motion Engine...</span>
           <span style={{ color: '#6EE7B7', fontWeight: 600 }}>{progress}%</span>
         </div>
       </div>

@@ -1,6 +1,5 @@
 import React, { useRef, useCallback } from 'react';
-import gsap from 'gsap';
-import { TILT } from '../../engine/MotionTokens';
+import anime from 'animejs';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
 
 interface GlassCardProps {
@@ -24,20 +23,26 @@ export const GlassCard: React.FC<GlassCardProps> = ({
     const rect = ref.current.getBoundingClientRect();
     const dx = ((e.clientX - rect.left) / rect.width  - 0.5) * 2;
     const dy = ((e.clientY - rect.top)  / rect.height - 0.5) * 2;
-    gsap.to(ref.current, {
-      rotateY:  dx * TILT.maxDeg,
-      rotateX: -dy * TILT.maxDeg,
-      scale: TILT.scale,
-      duration: 0.3, ease: 'power2.out', overwrite: 'auto',
-      transformPerspective: TILT.perspective,
+
+    anime({
+      targets: ref.current,
+      rotateY: dx * 6,
+      rotateX: -dy * 6,
+      scale: 1.02,
+      duration: 400,
+      easing: 'easeOutQuad',
     });
   }, [tilt, reduced]);
 
   const onMouseLeave = useCallback(() => {
     if (!ref.current) return;
-    gsap.to(ref.current, {
-      rotateY: 0, rotateX: 0, scale: 1,
-      duration: 0.6, ease: TILT.resetEase, overwrite: 'auto',
+    anime({
+      targets: ref.current,
+      rotateY: 0,
+      rotateX: 0,
+      scale: 1.0,
+      duration: 600,
+      easing: 'easeOutElastic(1, 0.4)',
     });
   }, []);
 
@@ -45,7 +50,7 @@ export const GlassCard: React.FC<GlassCardProps> = ({
     <div
       ref={ref}
       className={`glass ${float && !reduced ? 'glass-float' : ''} ${className}`}
-      style={{ ...style, willChange: tilt ? 'transform' : undefined }}
+      style={{ ...style, willChange: tilt ? 'transform' : undefined, transformStyle: 'preserve-3d' }}
       onMouseMove={onMouseMove}
       onMouseLeave={onMouseLeave}
       onClick={onClick}

@@ -1,7 +1,6 @@
 import React, { useRef, useEffect } from 'react';
-import gsap from 'gsap';
+import anime from 'animejs';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { EASE, DUR, STAGGER } from '../../engine/MotionTokens';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
 
 interface SplitTextProps {
@@ -9,7 +8,6 @@ interface SplitTextProps {
   tag?: 'h1' | 'h2' | 'h3' | 'h4' | 'p' | 'span';
   className?: string;
   style?: React.CSSProperties;
-  /** scroll trigger start position */
   start?: string;
   stagger?: number;
   delay?: number;
@@ -17,11 +15,11 @@ interface SplitTextProps {
 
 /**
  * SplitText — splits text into individual <span class="char"> elements
- * and animates each one in on scroll with GSAP.
+ * and animates each character with Anime.js staggered assembly.
  */
 export const SplitText: React.FC<SplitTextProps> = ({
   text, tag: Tag = 'h2', className = '', style,
-  start = 'top 80%', stagger = STAGGER.char, delay = 0,
+  start = 'top 80%', stagger = 30, delay = 0,
 }) => {
   const containerRef = useRef<HTMLElement>(null);
   const reduced = useReducedMotion();
@@ -37,25 +35,33 @@ export const SplitText: React.FC<SplitTextProps> = ({
 
     const chars = el.querySelectorAll<HTMLSpanElement>('.char');
 
-    const anim = gsap.fromTo(
-      chars,
-      { y: 60, opacity: 0, rotateX: -90 },
-      {
-        y: 0, opacity: 1, rotateX: 0,
-        stagger,
-        delay,
-        duration: DUR.slow,
-        ease: EASE.out,
-        transformOrigin: '50% 100%',
-        scrollTrigger: {
-          trigger: el,
-          start,
-          toggleActions: 'play none none reverse',
-        },
-      }
-    );
+    const st = ScrollTrigger.create({
+      trigger: el,
+      start,
+      onEnter: () => {
+        anime({
+          targets: chars,
+          translateY: [50, 0],
+          rotateX: [-90, 0],
+          opacity: [0, 1],
+          delay: anime.stagger(stagger, { start: delay * 1000 }),
+          duration: 800,
+          easing: 'easeOutBack',
+        });
+      },
+      onLeaveBack: () => {
+        anime({
+          targets: chars,
+          translateY: [0, 50],
+          rotateX: [0, -90],
+          opacity: [1, 0],
+          duration: 400,
+          easing: 'easeInCubic',
+        });
+      },
+    });
 
-    return () => { anim.kill(); };
+    return () => { st.kill(); };
   }, [reduced, start, stagger, delay]);
 
   const chars = text.split('').map((char, i) => (
