@@ -14,7 +14,7 @@ export const SceneGraph: React.FC<SceneGraphProps> = ({ children, reducedMotion 
 
     const handleMouseMove = (e: MouseEvent) => {
       if (sceneRef.current) {
-        director.updateSceneParallax(sceneRef.current, e.clientX, e.clientY);
+        director.updateSceneParallaxWithInertia(sceneRef.current, e.clientX, e.clientY);
       }
     };
 
@@ -34,7 +34,7 @@ export const SceneGraph: React.FC<SceneGraphProps> = ({ children, reducedMotion 
         backgroundColor: '#07090E'
       }}
     >
-      {/* 3D Camera Scene Container */}
+      {/* 3D Camera Scene Container with Spring Damping & Motion Blur */}
       <div
         ref={sceneRef}
         id="os-scene-container"
@@ -42,7 +42,6 @@ export const SceneGraph: React.FC<SceneGraphProps> = ({ children, reducedMotion 
           width: '100%',
           height: '100%',
           transformStyle: 'preserve-3d',
-          transition: 'transform 0.1s ease-out',
           willChange: 'transform, opacity, filter'
         }}
       >
