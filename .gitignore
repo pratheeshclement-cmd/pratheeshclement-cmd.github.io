@@ -1,0 +1,16 @@
+# Logs & Build Outputs
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor & System
+.vscode
+.idea
+.DS_Store
+*.suo
+*.user
+
+# Gemini IDE Brain
+.gemini
+scratch
