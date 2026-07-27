@@ -69,7 +69,7 @@ const SkillCard: React.FC<{ cat: SkillCategory; index: number }> = ({ cat, index
 
 const SkillsScene: React.FC<{ id: string }> = ({ id }) => {
   const sectionRef = useRef<HTMLElement>(null);
-  useCinematicSceneTransition(sectionRef);
+  useCinematicSceneTransition(sectionRef, 'scale-up');
 
   return (
     <section id={id} ref={sectionRef} className="scene" aria-label="Skills section">

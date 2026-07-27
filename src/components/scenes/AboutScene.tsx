@@ -7,7 +7,7 @@ import { useCinematicSceneTransition } from '../../hooks/useScrollTimeline';
 
 const AboutScene: React.FC<{ id: string }> = ({ id }) => {
   const sectionRef = useRef<HTMLElement>(null);
-  useCinematicSceneTransition(sectionRef);
+  useCinematicSceneTransition(sectionRef, 'slide-left');
 
   return (
     <section id={id} ref={sectionRef} className="scene" aria-label="About section">

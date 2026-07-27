@@ -8,7 +8,7 @@ import { useCinematicSceneTransition } from '../../hooks/useScrollTimeline';
 
 const ContactScene: React.FC<{ id: string }> = ({ id }) => {
   const sectionRef = useRef<HTMLElement>(null);
-  useCinematicSceneTransition(sectionRef);
+  useCinematicSceneTransition(sectionRef, 'blur-clear');
 
   return (
     <section id={id} ref={sectionRef} className="scene" aria-label="Contact section">

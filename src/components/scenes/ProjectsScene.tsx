@@ -80,7 +80,7 @@ import { useCinematicSceneTransition } from '../../hooks/useScrollTimeline';
 const ProjectsScene: React.FC<{ id: string }> = ({ id }) => {
   const [activeProject, setActiveProject] = useState<Project | null>(null);
   const sectionRef = useRef<HTMLElement>(null);
-  useCinematicSceneTransition(sectionRef);
+  useCinematicSceneTransition(sectionRef, 'slide-right');
 
   return (
     <section id={id} ref={sectionRef} className="scene" aria-label="Projects section">

@@ -9,7 +9,7 @@ import { useCinematicSceneTransition } from '../../hooks/useScrollTimeline';
 
 const TestimonialsScene: React.FC<{ id: string }> = ({ id }) => {
   const sectionRef = useRef<HTMLElement>(null);
-  useCinematicSceneTransition(sectionRef);
+  useCinematicSceneTransition(sectionRef, 'split-reveal');
 
   return (
     <section id={id} ref={sectionRef} className="scene" aria-label="Testimonials and FAQ section">

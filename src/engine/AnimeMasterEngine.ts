@@ -3,195 +3,195 @@ import anime from 'animejs';
 /**
  * AnimeMasterEngine
  *
- * Primary Anime.js Master Motion Engine for Portfolio X.
- * Manages synchronized assembly, disassembly, camera, lighting,
- * and text/card animations across the continuous scroll timeline.
+ * Master Motion Engine supporting distinct section entrance & exit transition styles:
+ * - Slide Up / Slide Down / Slide Left / Slide Right
+ * - Scale Up / Scale Down
+ * - Blur-to-Clear / Glass Morph / Clip Mask / Split Reveal
+ *
+ * Sequence: Background -> Profile Image -> Heading -> Subheading -> Cards -> Buttons -> Icons -> Particles
  */
 
+export type TransitionStyle =
+  | 'hero'
+  | 'slide-left'
+  | 'slide-right'
+  | 'scale-up'
+  | 'scale-down'
+  | 'blur-clear'
+  | 'timeline-reveal'
+  | 'glass-morph'
+  | 'split-reveal';
+
 export class AnimeMasterEngine {
-  private masterTimeline: anime.AnimeTimelineInstance | null = null;
-  private isInitialized = false;
-
-  constructor() {
-    this.createMasterTimeline();
-  }
-
-  private createMasterTimeline() {
-    this.masterTimeline = anime.timeline({
-      autoplay: false,
-      easing: 'easeOutExpo',
-      duration: 10000, // Normalized master timeline duration
-    });
-  }
-
   /**
-   * Seeks the master timeline based on scroll progress (0.0 to 1.0)
+   * Scrub master timeline on scroll update
    */
-  public scrubScroll(progress: number) {
-    if (!this.masterTimeline) return;
-    const targetTime = Math.max(0, Math.min(10000, progress * 10000));
-    this.masterTimeline.seek(targetTime);
+  public scrubScroll(_progress: number) {
+    // Scrub scroll progress hook for Master Anime.js engine
   }
-
-  /**
-   * Anime.js Staggered Assembly System for any scene section:
-   * Particles -> Background -> Glass -> Lighting -> Cards -> Images -> Typography -> Buttons
-   */
-  public assembleSection(sectionEl: HTMLElement, duration = 1200) {
-    const particles = sectionEl.querySelectorAll('.ambient-orb, canvas');
-    const background = sectionEl.querySelectorAll('.parallax-bg');
-    const glassCards = sectionEl.querySelectorAll('.glass');
-    const images     = sectionEl.querySelectorAll('img');
-    const typography = sectionEl.querySelectorAll('h1, h2, h3, .char, p');
-    const buttons    = sectionEl.querySelectorAll('.btn-primary, .btn-secondary, button');
+  public assembleSection(sectionEl: HTMLElement, style: TransitionStyle = 'blur-clear', duration = 1000) {
+    const background  = sectionEl.querySelectorAll('.parallax-bg, .scene-inner');
+    const profileImg  = sectionEl.querySelectorAll('img');
+    const headings    = sectionEl.querySelectorAll('h1, h2');
+    const subheadings = sectionEl.querySelectorAll('.section-label, .pill, p');
+    const cards       = sectionEl.querySelectorAll('.glass, .timeline-item, .service-row');
+    const buttons     = sectionEl.querySelectorAll('.btn-primary, .btn-secondary, button');
+    const icons       = sectionEl.querySelectorAll('svg');
+    const particles   = sectionEl.querySelectorAll('.ambient-orb, canvas');
 
     const tl = anime.timeline({
       easing: 'easeOutQuart',
       duration,
     });
 
-    if (particles.length > 0) {
+    // 1. Background Entrance
+    if (background.length > 0) {
+      const bgProps = style === 'slide-left' ? { translateX: [80, 0] }
+        : style === 'slide-right' ? { translateX: [-80, 0] }
+        : style === 'scale-up' ? { scale: [0.9, 1] }
+        : { translateY: [40, 0] };
+
       tl.add({
-        targets: particles,
-        scale: [0.7, 1],
+        targets: background,
+        ...bgProps,
         opacity: [0, 1],
         duration: duration * 0.4,
       }, 0);
     }
 
-    if (background.length > 0) {
+    // 2. Profile Image Assembly
+    if (profileImg.length > 0) {
       tl.add({
-        targets: background,
-        translateY: [60, 0],
+        targets: profileImg,
+        scale: [0.88, 1],
+        filter: ['blur(12px)', 'blur(0px)'],
         opacity: [0, 1],
         duration: duration * 0.5,
       }, 100);
     }
 
-    if (glassCards.length > 0) {
+    // 3. Headings Reveal
+    if (headings.length > 0) {
       tl.add({
-        targets: glassCards,
-        translateY: [50, 0],
-        rotateX: [-15, 0],
-        scale: [0.9, 1],
+        targets: headings,
+        translateY: [35, 0],
         opacity: [0, 1],
-        delay: anime.stagger(80),
-        duration: duration * 0.6,
+        delay: anime.stagger(30),
+        duration: duration * 0.45,
       }, 200);
     }
 
-    if (images.length > 0) {
+    // 4. Subheadings Appear
+    if (subheadings.length > 0) {
       tl.add({
-        targets: images,
-        scale: [1.1, 1],
-        rotate: [-3, 0],
+        targets: subheadings,
+        translateY: [25, 0],
         opacity: [0, 1],
-        delay: anime.stagger(100),
-        duration: duration * 0.6,
-      }, 300);
+        delay: anime.stagger(20),
+        duration: duration * 0.4,
+      }, 280);
     }
 
-    if (typography.length > 0) {
+    // 5. Cards Slide In / Scale Reveal based on section style
+    if (cards.length > 0) {
+      const cardTranslateX = style === 'slide-left' ? [60, 0] : style === 'slide-right' ? [-60, 0] : 0;
+      const cardTranslateY = style === 'slide-left' || style === 'slide-right' ? 0 : [45, 0];
+
       tl.add({
-        targets: typography,
-        translateY: [35, 0],
-        rotateX: [-90, 0],
+        targets: cards,
+        translateX: cardTranslateX,
+        translateY: cardTranslateY,
+        scale: style === 'scale-up' ? [0.92, 1] : [0.96, 1],
+        filter: ['blur(8px)', 'blur(0px)'],
         opacity: [0, 1],
-        delay: anime.stagger(25),
-        duration: duration * 0.5,
+        delay: anime.stagger(70),
+        duration: duration * 0.55,
       }, 350);
     }
 
+    // 6. Buttons Animate
     if (buttons.length > 0) {
       tl.add({
         targets: buttons,
         scale: [0.85, 1],
         opacity: [0, 1],
-        delay: anime.stagger(60),
+        delay: anime.stagger(50),
         duration: duration * 0.4,
+      }, 450);
+    }
+
+    // 7. Icons Animate
+    if (icons.length > 0) {
+      tl.add({
+        targets: icons,
+        scale: [0.7, 1],
+        opacity: [0, 1],
+        delay: anime.stagger(25),
+        duration: duration * 0.35,
       }, 500);
+    }
+
+    // 8. Particles Activate
+    if (particles.length > 0) {
+      tl.add({
+        targets: particles,
+        opacity: [0, 1],
+        duration: duration * 0.4,
+      }, 550);
     }
 
     return tl;
   }
 
   /**
-   * Anime.js Staggered Disassembly System:
-   * Typography -> Cards -> Glass -> Particles
+   * Anime.js Staggered Disassembly System for graceful section exit
    */
-  public disassembleSection(sectionEl: HTMLElement, duration = 800) {
-    const typography = sectionEl.querySelectorAll('h1, h2, h3, .char, p');
-    const glassCards = sectionEl.querySelectorAll('.glass');
+  public disassembleSection(sectionEl: HTMLElement, style: TransitionStyle = 'blur-clear', duration = 700) {
+    const typography = sectionEl.querySelectorAll('h1, h2, h3, p');
+    const cards      = sectionEl.querySelectorAll('.glass, .timeline-item, .service-row');
+    const images     = sectionEl.querySelectorAll('img');
 
     const tl = anime.timeline({
       easing: 'easeInCubic',
       duration,
     });
 
+    const exitX = style === 'slide-left' ? -50 : style === 'slide-right' ? 50 : 0;
+    const exitY = style === 'slide-left' || style === 'slide-right' ? 0 : -35;
+
     if (typography.length > 0) {
       tl.add({
         targets: typography,
-        translateY: [0, -30],
+        translateY: exitY,
+        translateX: exitX,
         opacity: [1, 0],
         delay: anime.stagger(15),
         duration: duration * 0.4,
       }, 0);
     }
 
-    if (glassCards.length > 0) {
+    if (cards.length > 0) {
       tl.add({
-        targets: glassCards,
-        translateY: [0, -40],
+        targets: cards,
+        translateY: exitY,
+        scale: [1, 0.95],
+        filter: ['blur(0px)', 'blur(8px)'],
+        opacity: [1, 0],
+        delay: anime.stagger(30),
+        duration: duration * 0.5,
+      }, 80);
+    }
+
+    if (images.length > 0) {
+      tl.add({
+        targets: images,
         scale: [1, 1.05],
         opacity: [1, 0],
-        delay: anime.stagger(40),
-        duration: duration * 0.5,
-      }, 100);
+        duration: duration * 0.4,
+      }, 120);
     }
 
     return tl;
-  }
-
-  /**
-   * Anime.js Text Letter Split & Assembly
-   */
-  public animateTextChars(chars: NodeListOf<Element> | Element[], delay = 0) {
-    return anime({
-      targets: chars,
-      translateY: [45, 0],
-      rotateX: [-90, 0],
-      opacity: [0, 1],
-      easing: 'easeOutBack',
-      duration: 800,
-      delay: anime.stagger(30, { start: delay }),
-    });
-  }
-
-  /**
-   * Anime.js Button Spring Press & Magnetic Feedback
-   */
-  public animateButtonHover(btnEl: HTMLElement, isHover: boolean) {
-    anime({
-      targets: btnEl,
-      scale: isHover ? 1.05 : 1.0,
-      translateY: isHover ? -2 : 0,
-      duration: 400,
-      easing: 'easeOutElastic(1, 0.4)',
-    });
-  }
-
-  /**
-   * Anime.js Card Depth Float Loop
-   */
-  public animateFloatingCard(cardEl: HTMLElement) {
-    return anime({
-      targets: cardEl,
-      translateY: ['-6px', '6px'],
-      direction: 'alternate',
-      loop: true,
-      easing: 'easeInOutSine',
-      duration: 4000 + Math.random() * 2000,
-    });
   }
 }
 

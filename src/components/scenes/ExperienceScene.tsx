@@ -79,7 +79,7 @@ const TimelineCard: React.FC<{ item: ExperienceItem; index: number }> = ({ item,
 
 const ExperienceScene: React.FC<{ id: string }> = ({ id }) => {
   const sectionRef = useRef<HTMLElement>(null);
-  useCinematicSceneTransition(sectionRef);
+  useCinematicSceneTransition(sectionRef, 'timeline-reveal');
 
   return (
     <section id={id} ref={sectionRef} className="scene" aria-label="Experience and certifications section">

@@ -1,17 +1,15 @@
 import { useEffect } from 'react';
-import anime from 'animejs';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useReducedMotion } from './useReducedMotion';
-import { animeEngine } from '../engine/AnimeMasterEngine';
+import { animeEngine, TransitionStyle } from '../engine/AnimeMasterEngine';
 
 /**
  * useAnimeScene
- * Binds an entire scene to the Anime.js Master Motion Engine.
- * As the user scrolls into the section, Anime.js executes the staggered Assembly System.
- * As the user scrolls past the section, Anime.js executes the Disassembly System.
+ * Binds an entire scene section to the Anime.js Motion Engine with a distinct transition style.
  */
 export function useAnimeScene(
   sectionRef: React.RefObject<HTMLElement | null>,
+  style: TransitionStyle = 'blur-clear',
   options?: {
     onAssemble?: () => void;
     onDisassemble?: () => void;
@@ -31,23 +29,23 @@ export function useAnimeScene(
       end: 'bottom 20%',
       onEnter: () => {
         if (!hasAssembled) {
-          animeEngine.assembleSection(section);
+          animeEngine.assembleSection(section, style);
           options?.onAssemble?.();
           hasAssembled = true;
         }
       },
       onLeave: () => {
-        animeEngine.disassembleSection(section);
+        animeEngine.disassembleSection(section, style);
         options?.onDisassemble?.();
         hasAssembled = false;
       },
       onEnterBack: () => {
-        animeEngine.assembleSection(section);
+        animeEngine.assembleSection(section, style);
         options?.onAssemble?.();
         hasAssembled = true;
       },
       onLeaveBack: () => {
-        animeEngine.disassembleSection(section);
+        animeEngine.disassembleSection(section, style);
         options?.onDisassemble?.();
         hasAssembled = false;
       },
@@ -56,8 +54,13 @@ export function useAnimeScene(
     return () => {
       st.kill();
     };
-  }, [reduced, sectionRef]);
+  }, [reduced, sectionRef, style]);
 }
 
-/** Legacy alias for backwards compatibility */
-export const useCinematicSceneTransition = useAnimeScene;
+/** Backwards compatibility alias */
+export function useCinematicSceneTransition(
+  sectionRef: React.RefObject<HTMLElement | null>,
+  style: TransitionStyle = 'blur-clear'
+) {
+  return useAnimeScene(sectionRef, style);
+}

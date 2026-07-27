@@ -73,7 +73,7 @@ const ServiceRow: React.FC<{ service: Service; index: number }> = ({ service, in
 
 const ServicesScene: React.FC<{ id: string }> = ({ id }) => {
   const sectionRef = useRef<HTMLElement>(null);
-  useCinematicSceneTransition(sectionRef);
+  useCinematicSceneTransition(sectionRef, 'glass-morph');
 
   return (
     <section id={id} ref={sectionRef} className="scene" aria-label="Services section">
