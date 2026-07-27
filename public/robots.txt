@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://pratheeshclement-cmd.github.io/sitemap.xml

@@ -10,7 +10,7 @@ import { MAGNETIC, EASE } from '../engine/MotionTokens';
  * On mouseleave, it springs back using elastic easing.
  */
 export function useMagneticHover<T extends HTMLElement>(
-  pull = MAGNETIC.pull
+  pull: number = MAGNETIC.pull
 ) {
   const ref = useRef<T>(null);
 
