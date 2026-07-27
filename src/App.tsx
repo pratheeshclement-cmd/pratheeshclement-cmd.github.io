@@ -8,7 +8,9 @@ import { RecruiterBar } from './components/RecruiterBar';
 import { GlobalSearchModal } from './components/GlobalSearchModal';
 import { CursorLighting } from './components/CursorLighting';
 import { SceneGraph } from './components/SceneGraph';
+import { OSWindowFrame } from './components/OSWindowFrame';
 import { director } from './services/TransitionDirector';
+import { sound } from './utils/soundEffects';
 import { use3DTilt, useMagneticButtons } from './utils/motionEffects';
 
 // Workspaces
@@ -31,6 +33,7 @@ import { SettingsWorkspace } from './components/workspaces/SettingsWorkspace';
 export const App: React.FC = () => {
   const [isBooting, setIsBooting] = useState(true);
   const [activeWorkspaceId, setActiveWorkspaceId] = useState<WorkspaceId>('welcome');
+  const [openWorkspaces, setOpenWorkspaces] = useState<WorkspaceId[]>(['welcome']);
   const [recruiterBarOpen, setRecruiterBarOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   
@@ -48,12 +51,51 @@ export const App: React.FC = () => {
   use3DTilt('.glass-card');
   useMagneticButtons('.btn-primary, .btn-secondary');
 
+  // Phase 9 Section 6: Global Shortcuts Listener (Cmd+1-9, Cmd+K, Esc)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const isCmd = e.metaKey || e.ctrlKey;
+
+      if (isCmd && e.key === 'k') {
+        e.preventDefault();
+        sound.playClick();
+        setSearchOpen(prev => !prev);
+        return;
+      }
+
+      if (isCmd && e.key >= '1' && e.key <= '9') {
+        e.preventDefault();
+        const targetIdx = parseInt(e.key, 10) - 1;
+        if (WORKSPACES[targetIdx]) {
+          sound.playWindowSwitch();
+          handleSelectWorkspace(WORKSPACES[targetIdx].id);
+        }
+        return;
+      }
+
+      if (e.key === 'Escape') {
+        if (searchOpen) {
+          setSearchOpen(false);
+        } else if (recruiterBarOpen) {
+          setRecruiterBarOpen(false);
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [searchOpen, recruiterBarOpen]);
+
   const handleBootComplete = () => {
     setIsBooting(false);
   };
 
-  // Section 9 & 10: All navigation passes through one TransitionDirector timeline
+  // Section 2 & 8: Keep-Alive Workspace Navigation & State Persistence
   const handleSelectWorkspace = (id: WorkspaceId) => {
+    if (!openWorkspaces.includes(id)) {
+      setOpenWorkspaces(prev => [...prev, id]);
+    }
+
     if (id === activeWorkspaceId) return;
 
     const sceneElement = document.getElementById('os-scene-container');
@@ -72,12 +114,23 @@ export const App: React.FC = () => {
     }
   };
 
+  const handleCloseWorkspace = (id: WorkspaceId) => {
+    sound.playClick();
+    if (openWorkspaces.length <= 1) return; // Keep at least 1 window
+    const filtered = openWorkspaces.filter(w => w !== id);
+    setOpenWorkspaces(filtered);
+    if (activeWorkspaceId === id) {
+      setActiveWorkspaceId(filtered[filtered.length - 1]);
+    }
+  };
+
   const handleUpdateSettings = (newSettings: Partial<SystemSettings>) => {
     setSystemSettings(prev => ({ ...prev, ...newSettings }));
   };
 
-  const renderActiveWorkspace = () => {
-    switch (activeWorkspaceId) {
+  // Render Keep-Alive Workspace Node (Preserves scroll, forms, chat state 100%)
+  const renderWorkspaceContent = (wsId: WorkspaceId) => {
+    switch (wsId) {
       case 'welcome':
         return <WelcomeWorkspace onNavigate={handleSelectWorkspace} />;
       case 'ai-concierge':
@@ -154,9 +207,35 @@ export const App: React.FC = () => {
           />
         )}
 
-        {/* Layer 5: Active Workspace Viewport */}
+        {/* Layer 5: Desktop Keep-Alive Window Viewport Stack */}
         <main ref={viewportRef} className="os-viewport">
-          {renderActiveWorkspace()}
+          {openWorkspaces.map(wsId => {
+            const wsConfig = WORKSPACES.find(w => w.id === wsId) || WORKSPACES[0];
+            const isActive = wsId === activeWorkspaceId;
+
+            return (
+              <div
+                key={wsId}
+                style={{
+                  display: isActive ? 'block' : 'none',
+                  width: '100%',
+                  height: '100%'
+                }}
+              >
+                <OSWindowFrame
+                  title={wsConfig.title}
+                  badge={wsConfig.badge}
+                  accentColor={wsConfig.accentColor}
+                  isActive={isActive}
+                  onFocus={() => handleSelectWorkspace(wsId)}
+                  onClose={() => handleCloseWorkspace(wsId)}
+                  onMinimize={() => handleCloseWorkspace(wsId)}
+                >
+                  {renderWorkspaceContent(wsId)}
+                </OSWindowFrame>
+              </div>
+            );
+          })}
         </main>
 
         {/* Layer 6: Bottom HarmonyOS Dock */}
@@ -165,7 +244,7 @@ export const App: React.FC = () => {
           onSelectWorkspace={handleSelectWorkspace}
         />
 
-        {/* Layer 7: Global Search Modal */}
+        {/* Layer 7: Global Search Command Center */}
         <GlobalSearchModal
           isOpen={searchOpen}
           onClose={() => setSearchOpen(false)}
