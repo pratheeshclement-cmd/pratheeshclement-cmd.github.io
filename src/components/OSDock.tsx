@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import anime from 'animejs';
 import { WORKSPACES } from '../data/pratheeshData';
 import { WorkspaceConfig, WorkspaceId } from '../types';
 import { sound } from '../utils/soundEffects';
@@ -13,42 +14,70 @@ export const OSDock: React.FC<OSDockProps> = ({
   activeWorkspaceId,
   onSelectWorkspace
 }) => {
-  const [hoveredId, setHoveredId] = useState<string | null>(null);
+  const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
+  const dockRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    // Dock slide up animation on mount
+    if (dockRef.current) {
+      anime({
+        targets: dockRef.current,
+        translateY: [40, 0],
+        opacity: [0, 1],
+        duration: 600,
+        easing: 'cubicBezier(0.25, 1, 0.5, 1)'
+      });
+    }
+  }, []);
 
   const getIcon = (iconName: string, color: string, isActive: boolean) => {
     const IconComponent = (Icons as unknown as Record<string, React.ElementType>)[iconName] || Icons.Sparkles;
     return <IconComponent size={20} color={isActive ? '#FFF' : color} />;
   };
 
+  // Calculate HarmonyOS style proximity scale for dock items
+  const getItemScale = (idx: number) => {
+    if (hoveredIdx === null) return 1;
+    const distance = Math.abs(hoveredIdx - idx);
+    if (distance === 0) return 1.22; // Target icon
+    if (distance === 1) return 1.10; // Neighbor icons
+    if (distance === 2) return 1.04;
+    return 1;
+  };
+
   return (
-    <div style={{
-      position: 'fixed',
-      bottom: '18px',
-      left: '50%',
-      transform: 'translateX(-50%)',
-      zIndex: 9500,
-      display: 'flex',
-      alignItems: 'center',
-      gap: '8px',
-      padding: '8px 16px',
-      backgroundColor: 'rgba(11, 15, 25, 0.85)',
-      backdropFilter: 'blur(30px)',
-      WebkitBackdropFilter: 'blur(30px)',
-      border: '1px solid rgba(255, 255, 255, 0.12)',
-      borderRadius: '24px',
-      boxShadow: '0 20px 50px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.15)',
-      maxWidth: '96vw',
-      overflowX: 'auto'
-    }}>
-      {WORKSPACES.map((ws: WorkspaceConfig) => {
+    <div
+      ref={dockRef}
+      style={{
+        position: 'fixed',
+        bottom: '18px',
+        left: '50%',
+        transform: 'translateX(-50%)',
+        zIndex: 9500,
+        display: 'flex',
+        alignItems: 'center',
+        gap: '8px',
+        padding: '8px 16px',
+        backgroundColor: 'rgba(11, 15, 25, 0.85)',
+        backdropFilter: 'blur(30px)',
+        WebkitBackdropFilter: 'blur(30px)',
+        border: '1px solid rgba(255, 255, 255, 0.12)',
+        borderRadius: '24px',
+        boxShadow: '0 20px 50px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.15)',
+        maxWidth: '96vw',
+        overflowX: 'auto'
+      }}
+    >
+      {WORKSPACES.map((ws: WorkspaceConfig, idx: number) => {
         const isActive = ws.id === activeWorkspaceId;
-        const isHovered = ws.id === hoveredId;
+        const isHovered = hoveredIdx === idx;
+        const scale = getItemScale(idx);
 
         return (
           <div
             key={ws.id}
-            onMouseEnter={() => setHoveredId(ws.id)}
-            onMouseLeave={() => setHoveredId(null)}
+            onMouseEnter={() => setHoveredIdx(idx)}
+            onMouseLeave={() => setHoveredIdx(null)}
             onClick={() => {
               sound.playWindowSwitch();
               onSelectWorkspace(ws.id);
@@ -59,14 +88,14 @@ export const OSDock: React.FC<OSDockProps> = ({
               flexDirection: 'column',
               alignItems: 'center',
               cursor: 'pointer',
-              transition: 'all 0.25s cubic-bezier(0.25, 1, 0.5, 1)'
+              transition: 'transform 0.2s cubic-bezier(0.25, 1, 0.5, 1)'
             }}
           >
             {/* Hover Tooltip */}
             {isHovered && (
               <div style={{
                 position: 'absolute',
-                top: '-42px',
+                top: '-44px',
                 whiteSpace: 'nowrap',
                 backgroundColor: 'rgba(15, 23, 42, 0.95)',
                 color: '#FFF',
@@ -93,15 +122,15 @@ export const OSDock: React.FC<OSDockProps> = ({
               </div>
             )}
 
-            {/* Dock Item Button */}
+            {/* Dock Item Button with Proximity Magnification */}
             <div style={{
-              width: isHovered ? '46px' : '40px',
-              height: isHovered ? '46px' : '40px',
+              width: '40px',
+              height: '40px',
               borderRadius: '12px',
               backgroundColor: isActive 
                 ? ws.accentColor 
                 : isHovered 
-                  ? 'rgba(255, 255, 255, 0.12)' 
+                  ? 'rgba(255, 255, 255, 0.14)' 
                   : 'rgba(255, 255, 255, 0.05)',
               border: isActive 
                 ? `1px solid ${ws.accentColor}` 
@@ -109,11 +138,13 @@ export const OSDock: React.FC<OSDockProps> = ({
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              transition: 'all 0.25s cubic-bezier(0.25, 1, 0.5, 1)',
-              transform: isHovered ? 'translateY(-6px)' : 'translateY(0)',
+              transition: 'all 0.2s cubic-bezier(0.25, 1, 0.5, 1)',
+              transform: `scale(${scale}) translateY(${isHovered ? '-6px' : '0px'})`,
               boxShadow: isActive 
-                ? `0 0 20px ${ws.accentColor}80` 
-                : 'none'
+                ? `0 0 24px ${ws.accentColor}90` 
+                : isHovered 
+                  ? '0 6px 15px rgba(0, 0, 0, 0.4)' 
+                  : 'none'
             }}>
               {getIcon(ws.icon, ws.accentColor, isActive)}
             </div>
@@ -125,7 +156,8 @@ export const OSDock: React.FC<OSDockProps> = ({
               borderRadius: '50%',
               backgroundColor: isActive ? ws.accentColor : 'transparent',
               marginTop: '4px',
-              boxShadow: isActive ? `0 0 8px ${ws.accentColor}` : 'none'
+              boxShadow: isActive ? `0 0 8px ${ws.accentColor}` : 'none',
+              transition: 'all 0.2s ease'
             }} />
           </div>
         );

@@ -7,6 +7,8 @@ import { OSHeaderBar } from './components/OSHeaderBar';
 import { OSDock } from './components/OSDock';
 import { RecruiterBar } from './components/RecruiterBar';
 import { GlobalSearchModal } from './components/GlobalSearchModal';
+import { CursorLighting } from './components/CursorLighting';
+import { use3DTilt, useMagneticButtons } from './utils/motionEffects';
 
 // Workspaces
 import { WelcomeWorkspace } from './components/workspaces/WelcomeWorkspace';
@@ -41,13 +43,30 @@ export const App: React.FC = () => {
   const viewportRef = useRef<HTMLDivElement>(null);
   const activeWorkspace = WORKSPACES.find(w => w.id === activeWorkspaceId) || WORKSPACES[0];
 
+  // Motion hooks
+  use3DTilt('.glass-card');
+  useMagneticButtons('.btn-primary, .btn-secondary');
+
   useEffect(() => {
     if (!isBooting && viewportRef.current && !systemSettings.reducedMotion) {
       viewportRef.current.scrollTop = 0;
+      
+      // Phase 6 Cinematic Workspace Transition: scale 0.98 -> 1.0, slide up 20px, fade in
       anime({
         targets: viewportRef.current,
         opacity: [0, 1],
-        translateY: [16, 0],
+        scale: [0.98, 1.0],
+        translateY: [20, 0],
+        duration: 400,
+        easing: 'cubicBezier(0.25, 1, 0.5, 1)'
+      });
+
+      // Stagger card reveals inside active workspace
+      anime({
+        targets: viewportRef.current.querySelectorAll('.glass-card'),
+        opacity: [0, 1],
+        translateY: [15, 0],
+        delay: anime.stagger(60),
         duration: 350,
         easing: 'cubicBezier(0.25, 1, 0.5, 1)'
       });
@@ -59,7 +78,23 @@ export const App: React.FC = () => {
   };
 
   const handleSelectWorkspace = (id: WorkspaceId) => {
-    setActiveWorkspaceId(id);
+    if (id === activeWorkspaceId) return;
+
+    // Scale out current workspace slightly before switching
+    if (viewportRef.current && !systemSettings.reducedMotion) {
+      anime({
+        targets: viewportRef.current,
+        scale: [1.0, 0.98],
+        opacity: [1, 0.6],
+        duration: 150,
+        easing: 'easeInQuad',
+        complete: () => {
+          setActiveWorkspaceId(id);
+        }
+      });
+    } else {
+      setActiveWorkspaceId(id);
+    }
   };
 
   const handleUpdateSettings = (newSettings: Partial<SystemSettings>) => {
@@ -109,7 +144,10 @@ export const App: React.FC = () => {
 
   return (
     <div className={`os-container ${systemSettings.highContrast ? 'high-contrast-mode' : ''}`}>
-      {/* Ambient Background */}
+      {/* Soft Cyan Cursor Radial Lighting */}
+      <CursorLighting disabled={systemSettings.reducedMotion} />
+
+      {/* Ambient Background Orbs (GPU accelerated translate3d) */}
       <div className="ambient-background" style={{ opacity: systemSettings.glowIntensity === 'low' ? 0.15 : 0.35 }}>
         <div className="ambient-orb orb-1" />
         <div className="ambient-orb orb-2" />

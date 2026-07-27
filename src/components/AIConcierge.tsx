@@ -1,8 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { INITIAL_AI_MESSAGES, PERSONAL_INFO, PROJECTS, CERTIFICATIONS, WORK_EXPERIENCE, EDUCATION } from '../data/pratheeshData';
+import anime from 'animejs';
+import { INITIAL_AI_MESSAGES } from '../data/pratheeshData';
 import { AIMessage } from '../types';
 import { sound } from '../utils/soundEffects';
-import { Bot, Send, User, Sparkles, Key, CheckCircle2, RefreshCw } from 'lucide-react';
+import { Bot, Send, User, Key } from 'lucide-react';
 
 export const AIConcierge: React.FC = () => {
   const [messages, setMessages] = useState<AIMessage[]>(INITIAL_AI_MESSAGES);
@@ -10,10 +11,24 @@ export const AIConcierge: React.FC = () => {
   const [apiKey, setApiKey] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
+
+  useEffect(() => {
+    // Spring open animation on mount
+    if (containerRef.current) {
+      anime({
+        targets: containerRef.current,
+        scale: [0.92, 1.0],
+        opacity: [0, 1],
+        duration: 500,
+        easing: 'cubicBezier(0.25, 1, 0.5, 1)'
+      });
+    }
+  }, []);
 
   useEffect(() => {
     scrollToBottom();
@@ -114,11 +129,11 @@ export const AIConcierge: React.FC = () => {
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       }]);
       setIsTyping(false);
-    }, 600);
+    }, 500);
   };
 
   return (
-    <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
+    <div ref={containerRef} style={{ maxWidth: '1000px', margin: '0 auto' }}>
       {/* Header Banner */}
       <div className="glass-panel" style={{
         padding: '24px',
@@ -286,7 +301,7 @@ export const AIConcierge: React.FC = () => {
           {isTyping && (
             <div style={{ display: 'flex', gap: '12px', alignItems: 'center', color: '#94A3B8', fontSize: '0.85rem' }}>
               <Bot size={20} color="#7F00FF" />
-              <span>Concierge is thinking...</span>
+              <span className="shimmer-text">Concierge is processing response...</span>
             </div>
           )}
           <div ref={chatEndRef} />

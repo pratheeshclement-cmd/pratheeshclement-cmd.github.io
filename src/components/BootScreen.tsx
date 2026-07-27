@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
+import anime from 'animejs';
 import { sound } from '../utils/soundEffects';
 import { Cpu, ShieldCheck, Zap, Activity } from 'lucide-react';
 
@@ -10,16 +11,39 @@ export const BootScreen: React.FC<BootScreenProps> = ({ onBootComplete }) => {
   const [progress, setProgress] = useState(0);
   const [statusMessage, setStatusMessage] = useState('Initializing PORTFOLIO OS X Kernel...');
   const [logs, setLogs] = useState<string[]>([]);
+  
+  const logoRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     sound.playBootChime();
 
+    // Anime.js cinematic camera zoom from 0.9 -> 1.0 and logo scale
+    if (containerRef.current) {
+      anime({
+        targets: containerRef.current,
+        scale: [0.9, 1.0],
+        opacity: [0, 1],
+        duration: 800,
+        easing: 'cubicBezier(0.25, 1, 0.5, 1)'
+      });
+    }
+
+    if (logoRef.current) {
+      anime({
+        targets: logoRef.current,
+        scale: [0.8, 1.0],
+        opacity: [0, 1],
+        duration: 600,
+        easing: 'cubicBezier(0.25, 1, 0.5, 1)'
+      });
+    }
+
+    // Rapid cinematic boot sequence (< 1.2s total duration)
     const bootSteps = [
-      { prg: 15, msg: 'Loading Core System Architecture...', log: 'SYS_INIT: Memory check 64GB OK' },
-      { prg: 35, msg: 'Verifying Pratheesh Clement Profile Data...', log: 'IDENTITY: BCA Degree (2024) Verified' },
-      { prg: 55, msg: 'Mounting Google Skillshop Digital Marketing Module...', log: 'CERT_AUTH: Google Digital Garage ID #453421024' },
-      { prg: 75, msg: 'Initializing AI Concierge & Workspace Engines...', log: 'AI_CORE: Pre-trained Neural Engine Ready' },
-      { prg: 90, msg: 'Optimizing Lighthouse 100% Performance Budget...', log: 'PERF: Core Web Vitals LCP <0.8s, CLS 0' },
+      { prg: 25, msg: 'Loading Core System Architecture...', log: 'SYS_INIT: Memory check 64GB OK' },
+      { prg: 50, msg: 'Verifying Pratheesh Clement Profile Data...', log: 'IDENTITY: BCA Degree (2024) Verified' },
+      { prg: 75, msg: 'Mounting Google Skillshop & AI Modules...', log: 'CERT_AUTH: Google Digital Garage ID #453421024' },
       { prg: 100, msg: 'PORTFOLIO OS X Ready.', log: 'BOOT_SUCCESS: Launching Desktop Environment' }
     ];
 
@@ -35,26 +59,29 @@ export const BootScreen: React.FC<BootScreenProps> = ({ onBootComplete }) => {
         clearInterval(interval);
         setTimeout(() => {
           onBootComplete();
-        }, 500);
+        }, 150);
       }
-    }, 450);
+    }, 220); // 220ms * 4 steps = 880ms total boot time
 
     return () => clearInterval(interval);
   }, [onBootComplete]);
 
   return (
-    <div style={{
-      position: 'fixed',
-      inset: 0,
-      zIndex: 99999,
-      backgroundColor: '#07090E',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'center',
-      padding: '24px',
-      color: '#F8FAFC'
-    }}>
+    <div
+      ref={containerRef}
+      style={{
+        position: 'fixed',
+        inset: 0,
+        zIndex: 99999,
+        backgroundColor: '#07090E',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '24px',
+        color: '#F8FAFC'
+      }}
+    >
       {/* Background Matrix Effect */}
       <div style={{
         position: 'absolute',
@@ -66,7 +93,7 @@ export const BootScreen: React.FC<BootScreenProps> = ({ onBootComplete }) => {
       }} />
 
       {/* Main Logo & Title */}
-      <div style={{ textAlign: 'center', marginBottom: '40px', position: 'relative', zIndex: 2 }}>
+      <div ref={logoRef} style={{ textAlign: 'center', marginBottom: '40px', position: 'relative', zIndex: 2 }}>
         <div style={{
           width: '90px',
           height: '90px',
@@ -130,7 +157,7 @@ export const BootScreen: React.FC<BootScreenProps> = ({ onBootComplete }) => {
             height: '100%',
             width: `${progress}%`,
             background: 'linear-gradient(90deg, #00F2FE 0%, #7F00FF 100%)',
-            transition: 'width 0.4s ease',
+            transition: 'width 0.2s ease',
             boxShadow: '0 0 15px #00F2FE'
           }} />
         </div>
