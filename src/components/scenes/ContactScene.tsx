@@ -100,7 +100,12 @@ const ContactScene: React.FC<{ id: string }> = ({ id }) => {
               }}>
                 <img
                   src="/assets/pratheesh4k2.jpeg"
-                  alt="Pratheesh Clement"
+                  alt="Pratheesh Clement — Digital Marketing Specialist & Freelance SEO Consultant Vadalur"
+                  title="Contact Pratheesh Clement"
+                  width={96}
+                  height={96}
+                  loading="lazy"
+                  decoding="async"
                   style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                 />
               </div>
@@ -138,7 +143,12 @@ const ContactScene: React.FC<{ id: string }> = ({ id }) => {
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
                   <img
                     src="/assets/pratheesh4k1.jpeg"
-                    alt="Pratheesh Clement"
+                    alt="Pratheesh Clement — Architect of Digital Ecosystems"
+                    title="Pratheesh Clement"
+                    width={40}
+                    height={40}
+                    loading="lazy"
+                    decoding="async"
                     style={{ width: 40, height: 40, borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--accent-primary)' }}
                   />
                   <div>

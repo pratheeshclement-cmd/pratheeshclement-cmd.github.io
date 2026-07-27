@@ -223,7 +223,12 @@ const HeroScene: React.FC<{ id: string }> = ({ id }) => {
               >
                 <img
                   src="/assets/pratheesh4k2.jpeg"
-                  alt="Pratheesh Clement — Digital Marketing Specialist & AI Enthusiast"
+                  alt="Pratheesh Clement — Digital Marketing Specialist, Technical SEO Expert & AI Enthusiast based in Vadalur, Tamil Nadu"
+                  title="Pratheesh Clement — Architect of Digital Ecosystems"
+                  width={600}
+                  height={800}
+                  loading="eager"
+                  decoding="async"
                   style={{
                     width: '100%',
                     height: '100%',

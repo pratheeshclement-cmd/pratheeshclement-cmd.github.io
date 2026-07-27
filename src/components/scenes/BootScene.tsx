@@ -115,7 +115,12 @@ const BootScene: React.FC<BootSceneProps> = ({ onLeave }) => {
       <img
         ref={bgImageRef}
         src="/assets/pratheesh4k2.jpeg"
-        alt="Pratheesh Clement Full Portrait"
+        alt="Pratheesh Clement — Full Portrait, Digital Marketing Specialist & AI Enthusiast Vadalur"
+        title="Pratheesh Clement Portfolio Booting"
+        width={1080}
+        height={1920}
+        loading="eager"
+        decoding="async"
         style={{
           position: 'absolute',
           inset: 0,

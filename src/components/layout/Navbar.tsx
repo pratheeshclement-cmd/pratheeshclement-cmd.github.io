@@ -168,7 +168,12 @@ export const Navbar: React.FC<NavbarProps> = ({ scrollProgress, theme, onToggleT
         >
           <img
             src="/assets/pratheesh4k1.jpeg"
-            alt="Pratheesh Clement"
+            alt="Pratheesh Clement — Digital Marketing Specialist & SEO Expert"
+            title="Pratheesh Clement Portfolio"
+            width={32}
+            height={32}
+            loading="eager"
+            decoding="async"
             style={{
               width: 32,
               height: 32,
