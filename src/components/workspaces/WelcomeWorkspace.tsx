@@ -1,13 +1,42 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
+import anime from 'animejs';
 import { PERSONAL_INFO } from '../../data/pratheeshData';
 import { sound } from '../../utils/soundEffects';
-import { Sparkles, ArrowRight, ShieldCheck, Zap, Award, Code2, Search, Bot } from 'lucide-react';
+import { ArrowRight, Code2, Search, Award, Zap, Bot } from 'lucide-react';
 
 interface WelcomeWorkspaceProps {
   onNavigate: (workspaceId: any) => void;
 }
 
 export const WelcomeWorkspace: React.FC<WelcomeWorkspaceProps> = ({ onNavigate }) => {
+  const portraitRef = useRef<HTMLDivElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
+
+  useEffect(() => {
+    // Section 5: Hero Cinematic slow floating portrait movement & breathing glow
+    if (portraitRef.current) {
+      anime({
+        targets: portraitRef.current,
+        translateY: [-6, 6],
+        duration: 3500,
+        direction: 'alternate',
+        loop: true,
+        easing: 'easeInOutSine'
+      });
+    }
+
+    // Character / Text stagger reveal
+    if (titleRef.current) {
+      anime({
+        targets: titleRef.current,
+        opacity: [0, 1],
+        translateY: [15, 0],
+        duration: 600,
+        easing: 'cubicBezier(0.25, 1, 0.5, 1)'
+      });
+    }
+  }, []);
+
   return (
     <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '32px' }}>
       {/* Hero Spotlight */}
@@ -37,16 +66,19 @@ export const WelcomeWorkspace: React.FC<WelcomeWorkspaceProps> = ({ onNavigate }
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px' }}>
             <span className="badge badge-cyan">PORTFOLIO OS X</span>
-            <span className="badge badge-violet">MASTER SPEC v1.0</span>
+            <span className="badge badge-violet">SPATIAL SCENE ENGINE v1.0</span>
           </div>
 
-          <h1 style={{
-            fontSize: '3.2rem',
-            fontWeight: 800,
-            lineHeight: 1.1,
-            fontFamily: 'Outfit, sans-serif',
-            marginBottom: '16px'
-          }}>
+          <h1
+            ref={titleRef}
+            style={{
+              fontSize: '3.2rem',
+              fontWeight: 800,
+              lineHeight: 1.1,
+              fontFamily: 'Outfit, sans-serif',
+              marginBottom: '16px'
+            }}
+          >
             PRATHEESH <span className="text-gradient">CLEMENT</span>
           </h1>
 
@@ -75,6 +107,10 @@ export const WelcomeWorkspace: React.FC<WelcomeWorkspaceProps> = ({ onNavigate }
                 onNavigate('ai-concierge');
               }}
               className="btn-primary"
+              style={{
+                boxShadow: '0 0 20px rgba(0, 242, 254, 0.4)',
+                animation: 'pulseGlow 2.5s infinite alternate ease-in-out'
+              }}
             >
               <Bot size={18} /> Launch AI Concierge
             </button>
@@ -91,15 +127,20 @@ export const WelcomeWorkspace: React.FC<WelcomeWorkspaceProps> = ({ onNavigate }
           </div>
         </div>
 
-        {/* Right Column: Spatial Profile Card */}
+        {/* Right Column: Spatial Profile Card with Parallax Floating Portrait */}
         <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <div className="glass-card" style={{
-            padding: '16px',
-            borderRadius: '24px',
-            maxWidth: '360px',
-            textAlign: 'center',
-            position: 'relative'
-          }}>
+          <div
+            ref={portraitRef}
+            className="glass-card"
+            style={{
+              padding: '16px',
+              borderRadius: '24px',
+              maxWidth: '360px',
+              textAlign: 'center',
+              position: 'relative',
+              boxShadow: '0 20px 40px rgba(0, 0, 0, 0.6), 0 0 30px rgba(0, 242, 254, 0.2)'
+            }}
+          >
             <div style={{
               width: '100%',
               height: '320px',

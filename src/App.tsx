@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import anime from 'animejs';
 import { WORKSPACES } from './data/pratheeshData';
 import { WorkspaceId, SystemSettings } from './types';
 import { BootScreen } from './components/BootScreen';
@@ -8,6 +7,8 @@ import { OSDock } from './components/OSDock';
 import { RecruiterBar } from './components/RecruiterBar';
 import { GlobalSearchModal } from './components/GlobalSearchModal';
 import { CursorLighting } from './components/CursorLighting';
+import { SceneGraph } from './components/SceneGraph';
+import { director } from './services/TransitionDirector';
 import { use3DTilt, useMagneticButtons } from './utils/motionEffects';
 
 // Workspaces
@@ -47,51 +48,25 @@ export const App: React.FC = () => {
   use3DTilt('.glass-card');
   useMagneticButtons('.btn-primary, .btn-secondary');
 
-  useEffect(() => {
-    if (!isBooting && viewportRef.current && !systemSettings.reducedMotion) {
-      viewportRef.current.scrollTop = 0;
-      
-      // Phase 6 Cinematic Workspace Transition: scale 0.98 -> 1.0, slide up 20px, fade in
-      anime({
-        targets: viewportRef.current,
-        opacity: [0, 1],
-        scale: [0.98, 1.0],
-        translateY: [20, 0],
-        duration: 400,
-        easing: 'cubicBezier(0.25, 1, 0.5, 1)'
-      });
-
-      // Stagger card reveals inside active workspace
-      anime({
-        targets: viewportRef.current.querySelectorAll('.glass-card'),
-        opacity: [0, 1],
-        translateY: [15, 0],
-        delay: anime.stagger(60),
-        duration: 350,
-        easing: 'cubicBezier(0.25, 1, 0.5, 1)'
-      });
-    }
-  }, [activeWorkspaceId, isBooting, systemSettings.reducedMotion]);
-
   const handleBootComplete = () => {
     setIsBooting(false);
   };
 
+  // Section 9 & 10: All navigation passes through one TransitionDirector timeline
   const handleSelectWorkspace = (id: WorkspaceId) => {
     if (id === activeWorkspaceId) return;
 
-    // Scale out current workspace slightly before switching
-    if (viewportRef.current && !systemSettings.reducedMotion) {
-      anime({
-        targets: viewportRef.current,
-        scale: [1.0, 0.98],
-        opacity: [1, 0.6],
-        duration: 150,
-        easing: 'easeInQuad',
-        complete: () => {
+    const sceneElement = document.getElementById('os-scene-container');
+    if (sceneElement && viewportRef.current) {
+      director.animateWorkspaceTransition(
+        sceneElement,
+        viewportRef.current,
+        id,
+        () => {
           setActiveWorkspaceId(id);
-        }
-      });
+        },
+        systemSettings.reducedMotion
+      );
     } else {
       setActiveWorkspaceId(id);
     }
@@ -144,56 +119,59 @@ export const App: React.FC = () => {
 
   return (
     <div className={`os-container ${systemSettings.highContrast ? 'high-contrast-mode' : ''}`}>
-      {/* Soft Cyan Cursor Radial Lighting */}
+      {/* Soft Cyan Cursor Lighting */}
       <CursorLighting disabled={systemSettings.reducedMotion} />
 
-      {/* Ambient Background Orbs (GPU accelerated translate3d) */}
-      <div className="ambient-background" style={{ opacity: systemSettings.glowIntensity === 'low' ? 0.15 : 0.35 }}>
-        <div className="ambient-orb orb-1" />
-        <div className="ambient-orb orb-2" />
-        <div className="ambient-orb orb-3" />
-      </div>
+      {/* 3D Spatial Scene Graph Container */}
+      <SceneGraph reducedMotion={systemSettings.reducedMotion}>
+        {/* Layer 1: Ambient Background Orbs */}
+        <div className="ambient-background" style={{ opacity: systemSettings.glowIntensity === 'low' ? 0.15 : 0.35 }}>
+          <div className="ambient-orb orb-1" />
+          <div className="ambient-orb orb-2" />
+          <div className="ambient-orb orb-3" />
+        </div>
 
-      {/* Spatial Grid */}
-      <div className="spatial-grid" />
+        {/* Layer 2: Spatial Grid */}
+        <div className="spatial-grid" />
 
-      {/* Top Header Bar */}
-      <OSHeaderBar
-        activeWorkspace={activeWorkspace}
-        onToggleRecruiterBar={() => setRecruiterBarOpen(!recruiterBarOpen)}
-        recruiterBarOpen={recruiterBarOpen}
-        onOpenSearch={() => setSearchOpen(true)}
-        onNavigate={handleSelectWorkspace}
-      />
-
-      {/* Recruiter Summary Banner */}
-      {recruiterBarOpen && (
-        <RecruiterBar
-          onClose={() => setRecruiterBarOpen(false)}
-          onNavigate={(id) => {
-            setRecruiterBarOpen(false);
-            handleSelectWorkspace(id);
-          }}
+        {/* Layer 3: Top OS Header Bar */}
+        <OSHeaderBar
+          activeWorkspace={activeWorkspace}
+          onToggleRecruiterBar={() => setRecruiterBarOpen(!recruiterBarOpen)}
+          recruiterBarOpen={recruiterBarOpen}
+          onOpenSearch={() => setSearchOpen(true)}
+          onNavigate={handleSelectWorkspace}
         />
-      )}
 
-      {/* Active Workspace Viewport */}
-      <main ref={viewportRef} className="os-viewport">
-        {renderActiveWorkspace()}
-      </main>
+        {/* Layer 4: Recruiter Summary Banner */}
+        {recruiterBarOpen && (
+          <RecruiterBar
+            onClose={() => setRecruiterBarOpen(false)}
+            onNavigate={(id) => {
+              setRecruiterBarOpen(false);
+              handleSelectWorkspace(id);
+            }}
+          />
+        )}
 
-      {/* Bottom HarmonyOS Dock */}
-      <OSDock
-        activeWorkspaceId={activeWorkspaceId}
-        onSelectWorkspace={handleSelectWorkspace}
-      />
+        {/* Layer 5: Active Workspace Viewport */}
+        <main ref={viewportRef} className="os-viewport">
+          {renderActiveWorkspace()}
+        </main>
 
-      {/* Global Search Modal */}
-      <GlobalSearchModal
-        isOpen={searchOpen}
-        onClose={() => setSearchOpen(false)}
-        onNavigate={handleSelectWorkspace}
-      />
+        {/* Layer 6: Bottom HarmonyOS Dock */}
+        <OSDock
+          activeWorkspaceId={activeWorkspaceId}
+          onSelectWorkspace={handleSelectWorkspace}
+        />
+
+        {/* Layer 7: Global Search Modal */}
+        <GlobalSearchModal
+          isOpen={searchOpen}
+          onClose={() => setSearchOpen(false)}
+          onNavigate={handleSelectWorkspace}
+        />
+      </SceneGraph>
     </div>
   );
 };
