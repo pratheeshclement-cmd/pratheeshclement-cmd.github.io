@@ -12,6 +12,8 @@ import { AmbientBackground }      from './components/layout/AmbientBackground';
 import { CinematicParticleCanvas } from './components/layout/CinematicParticleCanvas';
 import { CursorLighting }         from './components/layout/CursorLighting';
 import { ConsentBanner }          from './utils/ConsentBanner';
+import { LegalModal, LegalModalType } from './components/ui/LegalModal';
+import { CommandPaletteModal }    from './components/ui/CommandPaletteModal';
 
 // Scenes — lazy for code splitting
 const BootScene         = React.lazy(() => import('./components/scenes/BootScene'));
@@ -25,26 +27,30 @@ const TestimonialsScene = React.lazy(() => import('./components/scenes/Testimoni
 const ContactScene      = React.lazy(() => import('./components/scenes/ContactScene'));
 const AIConcierge       = React.lazy(() => import('./components/ai/AIConcierge'));
 
+import { AppRouter } from './router/AppRouter';
+
 gsap.registerPlugin(ScrollTrigger);
 
-export const App: React.FC = () => {
+export const AppContent: React.FC = () => {
   const [bootDone, setBootDone] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
-  const { theme, toggleTheme } = useTheme('light');
 
   // ── Mount 3D Virtual Camera & Lenis Smooth Scroll ──────────────────
   useEffect(() => {
     camera.mount('camera-perspective', 'main-world');
 
+    const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
     const lenis = new Lenis({
-      duration: 1.2,
+      duration: isTouch ? 0.8 : 1.2,
       easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
+      syncTouch: false,
     });
+    (window as any).__lenis__ = lenis;
 
     const onScroll = (e: { progress: number; velocity: number }) => {
       setScrollProgress(e.progress);
-      // Update Virtual Camera 3D flight & scrub master Anime.js timeline
       camera.updateCamera(e.progress, e.velocity);
       animeEngine.scrubScroll(e.progress);
       ScrollTrigger.update();
@@ -65,29 +71,10 @@ export const App: React.FC = () => {
 
   return (
     <>
-      {/* Accessibility skip link */}
-      <a className="skip-link" href="#main-world">Skip to content</a>
-
-      {/* Fixed ambient background layer */}
-      <AmbientBackground />
-
-      {/* Floating ambient particle canvas layer */}
-      <CinematicParticleCanvas />
-
-      {/* Custom cursor lighting */}
-      <CursorLighting />
-
       {/* Boot sequence — fixed overlay */}
       <Suspense fallback={null}>
         {!bootDone && <BootScene id="scene-boot" onLeave={() => setBootDone(true)} />}
       </Suspense>
-
-      {/* Floating glass navbar */}
-      <Navbar
-        scrollProgress={scrollProgress}
-        theme={theme}
-        onToggleTheme={toggleTheme}
-      />
 
       {/* ── 3D Virtual Camera Perspective Container ───────────────────── */}
       <div id="camera-perspective" style={{ width: '100%', minHeight: '100vh', overflowX: 'hidden' }}>
@@ -106,13 +93,87 @@ export const App: React.FC = () => {
         </main>
       </div>
 
-      {/* Persistent AI Concierge */}
-      <Suspense fallback={null}>
-        <AIConcierge />
-      </Suspense>
-
       {/* Cookie Consent Banner — displays center screen after loading finishes */}
       <ConsentBanner bootDone={bootDone} />
     </>
   );
 };
+
+export const App: React.FC = () => {
+  const [legalModalType, setLegalModalType] = useState<LegalModalType>(null);
+  const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
+  const { theme, toggleTheme } = useTheme('light');
+
+  // Listen for open-legal-modal & command palette events
+  useEffect(() => {
+    const handleOpenLegal = (e: CustomEvent<LegalModalType>) => {
+      if (e.detail) {
+        setLegalModalType(e.detail);
+      }
+    };
+
+    const handleOpenPalette = () => {
+      setIsCommandPaletteOpen(true);
+    };
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        setIsCommandPaletteOpen(prev => !prev);
+      }
+    };
+
+    window.addEventListener('open-legal-modal' as any, handleOpenLegal);
+    window.addEventListener('open-command-palette' as any, handleOpenPalette);
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('open-legal-modal' as any, handleOpenLegal);
+      window.removeEventListener('open-command-palette' as any, handleOpenPalette);
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
+
+  return (
+    <>
+      {/* Accessibility skip link */}
+      <a className="skip-link" href="#main-world">Skip to content</a>
+
+      {/* Fixed ambient background layer */}
+      <AmbientBackground />
+
+      {/* Floating ambient particle canvas layer */}
+      <CinematicParticleCanvas />
+
+      {/* Custom cursor lighting */}
+      <CursorLighting />
+
+      {/* Floating glass navbar persistent across all routes */}
+      <Navbar
+        scrollProgress={0}
+        theme={theme}
+        onToggleTheme={toggleTheme}
+      />
+
+      {/* Router renders Homepage (AppContent) at / or dedicated page at /about/, /blog/, etc. */}
+      <AppRouter homeComponent={<AppContent />} />
+
+      {/* Persistent AI Concierge */}
+      <Suspense fallback={null}>
+        <AIConcierge />
+      </Suspense>
+
+      {/* SEO Legal Documents Modal */}
+      <LegalModal type={legalModalType} onClose={() => setLegalModalType(null)} />
+
+      {/* Command Palette Spotlight Search Modal (⌘K) */}
+      <CommandPaletteModal
+        isOpen={isCommandPaletteOpen}
+        onClose={() => setIsCommandPaletteOpen(false)}
+        theme={theme}
+        onToggleTheme={toggleTheme}
+      />
+    </>
+  );
+};
+

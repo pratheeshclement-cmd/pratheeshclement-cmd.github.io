@@ -1,15 +1,14 @@
-import React, { useRef, useEffect, Suspense } from 'react';
-import { ArrowDown, Sparkles, Cpu, Github, Linkedin, Mail } from 'lucide-react';
+import React, { useRef, useEffect } from 'react';
+import { ArrowDown, Sparkles, Cpu, Github, Linkedin, Mail, Download } from 'lucide-react';
 import anime from 'animejs';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { SplitText } from '../ui/SplitText';
 import { MagneticButton } from '../ui/MagneticButton';
 import { GlassCard } from '../ui/GlassCard';
+import { HeroAuroraGlass } from '../ui/HeroAuroraGlass';
 import { IDENTITY } from '../../data/identity';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
-
-const HeroGlobe = React.lazy(() => import('../three/HeroGlobe'));
 
 const HeroScene: React.FC<{ id: string }> = ({ id }) => {
   const sectionRef   = useRef<HTMLElement>(null);
@@ -25,7 +24,6 @@ const HeroScene: React.FC<{ id: string }> = ({ id }) => {
     if (reduced) return;
 
     // 1. Anime.js Profile Image Assembly Sequence:
-    // Particles gather -> Outline appears -> Glass forms -> Image clarifies -> Lighting activates -> Float loop
     if (heroImageRef.current) {
       anime.timeline({ easing: 'easeOutQuart' })
         .add({
@@ -56,7 +54,7 @@ const HeroScene: React.FC<{ id: string }> = ({ id }) => {
       .fromTo(bodyRef.current,    { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' }, '-=0.2')
       .fromTo(ctaRef.current,     { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' }, '-=0.2');
 
-    // 3. Globe and Image scroll disassembly parallax
+    // 3. Image scroll disassembly parallax
     const st = ScrollTrigger.create({
       trigger: sectionRef.current,
       start: 'top top',
@@ -67,7 +65,6 @@ const HeroScene: React.FC<{ id: string }> = ({ id }) => {
           gsap.set(globeRef.current, { y: self.progress * 80, opacity: 1 - self.progress * 0.5 });
         }
         if (heroImageRef.current) {
-          // Disassembly transition on scroll exit
           gsap.set(heroImageRef.current, {
             y: self.progress * 120,
             scale: 1 + self.progress * 0.1,
@@ -93,19 +90,16 @@ const HeroScene: React.FC<{ id: string }> = ({ id }) => {
       style={{ minHeight: '100vh', position: 'relative', overflow: 'hidden' }}
       aria-label="Hero section"
     >
-      {/* Three.js Globe — background accent */}
+      {/* Morphing Aurora Glass — background animation */}
       <div
         ref={globeRef}
         style={{
           position: 'absolute', inset: 0, zIndex: 0,
-          display: 'flex', alignItems: 'center', justifyContent: 'flex-end',
-          pointerEvents: 'none', opacity: 0.65,
+          pointerEvents: 'none',
         }}
         aria-hidden="true"
       >
-        <Suspense fallback={null}>
-          <HeroGlobe />
-        </Suspense>
+        <HeroAuroraGlass />
       </div>
 
       {/* Hero Grid Container */}
@@ -126,21 +120,23 @@ const HeroScene: React.FC<{ id: string }> = ({ id }) => {
               </span>
             </div>
 
-            {/* Headline */}
-            <SplitText
-              text="PRATHEESH CLEMENT"
-              tag="h1"
+            {/* Headline — One Single Semantic H1 for SEO Integrity */}
+            <h1
               style={{
-                fontSize: 'clamp(2.5rem, 5.5vw, 4.8rem)',
+                fontSize: 'clamp(2.6rem, 6vw, 4.8rem)',
                 fontWeight: 700,
                 letterSpacing: '-0.02em',
-                lineHeight: 1.05,
+                lineHeight: 1.0,
                 marginBottom: 24,
-                color: 'var(--text-primary)',
               }}
-              start="top 90%"
-              delay={0.4}
-            />
+            >
+              <span style={{ display: 'block', color: 'var(--text-primary)' }}>
+                PRATHEESH
+              </span>
+              <span style={{ display: 'block', color: 'var(--accent-primary)' }}>
+                CLEMENT
+              </span>
+            </h1>
 
             {/* Motto */}
             <div ref={mottoRef} style={{ marginBottom: 24, opacity: 0 }}>
@@ -175,6 +171,15 @@ const HeroScene: React.FC<{ id: string }> = ({ id }) => {
               >
                 <Mail size={16} />
                 Let's Talk
+              </MagneticButton>
+              <MagneticButton
+                variant="secondary"
+                as="a"
+                href="/resume/MariyaPratheesh.docx"
+                download="MariyaPratheesh_Resume.docx"
+              >
+                <Download size={16} />
+                Resume CV
               </MagneticButton>
             </div>
 
@@ -221,25 +226,31 @@ const HeroScene: React.FC<{ id: string }> = ({ id }) => {
                   boxShadow: '0 20px 50px rgba(59, 130, 246, 0.2)',
                 }}
               >
-                <img
-                  src="/assets/pratheesh4k2.jpeg"
-                  alt="Pratheesh Clement — Digital Marketing Specialist, Technical SEO Expert & AI Enthusiast based in Vadalur, Tamil Nadu"
-                  title="Pratheesh Clement — Architect of Digital Ecosystems"
-                  width={600}
-                  height={800}
-                  loading="eager"
-                  decoding="async"
-                  style={{
-                    width: '100%',
-                    height: '100%',
-                    objectFit: 'cover',
-                    objectPosition: 'center 10%',
-                    display: 'block',
-                  }}
-                  onError={(e) => {
-                    (e.currentTarget as HTMLImageElement).src = '/assets/pratheesh4k1.jpeg';
-                  }}
-                />
+                <picture style={{ display: 'block', width: '100%', height: '100%' }}>
+                  <source media="(max-width: 480px)" srcSet="/assets/pratheesh-mobile.jpg 480w" sizes="100vw" />
+                  <source media="(max-width: 800px)" srcSet="/assets/pratheesh-tablet.jpg 800w" sizes="(max-width: 800px) 100vw, 800px" />
+                  <source srcSet="/assets/pratheesh-desktop.jpg 1200w" sizes="1200px" />
+                  <img
+                    src="/assets/pratheesh-desktop.jpg"
+                    alt="Pratheesh Clement — Digital Marketing Specialist, Technical SEO Expert & AI Enthusiast based in Vadalur, Tamil Nadu"
+                    title="Pratheesh Clement — Architect of Digital Ecosystems"
+                    width={600}
+                    height={800}
+                    loading="eager"
+                    decoding="async"
+                    fetchPriority="high"
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover',
+                      objectPosition: 'center 10%',
+                      display: 'block',
+                    }}
+                    onError={(e) => {
+                      (e.currentTarget as HTMLImageElement).src = '/assets/pratheesh4k1.jpeg';
+                    }}
+                  />
+                </picture>
 
                 {/* Gradient vignette overlay */}
                 <div

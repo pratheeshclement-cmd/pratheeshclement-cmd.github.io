@@ -62,7 +62,8 @@ const AboutScene: React.FC<{ id: string }> = ({ id }) => {
       />
 
       <div className="scene-inner" style={{ position: 'relative', zIndex: 1 }}>
-        <div className="grid-2" style={{ alignItems: 'flex-start', gap: 48 }}>
+        {/* Main 2-Column Split: Story & Vision text vs Portrait Showcase */}
+        <div className="grid-2" style={{ alignItems: 'center', gap: 48, marginBottom: 48 }}>
 
           {/* Left Column — Text content (Strictly No Overflow) */}
           <div style={{ wordBreak: 'break-word', overflowWrap: 'break-word' }}>
@@ -87,56 +88,15 @@ const AboutScene: React.FC<{ id: string }> = ({ id }) => {
                 fontSize: '1.05rem',
                 color: 'var(--text-secondary)',
                 lineHeight: 1.75,
-                marginBottom: 24,
+                marginBottom: 28,
                 maxWidth: 620,
               }}
             >
               {IDENTITY.bio.medium}
             </p>
 
-            {/* Career Origins Callout Card */}
-            <GlassCard
-              style={{
-                padding: 24,
-                marginBottom: 28,
-                borderLeft: '4px solid var(--accent-primary)',
-                background: 'var(--glass-bg)',
-                wordBreak: 'break-word',
-                overflowWrap: 'break-word',
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 10 }}>
-                <div
-                  style={{
-                    width: 36,
-                    height: 36,
-                    borderRadius: 10,
-                    background: 'rgba(59, 130, 246, 0.12)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    flexShrink: 0,
-                  }}
-                >
-                  <Compass size={18} color="var(--accent-primary)" />
-                </div>
-                <div>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-                    Career Origins
-                  </div>
-                  <div style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--text-primary)' }}>
-                    Nexteer Automotive → Digital Marketing Lead
-                  </div>
-                </div>
-              </div>
-
-              <p style={{ fontSize: '0.92rem', color: 'var(--text-secondary)', lineHeight: 1.7, fontStyle: 'italic', margin: 0 }}>
-                "{IDENTITY.bio.career}"
-              </p>
-            </GlassCard>
-
             {/* Core Values Pills */}
-            <div style={{ marginBottom: 20 }}>
+            <div>
               <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 12 }}>
                 Core Values & Directives
               </div>
@@ -151,10 +111,8 @@ const AboutScene: React.FC<{ id: string }> = ({ id }) => {
             </div>
           </div>
 
-          {/* Right Column — Head-and-Shoulders Portrait & Glass Cards */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 20, width: '100%' }}>
-
-            {/* Interactive Profile Card with Fixed Head-and-Shoulders Portrait */}
+          {/* Right Column — Head-and-Shoulders Portrait Card */}
+          <div style={{ width: '100%' }}>
             <GlassCard
               tilt
               style={{
@@ -189,7 +147,7 @@ const AboutScene: React.FC<{ id: string }> = ({ id }) => {
                     width: '100%',
                     height: '100%',
                     objectFit: 'cover',
-                    objectPosition: 'center 10%', // Keeps full head and shoulders visible as focal point!
+                    objectPosition: 'center 10%',
                     display: 'block',
                   }}
                   onError={(e) => {
@@ -265,21 +223,105 @@ const AboutScene: React.FC<{ id: string }> = ({ id }) => {
                 ))}
               </div>
             </GlassCard>
+          </div>
+        </div>
 
-            {/* Mission Glass Card */}
-            <GlassCard style={{ padding: 24, wordBreak: 'break-word', overflowWrap: 'break-word' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
-                <Target size={18} color="var(--accent-mint)" />
-                <div style={{ fontSize: '0.8rem', color: 'var(--accent-mint)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-                  Mission & Positioning
+        {/* Bottom 2-Column Equal-Height Cards: Career Origins vs. Mission */}
+        <div className="grid-2" style={{ gap: 24, alignItems: 'stretch' }}>
+
+          {/* Career Origins Card */}
+          <GlassCard
+            style={{
+              padding: 28,
+              borderLeft: '4px solid var(--accent-primary)',
+              background: 'var(--glass-bg)',
+              wordBreak: 'break-word',
+              overflowWrap: 'break-word',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+              height: '100%',
+              boxSizing: 'border-box',
+            }}
+          >
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 14 }}>
+                <div
+                  style={{
+                    width: 40,
+                    height: 40,
+                    borderRadius: 12,
+                    background: 'rgba(59, 130, 246, 0.12)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0,
+                  }}
+                >
+                  <Compass size={20} color="var(--accent-primary)" />
+                </div>
+                <div>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+                    Career Origins
+                  </div>
+                  <div style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+                    Nexteer Automotive → Digital Marketing Lead
+                  </div>
                 </div>
               </div>
-              <p style={{ fontSize: '0.92rem', color: 'var(--text-secondary)', lineHeight: 1.7, margin: 0 }}>
+
+              <p style={{ fontSize: '0.94rem', color: 'var(--text-secondary)', lineHeight: 1.7, fontStyle: 'italic', margin: 0 }}>
+                "{IDENTITY.bio.career}"
+              </p>
+            </div>
+          </GlassCard>
+
+          {/* Mission & Positioning Card */}
+          <GlassCard
+            style={{
+              padding: 28,
+              borderLeft: '4px solid var(--accent-mint)',
+              background: 'var(--glass-bg)',
+              wordBreak: 'break-word',
+              overflowWrap: 'break-word',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+              height: '100%',
+              boxSizing: 'border-box',
+            }}
+          >
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 14 }}>
+                <div
+                  style={{
+                    width: 40,
+                    height: 40,
+                    borderRadius: 12,
+                    background: 'rgba(16, 185, 129, 0.12)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0,
+                  }}
+                >
+                  <Target size={20} color="var(--accent-mint)" />
+                </div>
+                <div>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--accent-mint)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+                    Strategic Positioning
+                  </div>
+                  <div style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+                    Mission & Digital Ecosystems
+                  </div>
+                </div>
+              </div>
+
+              <p style={{ fontSize: '0.94rem', color: 'var(--text-secondary)', lineHeight: 1.7, margin: 0 }}>
                 {IDENTITY.mission}
               </p>
-            </GlassCard>
-
-          </div>
+            </div>
+          </GlassCard>
 
         </div>
       </div>

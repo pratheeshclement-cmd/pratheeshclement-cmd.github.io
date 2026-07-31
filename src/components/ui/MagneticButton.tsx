@@ -7,10 +7,11 @@ interface MagneticButtonProps extends React.ButtonHTMLAttributes<HTMLButtonEleme
   children: React.ReactNode;
   as?: 'button' | 'a';
   href?: string;
+  download?: string;
 }
 
 export const MagneticButton: React.FC<MagneticButtonProps> = ({
-  variant = 'primary', children, className = '', as: Tag = 'button', href, ...props
+  variant = 'primary', children, className = '', as: Tag = 'button', href, download, ...props
 }) => {
   const reduced = useReducedMotion();
   const { ref, onMouseMove, onMouseLeave } = useMagneticHover<HTMLButtonElement>();
@@ -23,6 +24,7 @@ export const MagneticButton: React.FC<MagneticButtonProps> = ({
     return (
       <a
         href={href}
+        download={download}
         className={`${cls} ${className}`}
         style={{ display: 'inline-flex', alignItems: 'center', gap: 10, textDecoration: 'none' }}
         onMouseMove={!reduced ? (onMouseMove as unknown as React.MouseEventHandler<HTMLAnchorElement>) : undefined}

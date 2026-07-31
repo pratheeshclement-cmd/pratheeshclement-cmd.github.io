@@ -4,6 +4,7 @@ import * as Icons from 'lucide-react';
 import { Project } from '../../types';
 import { GlassCard } from './GlassCard';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
+import { useScrollLock } from '../../hooks/useScrollLock';
 
 interface ProjectModalProps {
   project: Project;
@@ -14,6 +15,9 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) 
   const overlayRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion();
+
+  // Lock main page scrolling when project modal is open
+  useScrollLock(Boolean(project), contentRef);
 
   // Trap focus inside modal
   useEffect(() => {

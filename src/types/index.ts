@@ -48,6 +48,8 @@ export interface Service {
   description: string;
   icon: string;
   highlights: string[];
+  image?: string;
+  accentColor?: string;
 }
 
 export interface FAQItem {

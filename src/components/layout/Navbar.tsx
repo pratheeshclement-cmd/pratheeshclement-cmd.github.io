@@ -1,7 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import anime from 'animejs';
-import { Moon, Sun, Download, Settings, X, ArrowRight } from 'lucide-react';
+import { Moon, Sun, Settings, X, ArrowRight, Sparkles } from 'lucide-react';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
+import { useScrollLock } from '../../hooks/useScrollLock';
+import { useRouter, navigateTo, normalisePath } from '../../router/useRouter';
 
 interface NavbarProps {
   scrollProgress: number;
@@ -10,24 +12,28 @@ interface NavbarProps {
 }
 
 const NAV_LINKS = [
-  { label: 'About',      href: '#scene-about' },
-  { label: 'Skills',     href: '#scene-skills' },
-  { label: 'Projects',   href: '#scene-projects' },
-  { label: 'Experience', href: '#scene-experience' },
-  { label: 'Services',   href: '#scene-services' },
-  { label: 'Contact',    href: '#scene-contact' },
+  { label: 'About', href: '/about/', hash: '#scene-about' },
+  { label: 'Projects', href: '/projects/', hash: '#scene-projects' },
+  { label: 'Services', href: '/services/', hash: '#scene-services' },
+  { label: 'Blog', href: '/blog/', hash: '#scene-blog' },
+  { label: 'Experience', href: '/certifications/', hash: '#scene-experience' },
+  { label: 'Contact', href: '/contact/', hash: '#scene-contact' },
 ];
 
 export const Navbar: React.FC<NavbarProps> = ({ scrollProgress, theme, onToggleTheme }) => {
-  const barRef       = useRef<HTMLDivElement>(null);
-  const linksRef     = useRef<HTMLUListElement>(null);
-  const themeBtnRef  = useRef<HTMLButtonElement>(null);
-  const gearBtnRef   = useRef<HTMLButtonElement>(null);
+  const barRef        = useRef<HTMLDivElement>(null);
+  const linksRef      = useRef<HTMLUListElement>(null);
+  const themeBtnRef   = useRef<HTMLButtonElement>(null);
+  const gearBtnRef    = useRef<HTMLButtonElement>(null);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
 
+  const { currentPath, isHome } = useRouter();
   const [activeSection, setActiveSection] = useState('#scene-hero');
   const [mobileOpen, setMobileOpen]       = useState(false);
-  const reduced      = useReducedMotion();
+  const reduced       = useReducedMotion();
+
+  // Lock main page scrolling when mobile navigation menu is open
+  useScrollLock(mobileOpen, mobileMenuRef);
 
   // 1. Scroll progress bar update
   useEffect(() => {
@@ -36,16 +42,18 @@ export const Navbar: React.FC<NavbarProps> = ({ scrollProgress, theme, onToggleT
     }
   }, [scrollProgress]);
 
-  // 2. Active section detection on scroll
+  // 2. Active section detection on scroll (when on homepage)
   useEffect(() => {
+    if (!isHome) return;
+
     const handleScroll = () => {
-      const sections = NAV_LINKS.map(link => document.querySelector(link.href));
+      const sections = NAV_LINKS.map(link => document.querySelector(link.hash));
       const scrollPos = window.scrollY + 220;
 
       for (let i = sections.length - 1; i >= 0; i--) {
         const sec = sections[i] as HTMLElement | null;
         if (sec && sec.offsetTop <= scrollPos) {
-          setActiveSection(NAV_LINKS[i].href);
+          setActiveSection(NAV_LINKS[i].hash);
           return;
         }
       }
@@ -54,7 +62,7 @@ export const Navbar: React.FC<NavbarProps> = ({ scrollProgress, theme, onToggleT
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [isHome]);
 
   // 3. Stagger assembly on mount
   useEffect(() => {
@@ -119,10 +127,26 @@ export const Navbar: React.FC<NavbarProps> = ({ scrollProgress, theme, onToggleT
     onToggleTheme();
   };
 
-  const scrollTo = (href: string) => {
-    const el = document.querySelector(href);
-    if (el) el.scrollIntoView({ behavior: 'smooth' });
+  const handleNavClick = (link: { label: string; href: string; hash: string }) => {
     if (mobileOpen) setMobileOpen(false);
+
+    if (isHome) {
+      const el = document.querySelector(link.hash);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth' });
+        return;
+      }
+    }
+
+    navigateTo(link.href);
+  };
+
+  const isLinkActive = (link: { label: string; href: string; hash: string }) => {
+    if (isHome) {
+      return activeSection === link.hash;
+    }
+    const norm = normalisePath(currentPath);
+    return norm.startsWith(link.href);
   };
 
   return (
@@ -149,10 +173,17 @@ export const Navbar: React.FC<NavbarProps> = ({ scrollProgress, theme, onToggleT
         }}
         aria-label="Main navigation"
       >
-        {/* Branding: (Profile Photo) Pratheesh */}
+        {/* Branding: Pratheesh Clement */}
         <a
-          href="#scene-hero"
-          onClick={e => { e.preventDefault(); scrollTo('#scene-hero'); }}
+          href="/"
+          onClick={e => {
+            e.preventDefault();
+            if (isHome) {
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+              navigateTo('/');
+            }
+          }}
           style={{
             display: 'flex',
             alignItems: 'center',
@@ -164,11 +195,11 @@ export const Navbar: React.FC<NavbarProps> = ({ scrollProgress, theme, onToggleT
             textDecoration: 'none',
             letterSpacing: '-0.02em',
           }}
-          aria-label="Pratheesh Clement — go to top"
+          aria-label="Pratheesh Clement — go to homepage"
         >
           <img
             src="/assets/pratheesh4k1.jpeg"
-            alt="Pratheesh Clement — Digital Marketing Specialist & SEO Expert"
+            alt="Pratheesh Clement"
             title="Pratheesh Clement Portfolio"
             width={32}
             height={32}
@@ -186,7 +217,7 @@ export const Navbar: React.FC<NavbarProps> = ({ scrollProgress, theme, onToggleT
           <span>Pratheesh</span>
         </a>
 
-        {/* Desktop Nav links (Hidden on small screens via CSS query) */}
+        {/* Desktop Nav links */}
         <ul
           ref={linksRef}
           className="desktop-only-nav"
@@ -194,32 +225,35 @@ export const Navbar: React.FC<NavbarProps> = ({ scrollProgress, theme, onToggleT
           role="list"
         >
           {NAV_LINKS.map(link => {
-            const isActive = activeSection === link.href;
+            const active = isLinkActive(link);
             return (
               <li key={link.href}>
                 <a
                   href={link.href}
-                  onClick={e => { e.preventDefault(); scrollTo(link.href); }}
+                  onClick={e => {
+                    e.preventDefault();
+                    handleNavClick(link);
+                  }}
                   style={{
                     padding: '6px 14px',
                     fontSize: '0.85rem',
-                    fontWeight: isActive ? 600 : 500,
-                    color: isActive ? 'var(--accent-primary)' : 'var(--text-secondary)',
-                    background: isActive ? 'rgba(59, 130, 246, 0.1)' : 'transparent',
-                    border: isActive ? '1px solid rgba(59, 130, 246, 0.25)' : '1px solid transparent',
+                    fontWeight: active ? 600 : 500,
+                    color: active ? 'var(--accent-primary)' : 'var(--text-secondary)',
+                    background: active ? 'rgba(59, 130, 246, 0.1)' : 'transparent',
+                    border: active ? '1px solid rgba(59, 130, 246, 0.25)' : '1px solid transparent',
                     textDecoration: 'none',
                     borderRadius: 'var(--radius-full)',
                     transition: 'all 0.25s ease',
                     display: 'block',
                   }}
                   onMouseEnter={e => {
-                    if (!isActive) {
+                    if (!active) {
                       e.currentTarget.style.color = 'var(--text-primary)';
                       e.currentTarget.style.background = 'rgba(0,0,0,0.04)';
                     }
                   }}
                   onMouseLeave={e => {
-                    if (!isActive) {
+                    if (!active) {
                       e.currentTarget.style.color = 'var(--text-secondary)';
                       e.currentTarget.style.background = 'transparent';
                     }
@@ -232,8 +266,9 @@ export const Navbar: React.FC<NavbarProps> = ({ scrollProgress, theme, onToggleT
           })}
         </ul>
 
-        {/* Actions (Theme toggle + Resume + Mobile Gear Button) */}
+        {/* Actions (Theme toggle + AI Assistant + Command Palette + Mobile Gear) */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          {/* Theme Toggle */}
           <button
             ref={themeBtnRef}
             onClick={handleThemeToggle}
@@ -247,23 +282,51 @@ export const Navbar: React.FC<NavbarProps> = ({ scrollProgress, theme, onToggleT
               alignItems: 'center',
               padding: 8,
               borderRadius: 'var(--radius-sm)',
+              transition: 'color 0.2s ease',
             }}
+            onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent-primary)')}
+            onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-secondary)')}
           >
             {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
           </button>
 
-          <a
-            href="/resume/MariyaPratheesh.docx"
-            download="MariyaPratheesh_Resume.docx"
-            aria-label="Download Resume"
-            className="btn-primary desktop-only-nav"
-            style={{ padding: '8px 16px', fontSize: '0.85rem', textDecoration: 'none' }}
+          {/* AI Concierge Launcher */}
+          <button
+            onClick={() => window.dispatchEvent(new CustomEvent('open-ai-concierge'))}
+            aria-label="Open AI Concierge Assistant"
+            className="desktop-only-nav pill"
+            style={{
+              padding: '6px 14px',
+              fontSize: '0.82rem',
+              cursor: 'pointer',
+              background: 'rgba(139, 92, 246, 0.1)',
+              borderColor: 'rgba(139, 92, 246, 0.3)',
+              color: 'var(--accent-tertiary)',
+            }}
           >
-            <Download size={14} />
-            Resume
-          </a>
+            <Sparkles size={13} />
+            AI Assistant
+          </button>
 
-          {/* Mobile Animated Gear Icon Button */}
+          {/* Command Palette Launcher (⌘K) */}
+          <button
+            onClick={() => window.dispatchEvent(new CustomEvent('open-command-palette'))}
+            aria-label="Open Command Search Palette"
+            className="desktop-only-nav pill"
+            style={{
+              padding: '6px 12px',
+              fontSize: '0.8rem',
+              cursor: 'pointer',
+              background: 'rgba(59, 130, 246, 0.1)',
+              borderColor: 'rgba(59, 130, 246, 0.3)',
+              color: 'var(--accent-primary)',
+              fontFamily: 'var(--font-mono)',
+            }}
+          >
+            ⌘K
+          </button>
+
+          {/* Mobile Animated Gear Button */}
           <button
             ref={gearBtnRef}
             onClick={toggleMobileMenu}
@@ -276,7 +339,7 @@ export const Navbar: React.FC<NavbarProps> = ({ scrollProgress, theme, onToggleT
               borderRadius: '50%',
               width: 38,
               height: 38,
-              display: 'none', // Controlled via CSS for mobile display
+              display: 'none',
               alignItems: 'center',
               justifyContent: 'center',
               cursor: 'pointer',
@@ -289,12 +352,24 @@ export const Navbar: React.FC<NavbarProps> = ({ scrollProgress, theme, onToggleT
 
       {/* Scroll progress bar */}
       <div
-        style={{ height: 2, background: 'var(--bg-tertiary)', borderRadius: 2, marginTop: 4, overflow: 'hidden', opacity: scrollProgress > 0 ? 1 : 0, transition: 'opacity 0.3s ease' }}
+        style={{
+          height: 2,
+          background: 'var(--bg-tertiary)',
+          borderRadius: 2,
+          marginTop: 4,
+          overflow: 'hidden',
+          opacity: scrollProgress > 0 ? 1 : 0,
+          transition: 'opacity 0.3s ease',
+        }}
         aria-hidden="true"
       >
         <div
           ref={barRef}
-          style={{ height: '100%', background: 'linear-gradient(90deg, var(--accent-primary), var(--accent-tertiary))', transition: 'width 0.1s linear' }}
+          style={{
+            height: '100%',
+            background: 'linear-gradient(90deg, var(--accent-primary), var(--accent-tertiary))',
+            transition: 'width 0.1s linear',
+          }}
         />
       </div>
 
@@ -332,42 +407,36 @@ export const Navbar: React.FC<NavbarProps> = ({ scrollProgress, theme, onToggleT
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-            {NAV_LINKS.map(link => (
-              <a
-                key={link.href}
-                href={link.href}
-                onClick={e => { e.preventDefault(); scrollTo(link.href); }}
-                className="mobile-nav-item"
-                style={{
-                  padding: '14px 20px',
-                  borderRadius: 14,
-                  background: activeSection === link.href ? 'rgba(59, 130, 246, 0.12)' : 'var(--bg-secondary)',
-                  border: activeSection === link.href ? '1px solid var(--accent-primary)' : '1px solid var(--bg-tertiary)',
-                  color: activeSection === link.href ? 'var(--accent-primary)' : 'var(--text-primary)',
-                  fontSize: '1.05rem',
-                  fontWeight: 600,
-                  textDecoration: 'none',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                }}
-              >
-                {link.label}
-                <ArrowRight size={18} />
-              </a>
-            ))}
-          </div>
-
-          <div style={{ marginTop: 24, paddingTop: 20, borderTop: '1px solid var(--bg-tertiary)', display: 'flex', gap: 12 }}>
-            <a
-              href="/resume/MariyaPratheesh.docx"
-              download="MariyaPratheesh_Resume.docx"
-              className="btn-primary"
-              style={{ flex: 1, justifyContent: 'center', textDecoration: 'none' }}
-            >
-              <Download size={16} />
-              Download Resume
-            </a>
+            {NAV_LINKS.map(link => {
+              const active = isLinkActive(link);
+              return (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  onClick={e => {
+                    e.preventDefault();
+                    handleNavClick(link);
+                  }}
+                  className="mobile-nav-item"
+                  style={{
+                    padding: '14px 20px',
+                    borderRadius: 14,
+                    background: active ? 'rgba(59, 130, 246, 0.12)' : 'var(--bg-secondary)',
+                    border: active ? '1px solid var(--accent-primary)' : '1px solid var(--bg-tertiary)',
+                    color: active ? 'var(--accent-primary)' : 'var(--text-primary)',
+                    fontSize: '1.05rem',
+                    fontWeight: 600,
+                    textDecoration: 'none',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                  }}
+                >
+                  {link.label}
+                  <ArrowRight size={18} />
+                </a>
+              );
+            })}
           </div>
         </div>
       )}

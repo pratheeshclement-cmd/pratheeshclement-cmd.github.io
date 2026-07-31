@@ -3,8 +3,8 @@ import { useReducedMotion } from '../../hooks/useReducedMotion';
 
 /**
  * CinematicParticleCanvas
- * Spawns ambient floating luminous particles that assemble/disassemble
- * dynamically on scroll, creating seamless environment continuity between scenes.
+ * Ambient luminous floating particles with real-time mouse parallax deflection
+ * and scroll velocity dynamics.
  */
 export const CinematicParticleCanvas: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -21,6 +21,11 @@ export const CinematicParticleCanvas: React.FC = () => {
     let width  = (canvas.width  = window.innerWidth);
     let height = (canvas.height = window.innerHeight);
 
+    let mouseX = width / 2;
+    let mouseY = height / 2;
+    let targetMouseX = mouseX;
+    let targetMouseY = mouseY;
+
     const PARTICLE_COUNT = 60;
     interface Particle {
       x: number;
@@ -30,6 +35,8 @@ export const CinematicParticleCanvas: React.FC = () => {
       speedY: number;
       opacity: number;
       color: string;
+      baseX: number;
+      baseY: number;
     }
 
     const colors = [
@@ -39,21 +46,39 @@ export const CinematicParticleCanvas: React.FC = () => {
       'rgba(14, 165, 233, ',  // Ice Blue
     ];
 
-    const particles: Particle[] = Array.from({ length: PARTICLE_COUNT }, () => ({
-      x: Math.random() * width,
-      y: Math.random() * height,
-      size: Math.random() * 2.5 + 1,
-      speedX: (Math.random() - 0.5) * 0.4,
-      speedY: (Math.random() - 0.5) * 0.4,
-      opacity: Math.random() * 0.5 + 0.2,
-      color: colors[Math.floor(Math.random() * colors.length)],
-    }));
+    const particles: Particle[] = Array.from({ length: PARTICLE_COUNT }, () => {
+      const rx = Math.random() * width;
+      const ry = Math.random() * height;
+      return {
+        x: rx,
+        y: ry,
+        baseX: rx,
+        baseY: ry,
+        size: Math.random() * 2.5 + 1,
+        speedX: (Math.random() - 0.5) * 0.4,
+        speedY: (Math.random() - 0.5) * 0.4,
+        opacity: Math.random() * 0.5 + 0.2,
+        color: colors[Math.floor(Math.random() * colors.length)],
+      };
+    });
 
     let animId: number;
     let lastScrollY = window.scrollY;
 
+    const onMouseMove = (e: MouseEvent) => {
+      targetMouseX = e.clientX;
+      targetMouseY = e.clientY;
+    };
+    window.addEventListener('mousemove', onMouseMove);
+
     const render = () => {
       ctx.clearRect(0, 0, width, height);
+
+      mouseX += (targetMouseX - mouseX) * 0.05;
+      mouseY += (targetMouseY - mouseY) * 0.05;
+
+      const normMouseX = (mouseX / width - 0.5) * 40;
+      const normMouseY = (mouseY / height - 0.5) * 40;
 
       // Scroll velocity influence
       const currentScrollY = window.scrollY;
@@ -71,8 +96,12 @@ export const CinematicParticleCanvas: React.FC = () => {
         if (p.y < 0) p.y = height;
         if (p.y > height) p.y = 0;
 
+        // Mouse Parallax deflection offset
+        const drawX = p.x + normMouseX * (p.size / 3);
+        const drawY = p.y + normMouseY * (p.size / 3);
+
         ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.arc(drawX, drawY, p.size, 0, Math.PI * 2);
         ctx.fillStyle = `${p.color}${p.opacity})`;
         ctx.shadowBlur = p.size * 4;
         ctx.shadowColor = `${p.color}0.8)`;
@@ -93,6 +122,7 @@ export const CinematicParticleCanvas: React.FC = () => {
 
     return () => {
       cancelAnimationFrame(animId);
+      window.removeEventListener('mousemove', onMouseMove);
       window.removeEventListener('resize', onResize);
     };
   }, [reduced]);

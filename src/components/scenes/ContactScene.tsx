@@ -3,6 +3,7 @@ import { Mail, Phone, MapPin, Github, Linkedin, Instagram, Facebook, ArrowRight 
 import { SplitText } from '../ui/SplitText';
 import { GlassCard } from '../ui/GlassCard';
 import { MagneticButton } from '../ui/MagneticButton';
+import { CinematicProfileShowcase } from '../ui/CinematicProfileShowcase';
 import { IDENTITY } from '../../data/identity';
 import { useCinematicSceneTransition } from '../../hooks/useScrollTimeline';
 
@@ -86,51 +87,36 @@ const ContactScene: React.FC<{ id: string }> = ({ id }) => {
             </GlassCard>
           </div>
 
-          {/* CTA glass card with Pratheesh Photo */}
-          <GlassCard tilt style={{ padding: 36, textAlign: 'center' }}>
-            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 20 }}>
-              <div style={{
-                position: 'relative',
-                width: 96,
-                height: 96,
-                borderRadius: '50%',
-                overflow: 'hidden',
-                border: '3px solid var(--accent-primary)',
-                boxShadow: '0 0 25px rgba(59, 130, 246, 0.35)',
-              }}>
-                <img
-                  src="/assets/pratheesh4k2.jpeg"
-                  alt="Pratheesh Clement — Digital Marketing Specialist & Freelance SEO Consultant Vadalur"
-                  title="Contact Pratheesh Clement"
-                  width={96}
-                  height={96}
-                  loading="lazy"
-                  decoding="async"
-                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                />
+          {/* Right Column — Large Cinematic Profile Showcase (Occupies ~45–50% of section) */}
+          <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 20 }}>
+            <CinematicProfileShowcase
+              imageSrc="/assets/pratheesh4k2.jpeg"
+              altText="Pratheesh Clement — Digital Marketing Specialist & Freelance SEO Consultant Vadalur"
+            />
+
+            {/* Direct Inquiries & Messaging Action Box */}
+            <GlassCard style={{ padding: '24px 28px', textAlign: 'center' }}>
+              <h3 style={{ fontSize: '1.4rem', fontFamily: 'var(--font-display)', marginBottom: 8, lineHeight: 1.2 }}>
+                Direct Contact with Pratheesh
+              </h3>
+              <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: 20 }}>
+                Whether you need a digital marketing strategy, SEO overhaul, web development, or AI automation — let's talk.
+              </p>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                <MagneticButton as="a" href={`mailto:${IDENTITY.contact.email}`} style={{ justifyContent: 'center', padding: '12px 20px', fontSize: '0.9rem' } as React.CSSProperties}>
+                  Send Email <ArrowRight size={15} />
+                </MagneticButton>
+                <MagneticButton as="a" href={`https://wa.me/${IDENTITY.contact.whatsapp.replace(/\D/g, '')}`} variant="secondary" style={{ justifyContent: 'center', padding: '12px 20px', fontSize: '0.9rem' } as React.CSSProperties}>
+                  WhatsApp Chat
+                </MagneticButton>
               </div>
-            </div>
 
-            <h3 style={{ fontSize: '1.6rem', fontFamily: 'var(--font-display)', marginBottom: 12, lineHeight: 1.2 }}>
-              Direct Contact with Pratheesh
-            </h3>
-            <p style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', lineHeight: 1.7, marginBottom: 28 }}>
-              Whether you need a digital marketing strategy, SEO overhaul, web development, or AI automation — let's talk.
-            </p>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-              <MagneticButton as="a" href={`mailto:${IDENTITY.contact.email}`} style={{ justifyContent: 'center' } as React.CSSProperties}>
-                Send Email <ArrowRight size={16} />
-              </MagneticButton>
-              <MagneticButton as="a" href={`https://wa.me/${IDENTITY.contact.whatsapp.replace(/\D/g, '')}`} variant="secondary" style={{ justifyContent: 'center' } as React.CSSProperties}>
-                WhatsApp Chat
-              </MagneticButton>
-            </div>
-
-            <p style={{ marginTop: 28, fontSize: '0.8rem', color: 'var(--text-tertiary)' }}>
-              Available for remote work worldwide · IST timezone
-            </p>
-          </GlassCard>
+              <div style={{ marginTop: 16, fontSize: '0.78rem', color: 'var(--text-tertiary)' }}>
+                Available for remote work worldwide · IST (UTC+5:30) timezone
+              </div>
+            </GlassCard>
+          </div>
         </div>
 
         {/* ── Premium High-End Glassmorphic Footer ──────────────────── */}
@@ -149,7 +135,7 @@ const ContactScene: React.FC<{ id: string }> = ({ id }) => {
                     height={40}
                     loading="lazy"
                     decoding="async"
-                    style={{ width: 40, height: 40, borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--accent-primary)' }}
+                    style={{ width: 40, height: 40, borderRadius: '50%', objectFit: 'cover', objectPosition: 'center 10%', border: '2px solid var(--accent-primary)' }}
                   />
                   <div>
                     <div style={{ fontSize: '1.05rem', fontWeight: 700, color: 'var(--text-primary)', fontFamily: 'var(--font-display)' }}>
@@ -196,21 +182,27 @@ const ContactScene: React.FC<{ id: string }> = ({ id }) => {
               {/* Col 2: Quick Links */}
               <div>
                 <div style={{ fontSize: '0.78rem', color: 'var(--text-tertiary)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 16 }}>
-                  Quick Navigation
+                  Explore
                 </div>
                 <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
                   {[
-                    { label: 'About Pratheesh', href: '#scene-about' },
-                    { label: 'Technical Matrix', href: '#scene-skills' },
-                    { label: 'Featured Case Studies', href: '#scene-projects' },
-                    { label: 'Career & Experience', href: '#scene-experience' },
-                    { label: 'Services Offered', href: '#scene-services' },
-                    { label: 'Get in Touch', href: '#scene-contact' },
+                    { label: 'Home', href: '/' },
+                    { label: 'About Pratheesh', href: '/about/' },
+                    { label: 'Featured Projects', href: '/projects/' },
+                    { label: 'Services Overview', href: '/services/' },
+                    { label: 'Blog & Insights', href: '/blog/' },
+                    { label: 'Certifications', href: '/certifications/' },
+                    { label: 'Contact', href: '/contact/' },
                   ].map(link => (
                     <li key={link.href}>
                       <a
                         href={link.href}
-                        onClick={e => { e.preventDefault(); scrollTo(link.href); }}
+                        onClick={e => {
+                          if (link.href.startsWith('/')) {
+                            e.preventDefault();
+                            window.dispatchEvent(new CustomEvent('navigate', { detail: link.href }));
+                          }
+                        }}
                         style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', textDecoration: 'none', transition: 'color 0.2s ease' }}
                         onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent-primary)')}
                         onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-secondary)')}
@@ -222,27 +214,35 @@ const ContactScene: React.FC<{ id: string }> = ({ id }) => {
                 </ul>
               </div>
 
-              {/* Col 3: Case Studies */}
+              {/* Col 3: Expertise & Discipline Guides */}
               <div>
                 <div style={{ fontSize: '0.78rem', color: 'var(--text-tertiary)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 16 }}>
-                  Case Studies
+                  Expertise
                 </div>
                 <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
                   {[
-                    'SEO Growth Campaign',
-                    'Restaurant Web Layout',
-                    'B2B Social Lead Funnel',
-                    'Portfolio X Universe',
-                  ].map(title => (
-                    <li key={title}>
+                    { label: 'Technical SEO Strategy', href: '/seo/' },
+                    { label: 'Digital Marketing Strategy', href: '/digital-marketing/' },
+                    { label: 'UI/UX Design Systems', href: '/ui-ux-design/' },
+                    { label: 'Web Development (React)', href: '/web-development/' },
+                    { label: 'Google Search Console', href: '/google-search-console/' },
+                    { label: 'Meta Ads & Facebook', href: '/meta-ads/' },
+                    { label: 'Google Search Ads', href: '/google-ads/' },
+                    { label: 'AI Tools & Automation', href: '/ai-automation/' },
+                    { label: 'Freelance Services', href: '/freelancing/' },
+                  ].map(link => (
+                    <li key={link.href}>
                       <a
-                        href="#scene-projects"
-                        onClick={e => { e.preventDefault(); scrollTo('#scene-projects'); }}
+                        href={link.href}
+                        onClick={e => {
+                          e.preventDefault();
+                          window.dispatchEvent(new CustomEvent('navigate', { detail: link.href }));
+                        }}
                         style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', textDecoration: 'none', transition: 'color 0.2s ease' }}
                         onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent-primary)')}
                         onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-secondary)')}
                       >
-                        {title}
+                        {link.label}
                       </a>
                     </li>
                   ))}
@@ -274,9 +274,30 @@ const ContactScene: React.FC<{ id: string }> = ({ id }) => {
             </div>
 
             <div style={{ display: 'flex', gap: 20 }}>
-              <a href="#scene-hero" onClick={e => { e.preventDefault(); scrollTo('#scene-hero'); }} style={{ color: 'var(--text-tertiary)', textDecoration: 'none' }}>Privacy Policy</a>
-              <a href="#scene-hero" onClick={e => { e.preventDefault(); scrollTo('#scene-hero'); }} style={{ color: 'var(--text-tertiary)', textDecoration: 'none' }}>Terms of Service</a>
-              <a href="#scene-hero" onClick={e => { e.preventDefault(); scrollTo('#scene-hero'); }} style={{ color: 'var(--text-tertiary)', textDecoration: 'none' }}>Cookie Preferences</a>
+              <button
+                onClick={() => window.dispatchEvent(new CustomEvent('open-legal-modal', { detail: 'privacy' }))}
+                style={{ background: 'none', border: 'none', color: 'var(--text-tertiary)', cursor: 'pointer', padding: 0, fontSize: '0.8rem' }}
+                onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent-primary)')}
+                onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-tertiary)')}
+              >
+                Privacy Policy
+              </button>
+              <button
+                onClick={() => window.dispatchEvent(new CustomEvent('open-legal-modal', { detail: 'terms' }))}
+                style={{ background: 'none', border: 'none', color: 'var(--text-tertiary)', cursor: 'pointer', padding: 0, fontSize: '0.8rem' }}
+                onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent-primary)')}
+                onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-tertiary)')}
+              >
+                Terms of Service
+              </button>
+              <button
+                onClick={() => window.dispatchEvent(new CustomEvent('open-cookie-preferences'))}
+                style={{ background: 'none', border: 'none', color: 'var(--text-tertiary)', cursor: 'pointer', padding: 0, fontSize: '0.8rem' }}
+                onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent-primary)')}
+                onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-tertiary)')}
+              >
+                Cookie Preferences
+              </button>
             </div>
           </div>
         </footer>

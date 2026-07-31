@@ -3,6 +3,7 @@ import anime from 'animejs';
 import { ShieldCheck, Check, Cookie } from 'lucide-react';
 import { initAnalytics } from './analytics';
 import { useReducedMotion } from '../hooks/useReducedMotion';
+import { useScrollLock } from '../hooks/useScrollLock';
 
 const CONSENT_KEY = 'portfolio-consent-v1';
 
@@ -45,11 +46,24 @@ export const ConsentBanner: React.FC<{ bootDone?: boolean }> = ({ bootDone = tru
   const overlayRef = useRef<HTMLDivElement>(null);
   const reduced   = useReducedMotion();
 
+  // Lock main page scrolling when consent banner is open
+  useScrollLock(visible && bootDone, popupRef);
+
   useEffect(() => {
     if (consent.decided) {
       initAnalytics(consent);
     }
   }, [consent]);
+
+  // Listen for footer "Cookie Preferences" trigger event
+  useEffect(() => {
+    const handleReopen = () => {
+      setShowDetails(true);
+      setVisible(true);
+    };
+    window.addEventListener('open-cookie-preferences', handleReopen);
+    return () => window.removeEventListener('open-cookie-preferences', handleReopen);
+  }, []);
 
   // Anime.js Entrance Animation when loading finishes
   useEffect(() => {

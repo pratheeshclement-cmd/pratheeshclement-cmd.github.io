@@ -4,6 +4,7 @@ import { MessageCircle, X, Send, Bot } from 'lucide-react';
 import { AIMessage, UserRole } from '../../types';
 import { ROLE_QUICK_CHIPS, queryAIConcierge } from '../../data/aiKnowledgeBase';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
+import { useScrollLock } from '../../hooks/useScrollLock';
 
 const ROLES: { id: UserRole; label: string; emoji: string }[] = [
   { id: 'recruiter',  label: 'Recruiter',    emoji: '🎯' },
@@ -32,6 +33,9 @@ const AIConcierge: React.FC = () => {
   const messagesRef           = useRef<HTMLDivElement>(null);
   const inputRef              = useRef<HTMLInputElement>(null);
   const reduced               = useReducedMotion();
+
+  // Lock main page scrolling when AI Concierge panel is open
+  useScrollLock(open, panelRef);
 
   // Animate panel in/out
   useEffect(() => {
@@ -123,21 +127,32 @@ const AIConcierge: React.FC = () => {
           aria-modal="true"
           aria-label="AI Concierge chat"
           style={{
-            position: 'fixed', bottom: 96, right: 28, zIndex: 9000,
-            width: 'min(380px, calc(100vw - 56px))',
-            height: 520,
-            background: 'rgba(255,255,255,0.88)',
+            position: 'fixed',
+            bottom: window.innerWidth <= 640 ? 0 : 96,
+            right: window.innerWidth <= 640 ? 0 : 28,
+            left: window.innerWidth <= 640 ? 0 : 'auto',
+            top: window.innerWidth <= 640 ? 0 : 'auto',
+            zIndex: 99999,
+            width: window.innerWidth <= 640 ? '100vw' : 'min(380px, calc(100vw - 56px))',
+            height: window.innerWidth <= 640 ? '100dvh' : 520,
+            maxHeight: '100dvh',
+            background: 'var(--glass-bg)',
             backdropFilter: 'blur(32px) saturate(180%)',
-            borderRadius: 24, border: '1px solid rgba(203,213,225,0.5)',
-            boxShadow: '0 20px 60px rgba(0,0,0,0.15)',
-            display: 'flex', flexDirection: 'column', overflow: 'hidden',
+            WebkitBackdropFilter: 'blur(32px) saturate(180%)',
+            borderRadius: window.innerWidth <= 640 ? 0 : 24,
+            border: '1px solid var(--glass-border)',
+            boxShadow: '0 20px 60px rgba(0,0,0,0.2)',
+            display: 'flex',
+            flexDirection: 'column',
+            overflow: 'hidden',
           }}
         >
           {/* Header */}
           <div style={{
-            padding: '16px 20px', borderBottom: '1px solid rgba(203,213,225,0.5)',
+            padding: '16px 20px', borderBottom: '1px solid var(--glass-border)',
             display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-            background: 'linear-gradient(135deg, rgba(59,130,246,0.06), rgba(139,92,246,0.06))',
+            background: 'linear-gradient(135deg, rgba(59,130,246,0.08), rgba(139,92,246,0.08))',
+            paddingTop: window.innerWidth <= 640 ? 'max(16px, env(safe-area-inset-top))' : 16,
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
               <div style={{ width: 32, height: 32, borderRadius: '50%', background: 'linear-gradient(135deg, var(--accent-primary), var(--accent-tertiary))', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -148,14 +163,14 @@ const AIConcierge: React.FC = () => {
                 <div style={{ fontSize: '0.72rem', color: 'var(--accent-mint)', fontWeight: 600 }}>● Online</div>
               </div>
             </div>
-            <button onClick={closePanel} aria-label="Close chat" style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-tertiary)' }}>
-              <X size={18} />
+            <button onClick={closePanel} aria-label="Close chat" style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-tertiary)', padding: 8 }}>
+              <X size={20} />
             </button>
           </div>
 
           {/* Role picker */}
           {!role && (
-            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 24, gap: 12 }}>
+            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 24, gap: 12, overflowY: 'auto' }}>
               <div style={{ fontSize: '0.95rem', fontWeight: 600, color: 'var(--text-primary)', textAlign: 'center', marginBottom: 4 }}>
                 I'm here to help! Who are you?
               </div>
@@ -164,14 +179,13 @@ const AIConcierge: React.FC = () => {
                   key={r.id}
                   onClick={() => selectRole(r.id)}
                   style={{
-                    width: '100%', padding: '12px 16px', borderRadius: 12,
+                    width: '100%', padding: '14px 16px', borderRadius: 12,
                     background: 'var(--bg-secondary)', border: '1px solid var(--bg-tertiary)',
                     cursor: 'pointer', textAlign: 'left', display: 'flex', alignItems: 'center', gap: 10,
-                    fontFamily: 'var(--font-body)', fontSize: '0.9rem', fontWeight: 500,
+                    fontFamily: 'var(--font-body)', fontSize: '0.95rem', fontWeight: 500,
                     color: 'var(--text-primary)', transition: 'all 0.15s ease',
+                    minHeight: 48,
                   }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(59,130,246,0.08)'; (e.currentTarget as HTMLElement).style.borderColor = 'rgba(59,130,246,0.3)'; }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'var(--bg-secondary)'; (e.currentTarget as HTMLElement).style.borderColor = 'var(--bg-tertiary)'; }}
                 >
                   <span style={{ fontSize: '1.2rem' }}>{r.emoji}</span>
                   {r.label}
@@ -185,21 +199,21 @@ const AIConcierge: React.FC = () => {
             <>
               <div
                 ref={messagesRef}
-                style={{ flex: 1, overflowY: 'auto', padding: '16px 16px 8px', display: 'flex', flexDirection: 'column', gap: 12 }}
+                style={{ flex: 1, overflowY: 'auto', padding: '16px 16px 8px', display: 'flex', flexDirection: 'column', gap: 12, WebkitOverflowScrolling: 'touch' }}
               >
                 {msgs.map(msg => (
                   <div
                     key={msg.id}
                     style={{
                       alignSelf: msg.role === 'user' ? 'flex-end' : 'flex-start',
-                      maxWidth: '80%',
-                      padding: '10px 14px',
-                      borderRadius: msg.role === 'user' ? '16px 16px 4px 16px' : '16px 16px 16px 4px',
+                      maxWidth: '85%',
+                      padding: '12px 16px',
+                      borderRadius: msg.role === 'user' ? '18px 18px 4px 18px' : '18px 18px 18px 4px',
                       background: msg.role === 'user'
                         ? 'linear-gradient(135deg, var(--accent-primary), var(--accent-secondary))'
                         : 'var(--bg-secondary)',
                       color: msg.role === 'user' ? '#fff' : 'var(--text-primary)',
-                      fontSize: '0.88rem', lineHeight: 1.6,
+                      fontSize: '0.92rem', lineHeight: 1.6,
                       border: msg.role === 'assistant' ? '1px solid var(--bg-tertiary)' : 'none',
                     }}
                   >
@@ -221,13 +235,11 @@ const AIConcierge: React.FC = () => {
                       key={chip}
                       onClick={() => sendMessage(chip)}
                       style={{
-                        padding: '6px 12px', borderRadius: 999, fontSize: '0.78rem', fontWeight: 500,
+                        padding: '8px 14px', borderRadius: 999, fontSize: '0.82rem', fontWeight: 500,
                         background: 'rgba(59,130,246,0.08)', border: '1px solid rgba(59,130,246,0.25)',
                         color: 'var(--accent-primary)', cursor: 'pointer', fontFamily: 'var(--font-body)',
-                        transition: 'all 0.15s ease',
+                        minHeight: 36,
                       }}
-                      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(59,130,246,0.15)'; }}
-                      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'rgba(59,130,246,0.08)'; }}
                     >
                       {chip}
                     </button>
@@ -235,22 +247,29 @@ const AIConcierge: React.FC = () => {
                 </div>
               )}
 
-              {/* Input */}
+              {/* Input Form with safe area bottom padding */}
               <form
                 onSubmit={e => { e.preventDefault(); sendMessage(input); }}
-                style={{ padding: '12px 16px', borderTop: '1px solid var(--bg-tertiary)', display: 'flex', gap: 8 }}
+                style={{
+                  padding: '12px 16px',
+                  paddingBottom: window.innerWidth <= 640 ? 'max(16px, env(safe-area-inset-bottom))' : 12,
+                  borderTop: '1px solid var(--bg-tertiary)',
+                  display: 'flex',
+                  gap: 8,
+                  background: 'var(--bg-primary)',
+                }}
               >
                 <input
                   ref={inputRef}
                   value={input}
                   onChange={e => setInput(e.target.value)}
                   placeholder="Ask me anything…"
-                  aria-label="Message"
+                  aria-label="Message input"
                   style={{
-                    flex: 1, padding: '10px 14px', borderRadius: 12,
+                    flex: 1, padding: '12px 16px', borderRadius: 12,
                     border: '1px solid var(--bg-tertiary)', background: 'var(--bg-secondary)',
-                    fontFamily: 'var(--font-body)', fontSize: '0.88rem', color: 'var(--text-primary)',
-                    outline: 'none',
+                    fontFamily: 'var(--font-body)', fontSize: '1rem', color: 'var(--text-primary)',
+                    outline: 'none', minHeight: 44,
                   }}
                 />
                 <button
@@ -258,14 +277,14 @@ const AIConcierge: React.FC = () => {
                   aria-label="Send message"
                   disabled={!input.trim()}
                   style={{
-                    width: 40, height: 40, borderRadius: 10, flexShrink: 0,
+                    width: 44, height: 44, borderRadius: 12, flexShrink: 0,
                     background: input.trim() ? 'var(--accent-primary)' : 'var(--bg-tertiary)',
                     border: 'none', cursor: input.trim() ? 'pointer' : 'default',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     color: '#fff', transition: 'background 0.15s ease',
                   }}
                 >
-                  <Send size={16} />
+                  <Send size={18} />
                 </button>
               </form>
             </>
