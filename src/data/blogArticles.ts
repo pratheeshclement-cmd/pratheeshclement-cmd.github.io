@@ -26,7 +26,7 @@ export const BLOG_ARTICLES: BlogArticle[] = [
       Search engine optimization for modern single-page applications (SPAs) requires more than basic meta tags. When search engine crawlers like Googlebot encounter client-side rendered JavaScript apps, they rely on efficient rendering, clear structural metadata, and fast server response times.
 
       ### 1. Crawlability & Real URL Architecture
-      A common mistake in modern portfolios and single-page apps is relying entirely on hash-based navigation (\`/#about\`, \`/#skills\`). While hash anchors work smoothly for smooth scrolling, Google Search treats everything after the hash as client-side state. Important topics and case studies should exist on crawlable paths (\`/about/\`, \`/seo/\`, \`/projects/\`).
+      A common mistake in modern portfolios and single-page apps is relying entirely on hash-based navigation (\`/#about\`, \`/#skills\`). While hash anchors work smoothly for smooth scrolling, Google Search treats everything after the hash as client-side state. Important topics and case studies should exist on crawlable paths (\`/about/\`, \`/seo/\`, \`/projects/\`). Learn more about my approach on the [Technical SEO Authority Guide](/seo/) and [Google Search Console Architecture](/google-search-console/).
 
       ### 2. Structured Data Graphs (JSON-LD)
       Implementing structured data allows search engines to understand the exact entity behind a website. By crafting a nested \`@graph\` array connecting \`Person\`, \`WebSite\`, \`WebPage\`, and \`BreadcrumbList\`, search engines can associate content directly with an authoritative individual entity.
@@ -37,7 +37,7 @@ export const BLOG_ARTICLES: BlogArticle[] = [
       - **Interaction to Next Paint (INP):** Measures page responsiveness to user inputs. Target: under 200ms.
       - **Cumulative Layout Shift (CLS):** Measures visual stability. Target: score below 0.1.
 
-      By preloading critical above-the-fold media, specifying explicit width/height dimensions on image elements, and deferring non-essential scripts behind consent controls, we ensure both exceptional user experience and high technical search readiness.
+      By preloading critical above-the-fold media, specifying explicit width/height dimensions on image elements, and deferring non-essential scripts behind consent controls, we ensure both exceptional user experience and high technical search readiness. For custom frontend architecture details, read the [Web Development Guide](/web-development/).
     `,
   },
   {
@@ -54,7 +54,7 @@ export const BLOG_ARTICLES: BlogArticle[] = [
       Creative web design often clashes with technical search engine optimization. Rich cinematic animations, spatial background canvases, and smooth scrolling can degrade performance and hide semantic content from search crawlers if built improperly.
 
       ### The Hybrid Architecture Strategy
-      In building Pratheesh OS, the goal was clear: maintain a premium, scroll-driven cinematic universe without compromising semantic HTML hierarchy, keyboard accessibility, or indexable URLs.
+      In building Pratheesh OS, the goal was clear: maintain a premium, scroll-driven cinematic universe without compromising semantic HTML hierarchy, keyboard accessibility, or indexable URLs. Discover more on our [Web Development Services](/web-development/) and [Technical SEO Strategy](/seo/).
 
       ### 1. Semantic Foundation Beneath Visual Effects
       No matter how complex the canvas backdrop or parallax camera transformations are, the underlying HTML structure remains standard semantic elements: \`<header>\`, \`<nav>\`, \`<main>\`, \`<section>\`, \`<article>\`, and \`<footer>\`. Headings follow a strict hierarchy (\`h1\` -> \`h2\` -> \`h3\`), ensuring assistive technologies and search bots read clear topic outlines.
@@ -63,7 +63,7 @@ export const BLOG_ARTICLES: BlogArticle[] = [
       Not all users want intensive 3D camera transitions or parallax effects. Utilizing CSS media queries (\`prefers-reduced-motion: reduce\`) and custom React hooks (\`useReducedMotion\`), visual effects can be automatically scaled down to static, accessible views without breaking site usability.
 
       ### 3. Client-Side SPA Routing on Static Hosts
-      Deploying to static hosts like GitHub Pages (\`github.io\`) requires a smart routing strategy. By combining a lightweight 404 redirect script with client-side URL decoding, every major section resolves to a clean, indexable URL while preserving fast client-side navigation.
+      Deploying to static hosts like GitHub Pages (\`github.io\`) requires a smart routing strategy. By combining a lightweight 404 redirect script with client-side URL decoding, every major section resolves to a clean, indexable URL while preserving fast client-side navigation. Check out how telemetry is monitored via [Google Search Console](/google-search-console/).
     `,
   },
   {
@@ -77,7 +77,7 @@ export const BLOG_ARTICLES: BlogArticle[] = [
     readTime: '5 min read',
     author: 'Pratheesh Clement',
     content: `
-      Conversion tracking is the backbone of profitable paid advertising campaigns on platforms like Meta (Facebook & Instagram) and Google Ads. Without accurate event tracking, ad algorithms cannot optimize for high-value leads or purchases.
+      Conversion tracking is the backbone of profitable paid advertising campaigns on platforms like Meta (Facebook & Instagram) and Google Ads. Without accurate event tracking, ad algorithms cannot optimize for high-value leads or purchases. Explore our [Meta Ads Guide](/meta-ads/) and [Google Ads Paid Search Strategy](/google-ads/).
 
       ### 1. The Anatomy of Meta Pixel Events
       Meta Pixel tracks two types of events:

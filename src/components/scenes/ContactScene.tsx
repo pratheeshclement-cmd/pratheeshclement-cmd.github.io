@@ -119,12 +119,54 @@ const ContactScene: React.FC<{ id: string }> = ({ id }) => {
           </div>
         </div>
 
+        {/* ── Tasteful Google Business Profile & Review CTA (Requirement 5) ──────────── */}
+        {(() => {
+          // Documented constant: insert verified direct review URL when available from Google Business Profile Manager
+          const GOOGLE_REVIEW_URL = "";
+          const GOOGLE_PROFILE_URL = "https://www.google.com/search?q=Pratheesh+freelance";
+
+          return (
+            <div style={{ marginTop: 40, marginBottom: 48 }}>
+              <GlassCard style={{ padding: '28px 32px', textAlign: 'center', background: 'rgba(59, 130, 246, 0.04)', borderColor: 'rgba(59, 130, 246, 0.2)' }}>
+                <h3 style={{ fontSize: '1.15rem', fontFamily: 'var(--font-display)', color: 'var(--text-primary)', marginBottom: 6 }}>
+                  Worked with Pratheesh?
+                </h3>
+                <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: 20 }}>
+                  Share your genuine experience on Google Business Profile to help build trust and support independent digital consulting.
+                </p>
+                <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
+                  {GOOGLE_REVIEW_URL ? (
+                    <a
+                      href={GOOGLE_REVIEW_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn-primary"
+                      style={{ fontSize: '0.88rem', padding: '10px 20px', textDecoration: 'none' }}
+                    >
+                      Review on Google
+                    </a>
+                  ) : null}
+                  <a
+                    href={GOOGLE_PROFILE_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn-primary"
+                    style={{ fontSize: '0.88rem', padding: '10px 20px', textDecoration: 'none', background: 'var(--bg-secondary)', color: 'var(--text-primary)', border: '1px solid var(--bg-tertiary)' }}
+                  >
+                    View Google Business Profile
+                  </a>
+                </div>
+              </GlassCard>
+            </div>
+          );
+        })()}
+
         {/* ── Premium High-End Glassmorphic Footer ──────────────────── */}
         <footer style={{ paddingTop: 48, borderTop: '1px solid var(--bg-tertiary)' }}>
           <GlassCard style={{ padding: '40px 32px', marginBottom: 32 }}>
             <div className="grid-4" style={{ gap: 32, alignItems: 'flex-start' }}>
 
-              {/* Col 1: Brand & Identity */}
+              {/* Col 1: Profile & Identity */}
               <div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
                   <img
@@ -147,89 +189,12 @@ const ContactScene: React.FC<{ id: string }> = ({ id }) => {
                   </div>
                 </div>
 
-                <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: 20 }}>
-                  "{IDENTITY.tagline}"
-                </p>
-
-                <div style={{ display: 'flex', gap: 10 }}>
+                <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 8 }}>
                   {[
-                    { href: IDENTITY.social.github, icon: Github, label: 'GitHub' },
-                    { href: IDENTITY.social.linkedin, icon: Linkedin, label: 'LinkedIn' },
-                    { href: IDENTITY.social.instagram, icon: Instagram, label: 'Instagram' },
-                  ].map(({ href, icon: Icon, label }) => (
-                    <a
-                      key={label}
-                      href={href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label={label}
-                      style={{
-                        width: 34, height: 34, borderRadius: '50%',
-                        background: 'var(--bg-secondary)', border: '1px solid var(--bg-tertiary)',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        color: 'var(--text-secondary)', textDecoration: 'none',
-                        transition: 'all 0.2s ease',
-                      }}
-                      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--accent-primary)'; (e.currentTarget as HTMLElement).style.transform = 'translateY(-2px)'; }}
-                      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-secondary)'; (e.currentTarget as HTMLElement).style.transform = ''; }}
-                    >
-                      <Icon size={16} />
-                    </a>
-                  ))}
-                </div>
-              </div>
-
-              {/* Col 2: Quick Links */}
-              <div>
-                <div style={{ fontSize: '0.78rem', color: 'var(--text-tertiary)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 16 }}>
-                  Explore
-                </div>
-                <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
-                  {[
-                    { label: 'Home', href: '/' },
                     { label: 'About Pratheesh', href: '/about/' },
-                    { label: 'Featured Projects', href: '/projects/' },
                     { label: 'Services Overview', href: '/services/' },
-                    { label: 'Blog & Insights', href: '/blog/' },
                     { label: 'Certifications', href: '/certifications/' },
-                    { label: 'Contact', href: '/contact/' },
-                  ].map(link => (
-                    <li key={link.href}>
-                      <a
-                        href={link.href}
-                        onClick={e => {
-                          if (link.href.startsWith('/')) {
-                            e.preventDefault();
-                            window.dispatchEvent(new CustomEvent('navigate', { detail: link.href }));
-                          }
-                        }}
-                        style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', textDecoration: 'none', transition: 'color 0.2s ease' }}
-                        onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent-primary)')}
-                        onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-secondary)')}
-                      >
-                        {link.label}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              {/* Col 3: Expertise & Discipline Guides */}
-              <div>
-                <div style={{ fontSize: '0.78rem', color: 'var(--text-tertiary)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 16 }}>
-                  Expertise
-                </div>
-                <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
-                  {[
-                    { label: 'Technical SEO Strategy', href: '/seo/' },
-                    { label: 'Digital Marketing Strategy', href: '/digital-marketing/' },
-                    { label: 'UI/UX Design Systems', href: '/ui-ux-design/' },
-                    { label: 'Web Development (React)', href: '/web-development/' },
-                    { label: 'Google Search Console', href: '/google-search-console/' },
-                    { label: 'Meta Ads & Facebook', href: '/meta-ads/' },
-                    { label: 'Google Search Ads', href: '/google-ads/' },
-                    { label: 'AI Tools & Automation', href: '/ai-automation/' },
-                    { label: 'Freelance Services', href: '/freelancing/' },
+                    { label: 'Contact Inquiry', href: '/contact/' },
                   ].map(link => (
                     <li key={link.href}>
                       <a
@@ -249,19 +214,93 @@ const ContactScene: React.FC<{ id: string }> = ({ id }) => {
                 </ul>
               </div>
 
-              {/* Col 4: Inquiries & Contact */}
+              {/* Col 2: Expertise */}
               <div>
                 <div style={{ fontSize: '0.78rem', color: 'var(--text-tertiary)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 16 }}>
-                  Direct Inquiries
+                  Expertise
                 </div>
-                <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.7, marginBottom: 12 }}>
-                  <strong>Email:</strong> {IDENTITY.contact.email}<br />
-                  <strong>Phone:</strong> {IDENTITY.contact.phone}<br />
-                  <strong>Location:</strong> Vadalur, Tamil Nadu (IST)
+                <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  {[
+                    { label: 'Technical SEO', href: '/seo/' },
+                    { label: 'Digital Marketing', href: '/digital-marketing/' },
+                    { label: 'UI/UX Design', href: '/ui-ux-design/' },
+                    { label: 'Web Development', href: '/web-development/' },
+                    { label: 'AI & Automation', href: '/ai-automation/' },
+                  ].map(link => (
+                    <li key={link.href}>
+                      <a
+                        href={link.href}
+                        onClick={e => {
+                          e.preventDefault();
+                          window.dispatchEvent(new CustomEvent('navigate', { detail: link.href }));
+                        }}
+                        style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', textDecoration: 'none', transition: 'color 0.2s ease' }}
+                        onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent-primary)')}
+                        onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-secondary)')}
+                      >
+                        {link.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Col 3: Advertising */}
+              <div>
+                <div style={{ fontSize: '0.78rem', color: 'var(--text-tertiary)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 16 }}>
+                  Advertising
                 </div>
-                <span className="pill" style={{ fontSize: '0.72rem', background: 'rgba(16, 185, 129, 0.1)', color: 'var(--accent-mint)', borderColor: 'rgba(16, 185, 129, 0.3)' }}>
-                  Response within 24 hours
-                </span>
+                <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  {[
+                    { label: 'Google Search Ads', href: '/google-ads/' },
+                    { label: 'Meta Ads & Pixel', href: '/meta-ads/' },
+                    { label: 'Freelance Consulting', href: '/freelancing/' },
+                  ].map(link => (
+                    <li key={link.href}>
+                      <a
+                        href={link.href}
+                        onClick={e => {
+                          e.preventDefault();
+                          window.dispatchEvent(new CustomEvent('navigate', { detail: link.href }));
+                        }}
+                        style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', textDecoration: 'none', transition: 'color 0.2s ease' }}
+                        onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent-primary)')}
+                        onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-secondary)')}
+                      >
+                        {link.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Col 4: Resources */}
+              <div>
+                <div style={{ fontSize: '0.78rem', color: 'var(--text-tertiary)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 16 }}>
+                  Resources
+                </div>
+                <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  {[
+                    { label: 'SEO Knowledge Blog', href: '/blog/' },
+                    { label: 'Featured Case Studies', href: '/projects/' },
+                    { label: 'Google Search Console', href: '/google-search-console/' },
+                  ].map(link => (
+                    <li key={link.href}>
+                      <a
+                        href={link.href}
+                        onClick={e => {
+                          e.preventDefault();
+                          window.dispatchEvent(new CustomEvent('navigate', { detail: link.href }));
+                        }}
+                        style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', textDecoration: 'none', transition: 'color 0.2s ease' }}
+                        onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent-primary)')}
+                        onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-secondary)')}
+                      >
+                        {link.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
               </div>
 
             </div>
