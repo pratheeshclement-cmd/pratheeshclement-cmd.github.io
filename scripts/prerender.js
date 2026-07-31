@@ -241,3 +241,61 @@ ROUTES.forEach(route => {
 });
 
 console.log(`\n✅ Prerendered ${ROUTES.length} static HTML route entry points!`);
+
+// ─────────────────────────────────────────────────────────────────────────────
+// AUTOMATED BUILD SAFETY VALIDATION GATE
+// ─────────────────────────────────────────────────────────────────────────────
+console.log('\n🔍 Running Post-Build Production Validation Safety Gate...');
+
+function getAllHtmlFiles(dir, fileList = []) {
+  const files = fs.readdirSync(dir);
+  files.forEach(file => {
+    const filePath = path.join(dir, file);
+    if (fs.statSync(filePath).isDirectory()) {
+      getAllHtmlFiles(filePath, fileList);
+    } else if (file.endsWith('.html')) {
+      fileList.push(filePath);
+    }
+  });
+  return fileList;
+}
+
+const allHtmlFiles = getAllHtmlFiles(DIST_DIR);
+let validationFailed = false;
+
+allHtmlFiles.forEach(file => {
+  const content = fs.readFileSync(file, 'utf8');
+  const relativePath = path.relative(DIST_DIR, file);
+
+  // 1. Assert NO reference to source main.tsx or /src/main.tsx
+  if (content.includes('main.tsx') || content.includes('/src/main.tsx')) {
+    console.error(`❌ CRITICAL BUILD FAILURE: ${relativePath} contains uncompiled source entry 'main.tsx'!`);
+    validationFailed = true;
+  }
+
+  // 2. Assert presence of production asset bundle in index.html
+  if (relativePath === 'index.html') {
+    const scriptMatches = content.match(/src="(\/assets\/[^"]+)"/g);
+    if (!scriptMatches || scriptMatches.length === 0) {
+      console.error(`❌ CRITICAL BUILD FAILURE: dist/index.html missing production asset script tags!`);
+      validationFailed = true;
+    } else {
+      scriptMatches.forEach(match => {
+        const assetPath = match.replace(/^src="/, '').replace(/"$/, '');
+        const localAssetFile = path.join(DIST_DIR, assetPath);
+        if (!fs.existsSync(localAssetFile)) {
+          console.error(`❌ CRITICAL BUILD FAILURE: Referenced asset ${assetPath} does not exist in dist!`);
+          validationFailed = true;
+        }
+      });
+    }
+  }
+});
+
+if (validationFailed) {
+  console.error('\n❌ BUILD SAFETY VALIDATION FAILED! Aborting build.');
+  process.exit(1);
+} else {
+  console.log(`✅ Production build safety validation PASSED across ${allHtmlFiles.length} HTML files!`);
+}
+
