@@ -122,7 +122,7 @@ const ContactScene: React.FC<{ id: string }> = ({ id }) => {
         {/* ── Tasteful Google Business Profile & Review CTA (Requirement 5) ──────────── */}
         {(() => {
           // Documented constant: insert verified direct review URL when available from Google Business Profile Manager
-          const GOOGLE_REVIEW_URL = "";
+          const GOOGLE_REVIEW_URL = "https://g.page/r/CQmYzXtxKLqQEBM/review";
           const GOOGLE_PROFILE_URL = "https://www.google.com/search?q=Pratheesh+freelance";
 
           return (
