@@ -563,6 +563,40 @@ h1, h2, h3, h4 {
   height: 20px !important;
 }
 
+/* Mobile Drawer Portal & Pointer Events Hierarchy */
+.mobile-drawer-backdrop {
+  z-index: 99998 !important;
+  pointer-events: auto !important;
+  touch-action: auto !important;
+}
+
+.mobile-drawer-sheet {
+  z-index: 99999 !important;
+  pointer-events: auto !important;
+  touch-action: pan-y !important;
+}
+
+.mobile-drawer-sheet *,
+.mobile-nav-item,
+.mobile-nav-item * {
+  pointer-events: auto !important;
+  touch-action: auto !important;
+}
+
+body.menu-open {
+  overflow: hidden !important;
+  touch-action: pan-y !important;
+}
+
+body.menu-open #camera-perspective,
+body.menu-open #main-world,
+body.menu-open canvas,
+body.menu-open .particles,
+body.menu-open .hero-overlay,
+body.menu-open .background-effects {
+  pointer-events: none !important;
+}
+
 /* ── Responsive Mobile Navigation ────────────────────────────── */
 @media (max-width: 768px) {
   .main-header {

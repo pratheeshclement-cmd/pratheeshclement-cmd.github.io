@@ -27,7 +27,6 @@ export function useScrollLock(isLocked: boolean, modalRef?: React.RefObject<HTML
     const originalTouchAction = document.body.style.touchAction;
 
     document.body.style.overflow = 'hidden';
-    document.body.style.touchAction = 'none';
     if (scrollbarWidth > 0) {
       document.body.style.paddingRight = `${scrollbarWidth}px`;
     }

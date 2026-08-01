@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import anime from 'animejs';
 import gsap from 'gsap';
 import { Moon, Sun, Settings, X, ArrowRight, Sparkles, User, FolderKanban, Layers, BookOpen, Award, Mail } from 'lucide-react';
@@ -470,13 +471,14 @@ export const Navbar: React.FC<NavbarProps> = ({ scrollProgress, theme, onToggleT
       </div>
 
       {/* Mobile Full-Screen OS Navigation Panel & Dimmed Backdrop */}
-      {mobileOpen && (
+      {mobileOpen && createPortal(
         <>
           {/* 1. Full-screen dimmed backdrop overlay */}
           <div
             ref={overlayRef}
             onClick={() => setMobileOpen(false)}
             aria-hidden="true"
+            className="mobile-drawer-backdrop"
             style={{
               position: 'fixed',
               inset: 0,
@@ -485,6 +487,8 @@ export const Navbar: React.FC<NavbarProps> = ({ scrollProgress, theme, onToggleT
               backdropFilter: 'blur(14px)',
               WebkitBackdropFilter: 'blur(14px)',
               opacity: 0,
+              pointerEvents: 'auto',
+              touchAction: 'auto',
               transition: 'opacity 0.22s ease',
             }}
           />
@@ -495,6 +499,7 @@ export const Navbar: React.FC<NavbarProps> = ({ scrollProgress, theme, onToggleT
             role="dialog"
             aria-modal="true"
             aria-label="Mobile Settings and System Navigation"
+            className="mobile-drawer-sheet"
             style={{
               position: 'fixed',
               top: 'max(16px, env(safe-area-inset-top, 16px))',
@@ -518,6 +523,8 @@ export const Navbar: React.FC<NavbarProps> = ({ scrollProgress, theme, onToggleT
               boxShadow: '0 25px 60px rgba(0, 0, 0, 0.45)',
               transform: 'translate3d(0, 0, 0)',
               opacity: 0,
+              pointerEvents: 'auto',
+              touchAction: 'pan-y',
               willChange: 'transform, opacity',
             }}
           >
@@ -597,6 +604,8 @@ export const Navbar: React.FC<NavbarProps> = ({ scrollProgress, theme, onToggleT
                       alignItems: 'center',
                       justifyContent: 'space-between',
                       gap: 14,
+                      pointerEvents: 'auto',
+                      touchAction: 'auto',
                       transition: 'all 0.2s ease',
                     }}
                   >
@@ -652,6 +661,7 @@ export const Navbar: React.FC<NavbarProps> = ({ scrollProgress, theme, onToggleT
                   alignItems: 'center',
                   justifyContent: 'center',
                   gap: 8,
+                  pointerEvents: 'auto',
                   cursor: 'pointer',
                 }}
               >
@@ -659,7 +669,8 @@ export const Navbar: React.FC<NavbarProps> = ({ scrollProgress, theme, onToggleT
               </button>
             </div>
           </div>
-        </>
+        </>,
+        document.body
       )}
     </header>
   );
