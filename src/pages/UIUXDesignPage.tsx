@@ -93,7 +93,7 @@ export const UIUXDesignPage: React.FC = () => {
 
         {/* Section 2: Core Design System Principles */}
         <ContentH2>2. Core Interface Design Principles</ContentH2>
-        
+
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 16, margin: '24px 0 40px' }}>
           <InfoCard accentColor="var(--accent-primary)">
             <h4 style={{ fontSize: '1rem', fontFamily: 'var(--font-display)', color: 'var(--text-primary)', marginBottom: 6 }}>
@@ -170,10 +170,12 @@ export const UIUXDesignPage: React.FC = () => {
               { label: 'Pratheesh OS Case Study', href: '/projects/pratheesh-os/' },
               { label: 'Restaurant Layout Case Study', href: '/projects/restaurant-branding-web/' },
             ].map(link => (
-              <button
+              <a
                 key={link.href}
-                onClick={() => navigateTo(link.href)}
+                href={link.href}
+                onClick={e => { e.preventDefault(); navigateTo(link.href); }}
                 style={{
+                  display: 'inline-block',
                   padding: '8px 14px',
                   borderRadius: 999,
                   background: 'var(--glass-bg)',
@@ -181,12 +183,13 @@ export const UIUXDesignPage: React.FC = () => {
                   color: 'var(--text-primary)',
                   fontSize: '0.85rem',
                   fontWeight: 500,
-                  cursor: 'pointer',
+                  textDecoration: 'none',
                   fontFamily: 'var(--font-body)',
+                  transition: 'all 0.2s ease',
                 }}
               >
                 {link.label} →
-              </button>
+              </a>
             ))}
           </div>
         </div>

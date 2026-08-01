@@ -178,10 +178,12 @@ export const GoogleSearchConsolePage: React.FC = () => {
               { label: 'Blog: GSC URL Inspection', href: '/blog/how-i-approach-technical-seo/' },
               { label: 'SEO Growth Campaign Case Study', href: '/projects/seo-growth-campaign/' },
             ].map(link => (
-              <button
+              <a
                 key={link.href}
-                onClick={() => navigateTo(link.href)}
+                href={link.href}
+                onClick={e => { e.preventDefault(); navigateTo(link.href); }}
                 style={{
+                  display: 'inline-block',
                   padding: '8px 14px',
                   borderRadius: 999,
                   background: 'var(--glass-bg)',
@@ -189,12 +191,13 @@ export const GoogleSearchConsolePage: React.FC = () => {
                   color: 'var(--text-primary)',
                   fontSize: '0.85rem',
                   fontWeight: 500,
-                  cursor: 'pointer',
+                  textDecoration: 'none',
                   fontFamily: 'var(--font-body)',
+                  transition: 'all 0.2s ease',
                 }}
               >
                 {link.label} →
-              </button>
+              </a>
             ))}
           </div>
         </div>

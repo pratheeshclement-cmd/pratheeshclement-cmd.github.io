@@ -39,10 +39,43 @@ export const AppContent: React.FC = () => {
   useEffect(() => {
     camera.mount('camera-perspective', 'main-world');
 
-    const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    const isMobile = window.innerWidth <= 768 || 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 
+    // Mobile: Disable Lenis completely to enforce native 60 FPS touch scrolling without RAF lag
+    if (isMobile) {
+      let lastScrollY = window.scrollY;
+      let scrollTimer: number;
+
+      const onNativeScroll = () => {
+        const currentScrollY = window.scrollY;
+        const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const progress = totalHeight > 0 ? Math.min(1, Math.max(0, currentScrollY / totalHeight)) : 0;
+        const velocity = (currentScrollY - lastScrollY) * 0.1;
+        lastScrollY = currentScrollY;
+
+        setScrollProgress(progress);
+        camera.updateCamera(progress, velocity);
+        animeEngine.scrubScroll(progress);
+        ScrollTrigger.update();
+
+        window.dispatchEvent(new CustomEvent('mobile-scroll-state', { detail: { scrolling: true } }));
+        clearTimeout(scrollTimer);
+        scrollTimer = window.setTimeout(() => {
+          window.dispatchEvent(new CustomEvent('mobile-scroll-state', { detail: { scrolling: false } }));
+        }, 150);
+      };
+
+      window.addEventListener('scroll', onNativeScroll, { passive: true });
+      return () => {
+        camera.unmount();
+        clearTimeout(scrollTimer);
+        window.removeEventListener('scroll', onNativeScroll);
+      };
+    }
+
+    // Desktop: Initialize Lenis smooth scroll timeline engine
     const lenis = new Lenis({
-      duration: isTouch ? 0.8 : 1.2,
+      duration: 1.2,
       easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
       syncTouch: false,

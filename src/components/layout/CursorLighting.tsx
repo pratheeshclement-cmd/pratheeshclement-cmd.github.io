@@ -4,7 +4,10 @@ import gsap from 'gsap';
 export const CursorLighting: React.FC = () => {
   const dotRef = useRef<HTMLDivElement>(null);
 
+  const isMobile = typeof window !== 'undefined' && (window.innerWidth <= 768 || 'ontouchstart' in window || navigator.maxTouchPoints > 0);
+
   useEffect(() => {
+    if (isMobile) return;
     const dot = dotRef.current;
     if (!dot) return;
 
@@ -24,7 +27,9 @@ export const CursorLighting: React.FC = () => {
     return () => {
       window.removeEventListener('mousemove', onMove);
     };
-  }, []);
+  }, [isMobile]);
+
+  if (isMobile) return null;
 
   return <div ref={dotRef} className="cursor-dot" aria-hidden="true" />;
 };

@@ -6,7 +6,7 @@ import { Breadcrumb } from './components/Breadcrumb';
 import { BLOG_ARTICLES } from '../data/blogArticles';
 import { navigateTo } from '../router/useRouter';
 import { NotFoundPage } from './NotFoundPage';
-import { Calendar, Clock, User, ArrowRight, Share2 } from 'lucide-react';
+import { Calendar, Clock, User, ArrowRight, Share2, Layers } from 'lucide-react';
 import { IDENTITY } from '../data/identity';
 
 interface BlogArticlePageProps {
@@ -163,8 +163,103 @@ export const BlogArticlePage: React.FC<BlogArticlePageProps> = ({ slug }) => {
         <SkillGrid items={article.tags} accentColor="var(--accent-primary)" />
 
         {/* Main Article Content */}
-        <div style={{ marginTop: 32, marginBottom: 48 }}>
+        <div style={{ marginTop: 32, marginBottom: 40 }}>
           {renderContent(article.content)}
+        </div>
+
+        {/* Related Services & Case Studies Cluster */}
+        <div style={{ padding: 28, borderRadius: 20, background: 'var(--bg-secondary)', border: '1px solid var(--bg-tertiary)', marginBottom: 40 }}>
+          <h3 style={{ fontSize: '1.1rem', fontFamily: 'var(--font-display)', color: 'var(--text-primary)', marginBottom: 14, display: 'flex', alignItems: 'center', gap: 8 }}>
+            <Layers size={18} color="var(--accent-primary)" />
+            Related Services & Case Studies
+          </h3>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
+            {article.slug === 'how-i-approach-technical-seo' && [
+              { label: 'Technical SEO Guide', href: '/seo/' },
+              { label: 'Google Search Console Architecture', href: '/google-search-console/' },
+              { label: 'Web Development Services', href: '/web-development/' },
+              { label: 'SEO Growth Campaign Case Study', href: '/projects/seo-growth-campaign/' },
+              { label: 'Pratheesh OS Case Study', href: '/projects/pratheesh-os/' },
+            ].map(link => (
+              <a
+                key={link.href}
+                href={link.href}
+                onClick={e => { e.preventDefault(); navigateTo(link.href); }}
+                style={{
+                  display: 'inline-block',
+                  padding: '8px 14px',
+                  borderRadius: 999,
+                  background: 'var(--glass-bg)',
+                  border: '1px solid var(--glass-border)',
+                  color: 'var(--text-primary)',
+                  fontSize: '0.85rem',
+                  fontWeight: 500,
+                  textDecoration: 'none',
+                  fontFamily: 'var(--font-body)',
+                  transition: 'all 0.2s ease',
+                }}
+              >
+                {link.label} →
+              </a>
+            ))}
+
+            {article.slug === 'building-search-friendly-react-portfolios' && [
+              { label: 'Web Development & Frontend Architecture', href: '/web-development/' },
+              { label: 'Technical SEO Guide', href: '/seo/' },
+              { label: 'UI/UX Design Systems', href: '/ui-ux-design/' },
+              { label: 'Personal Portfolio Redesign Case Study', href: '/projects/portfolio-redesign/' },
+              { label: 'Pratheesh OS Case Study', href: '/projects/pratheesh-os/' },
+            ].map(link => (
+              <a
+                key={link.href}
+                href={link.href}
+                onClick={e => { e.preventDefault(); navigateTo(link.href); }}
+                style={{
+                  display: 'inline-block',
+                  padding: '8px 14px',
+                  borderRadius: 999,
+                  background: 'var(--glass-bg)',
+                  border: '1px solid var(--glass-border)',
+                  color: 'var(--text-primary)',
+                  fontSize: '0.85rem',
+                  fontWeight: 500,
+                  textDecoration: 'none',
+                  fontFamily: 'var(--font-body)',
+                  transition: 'all 0.2s ease',
+                }}
+              >
+                {link.label} →
+              </a>
+            ))}
+
+            {article.slug === 'how-meta-pixel-and-conversion-tracking-work' && [
+              { label: 'Meta Ads & Pixel Tracking', href: '/meta-ads/' },
+              { label: 'Google Ads Paid Search', href: '/google-ads/' },
+              { label: 'Digital Marketing Strategy', href: '/digital-marketing/' },
+              { label: 'B2B Lead Funnel Case Study', href: '/projects/b2b-conversion-funnel/' },
+            ].map(link => (
+              <a
+                key={link.href}
+                href={link.href}
+                onClick={e => { e.preventDefault(); navigateTo(link.href); }}
+                style={{
+                  display: 'inline-block',
+                  padding: '8px 14px',
+                  borderRadius: 999,
+                  background: 'var(--glass-bg)',
+                  border: '1px solid var(--glass-border)',
+                  color: 'var(--text-primary)',
+                  fontSize: '0.85rem',
+                  fontWeight: 500,
+                  textDecoration: 'none',
+                  fontFamily: 'var(--font-body)',
+                  transition: 'all 0.2s ease',
+                }}
+              >
+                {link.label} →
+              </a>
+            ))}
+          </div>
         </div>
 
         {/* Author Bio Box at End of Article (E-E-A-T Signal) */}

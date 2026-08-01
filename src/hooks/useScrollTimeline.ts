@@ -21,11 +21,12 @@ export function useAnimeScene(
     const section = sectionRef.current;
     if (!section || reduced) return;
 
+    const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
     let hasAssembled = false;
 
     const st = ScrollTrigger.create({
       trigger: section,
-      start: 'top 80%',
+      start: isMobile ? 'top 90%' : 'top 80%',
       end: 'bottom 20%',
       onEnter: () => {
         if (!hasAssembled) {
@@ -35,19 +36,25 @@ export function useAnimeScene(
         }
       },
       onLeave: () => {
-        animeEngine.disassembleSection(section, style);
-        options?.onDisassemble?.();
-        hasAssembled = false;
+        if (!isMobile) {
+          animeEngine.disassembleSection(section, style);
+          options?.onDisassemble?.();
+          hasAssembled = false;
+        }
       },
       onEnterBack: () => {
-        animeEngine.assembleSection(section, style);
-        options?.onAssemble?.();
-        hasAssembled = true;
+        if (!isMobile) {
+          animeEngine.assembleSection(section, style);
+          options?.onAssemble?.();
+          hasAssembled = true;
+        }
       },
       onLeaveBack: () => {
-        animeEngine.disassembleSection(section, style);
-        options?.onDisassemble?.();
-        hasAssembled = false;
+        if (!isMobile) {
+          animeEngine.disassembleSection(section, style);
+          options?.onDisassemble?.();
+          hasAssembled = false;
+        }
       },
     });
 

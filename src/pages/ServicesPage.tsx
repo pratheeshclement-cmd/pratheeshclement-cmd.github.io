@@ -120,43 +120,39 @@ export const ServicesPage: React.FC = () => {
               </div>
 
               {dedicatedRoute ? (
-                <button
-                  onClick={() => navigateTo(dedicatedRoute)}
+                <a
+                  href={dedicatedRoute}
+                  onClick={e => { e.preventDefault(); navigateTo(dedicatedRoute); }}
                   style={{
                     display: 'inline-flex',
                     alignItems: 'center',
                     gap: 8,
-                    background: 'none',
-                    border: 'none',
                     color: 'var(--accent-primary)',
                     fontWeight: 600,
                     fontSize: '0.9rem',
-                    cursor: 'pointer',
-                    padding: 0,
+                    textDecoration: 'none',
                     fontFamily: 'var(--font-body)',
                   }}
                 >
                   Explore {svc.name} Guide & Strategy <ArrowRight size={15} />
-                </button>
+                </a>
               ) : (
-                <button
-                  onClick={() => navigateTo('/contact/')}
+                <a
+                  href="/contact/"
+                  onClick={e => { e.preventDefault(); navigateTo('/contact/'); }}
                   style={{
                     display: 'inline-flex',
                     alignItems: 'center',
                     gap: 8,
-                    background: 'none',
-                    border: 'none',
                     color: 'var(--text-secondary)',
                     fontWeight: 600,
                     fontSize: '0.9rem',
-                    cursor: 'pointer',
-                    padding: 0,
+                    textDecoration: 'none',
                     fontFamily: 'var(--font-body)',
                   }}
                 >
                   Inquire About Service <ArrowRight size={15} />
-                </button>
+                </a>
               )}
             </div>
           );

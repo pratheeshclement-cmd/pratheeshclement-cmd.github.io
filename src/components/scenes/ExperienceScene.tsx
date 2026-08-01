@@ -1,6 +1,7 @@
 import React, { useRef, useEffect } from 'react';
-import * as Icons from 'lucide-react';
+import { ShieldCheck, Briefcase } from 'lucide-react';
 import gsap from 'gsap';
+import { getDynamicIcon } from '../../utils/iconMap';
 import { SplitText } from '../ui/SplitText';
 import { GlassCard } from '../ui/GlassCard';
 import { EXPERIENCE } from '../../data/experience';
@@ -24,41 +25,36 @@ const TimelineCard: React.FC<{ item: ExperienceItem; index: number }> = ({ item,
     );
   }, [index, reduced]);
 
-  const IconEl = ((Icons as unknown) as Record<string, React.FC<{ size?: number; color?: string }>>)[
-    item.icon.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join('')
-  ] ?? (Icons.Briefcase as unknown as React.FC<{ size?: number; color?: string }>);
+  const IconEl = getDynamicIcon(item.icon);
 
   const typeColor = item.type === 'certification' ? 'var(--accent-mint)'
     : item.type === 'education' ? 'var(--accent-secondary)' : 'var(--accent-primary)';
 
   return (
     <div ref={ref} className="timeline-item" style={{ opacity: reduced ? 1 : 0 }}>
-      {/* Dot */}
-      <div
-        className="timeline-dot"
-        style={{ background: `${typeColor}18`, border: `2px solid ${typeColor}` }}
-      >
-        <IconEl size={20} color={typeColor} />
+      <div className="timeline-node" style={{ background: typeColor, boxShadow: `0 0 16px ${typeColor}` }}>
+        <IconEl size={18} color="#fff" />
       </div>
 
-      {/* Content */}
-      <div style={{ flex: 1, paddingBottom: 8 }}>
-        <GlassCard style={{ padding: 24 }}>
-          <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8, marginBottom: 10 }}>
+      <div className="timeline-content">
+        <GlassCard style={{ padding: 24, borderLeft: `3px solid ${typeColor}` }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 8, marginBottom: 8 }}>
             <div>
-              <div style={{ fontSize: '0.75rem', color: typeColor, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 4 }}>
-                {item.current ? '● Current Role' : item.type === 'certification' ? '✓ Verified' : item.period}
-              </div>
-              <h3 style={{ fontSize: '1.1rem', fontFamily: 'var(--font-display)', color: 'var(--text-primary)', marginBottom: 2 }}>{item.company}</h3>
-              <div style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-secondary)' }}>{item.role}</div>
+              <span className="pill" style={{ color: typeColor, borderColor: `${typeColor}40`, marginBottom: 6, fontSize: '0.72rem' }}>
+                {item.type.toUpperCase()}
+              </span>
+              <h3 style={{ fontSize: '1.1rem', margin: '4px 0 2px' }}>{item.role}</h3>
+              <p style={{ margin: 0, fontWeight: 600, color: 'var(--text-secondary)', fontSize: '0.9rem' }}>{item.company}</p>
             </div>
+            <span style={{ fontSize: '0.8rem', color: 'var(--text-tertiary)', fontFamily: 'var(--font-mono)' }}>
+              {item.period}
+            </span>
           </div>
 
-          <p style={{ fontSize: '0.88rem', color: 'var(--text-secondary)', lineHeight: 1.75 }}>{item.description}</p>
+          <p style={{ fontSize: '0.88rem', color: 'var(--text-secondary)', marginBottom: 12 }}>{item.description}</p>
 
-          {/* Credential ID badge */}
           {item.credentialId && (
-            <div style={{ marginTop: 14, display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+            <div style={{ marginTop: 12, display: 'flex', alignItems: 'center', gap: 8 }}>
               <span style={{
                 fontFamily: 'var(--font-mono)', fontSize: '0.78rem', background: 'rgba(0,0,0,0.05)',
                 padding: '4px 12px', borderRadius: 6, color: 'var(--text-secondary)',
@@ -66,7 +62,7 @@ const TimelineCard: React.FC<{ item: ExperienceItem; index: number }> = ({ item,
                 ID: {item.credentialId}
               </span>
               <span className="pill" style={{ color: 'var(--accent-mint)', borderColor: 'rgba(16,185,129,0.3)', background: 'rgba(16,185,129,0.08)', fontSize: '0.72rem' }}>
-                <Icons.ShieldCheck size={12} />
+                <ShieldCheck size={12} />
                 Verified — {item.verifier}
               </span>
             </div>
@@ -86,7 +82,7 @@ const ExperienceScene: React.FC<{ id: string }> = ({ id }) => {
       <div className="scene-inner">
         <div style={{ textAlign: 'center', marginBottom: 56 }}>
           <span className="section-label">
-            <Icons.Briefcase size={13} />
+            <Briefcase size={13} />
             Experience & Credentials
           </span>
           <SplitText

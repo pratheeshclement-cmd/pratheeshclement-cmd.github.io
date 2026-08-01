@@ -1,6 +1,7 @@
 import React, { useRef, useEffect } from 'react';
-import * as Icons from 'lucide-react';
+import { ArrowRight, Layers } from 'lucide-react';
 import gsap from 'gsap';
+import { getDynamicIcon } from '../../utils/iconMap';
 import { SplitText } from '../ui/SplitText';
 import { GlassCard } from '../ui/GlassCard';
 import { SERVICES } from '../../data/services';
@@ -48,9 +49,7 @@ const ServiceCardItem: React.FC<{ service: Service; index: number }> = ({ servic
     );
   }, [index, reduced]);
 
-  const IconEl = ((Icons as unknown) as Record<string, React.FC<{ size?: number; color?: string }>>)[
-    service.icon.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join('')
-  ] ?? (Icons.Layers as unknown as React.FC<{ size?: number; color?: string }>);
+  const IconEl = getDynamicIcon(service.icon);
 
   const targetRoute = SERVICE_ROUTE_MAP[service.id] || '/services/';
   const accent = service.accentColor || 'var(--accent-primary)';
@@ -68,87 +67,69 @@ const ServiceCardItem: React.FC<{ service: Service; index: number }> = ({ servic
           onMouseLeave={!reduced ? onMouseLeave : undefined}
         >
           {/* Card Header & Content Wrapper */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 14, flex: 1, width: '100%', minWidth: 0 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12, flex: 1, minWidth: 0 }}>
             
-            {/* Top Bar: Index + Icon + Category */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, width: '100%' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                <span
-                  style={{
-                    fontSize: '1.2rem',
-                    fontWeight: 700,
-                    color: 'var(--text-tertiary)',
-                    fontFamily: 'var(--font-display)',
-                  }}
-                >
-                  {String(index + 1).padStart(2, '0')}
-                </span>
-                <div
-                  className="service-icon"
-                  style={{
-                    padding: 10,
-                    borderRadius: 12,
-                    background: `${accent}15`,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    flexShrink: 0,
-                  }}
-                >
-                  <IconEl size={22} color={accent} />
-                </div>
-              </div>
-
-              <span
+            {/* Top row: Icon + Category Badge */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}>
+              <div
                 style={{
-                  fontSize: '0.72rem',
+                  width: 44,
+                  height: 44,
+                  borderRadius: 12,
+                  background: `linear-gradient(135deg, ${accent}22, ${accent}08)`,
+                  border: `1px solid ${accent}35`,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: accent,
+                  flexShrink: 0,
+                }}
+              >
+                <IconEl size={22} color={accent} />
+              </div>
+              <span
+                className="pill"
+                style={{
+                  fontSize: '0.75rem',
                   fontWeight: 600,
                   color: accent,
-                  background: `${accent}12`,
-                  border: `1px solid ${accent}30`,
-                  padding: '4px 10px',
-                  borderRadius: 9999,
-                  letterSpacing: '0.04em',
-                  textTransform: 'uppercase',
+                  borderColor: `${accent}35`,
+                  background: `${accent}10`,
                 }}
               >
                 SPECIALIZATION
               </span>
             </div>
 
-            {/* Title & Description */}
-            <div>
-              <h3
-                style={{
-                  fontSize: 'clamp(1.2rem, 4vw, 1.4rem)',
-                  fontFamily: 'var(--font-display)',
-                  color: 'var(--text-primary)',
-                  marginBottom: 8,
-                  lineHeight: 1.25,
-                  textAlign: 'left',
-                  overflowWrap: 'break-word',
-                  wordBreak: 'break-word',
-                }}
-              >
-                {service.name}
-              </h3>
-              <p
-                style={{
-                  fontSize: '0.92rem',
-                  color: 'var(--text-secondary)',
-                  lineHeight: 1.65,
-                  textAlign: 'left',
-                  margin: 0,
-                  overflowWrap: 'break-word',
-                }}
-              >
-                {service.description}
-              </p>
-            </div>
+            {/* Service Title */}
+            <h3
+              style={{
+                fontSize: '1.25rem',
+                fontFamily: 'var(--font-display)',
+                fontWeight: 700,
+                color: 'var(--text-primary)',
+                lineHeight: 1.3,
+                margin: 0,
+              }}
+            >
+              {service.name}
+            </h3>
 
-            {/* Highlights pills */}
+            {/* Service Description */}
+            <p
+              style={{
+                fontSize: '0.92rem',
+                color: 'var(--text-secondary)',
+                lineHeight: 1.6,
+                margin: 0,
+              }}
+            >
+              {service.description}
+            </p>
+
+            {/* Key Deliverables Pills */}
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 4 }}>
-              {service.highlights.map(h => (
+              {service.highlights.slice(0, 3).map(h => (
                 <span key={h} className="pill" style={{ fontSize: '0.75rem', padding: '4px 12px' }}>
                   {h}
                 </span>
@@ -156,10 +137,14 @@ const ServiceCardItem: React.FC<{ service: Service; index: number }> = ({ servic
             </div>
 
             {/* Touch-Friendly Action CTA */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 8, color: accent, fontSize: '0.88rem', fontWeight: 600 }}>
+            <a
+              href={targetRoute}
+              onClick={e => { e.preventDefault(); navigateTo(targetRoute); }}
+              style={{ display: 'inline-flex', alignItems: 'center', gap: 6, marginTop: 8, color: accent, fontSize: '0.88rem', fontWeight: 600, textDecoration: 'none' }}
+            >
               <span>Explore {service.name} Strategy</span>
-              <Icons.ArrowRight size={16} />
-            </div>
+              <ArrowRight size={16} />
+            </a>
 
           </div>
         </div>
@@ -177,7 +162,7 @@ const ServicesScene: React.FC<{ id: string }> = ({ id }) => {
       <div className="scene-inner">
         <div style={{ marginBottom: 40 }}>
           <span className="section-label">
-            <Icons.Layers size={13} />
+            <Layers size={13} />
             Expertise & Capabilities
           </span>
           <SplitText

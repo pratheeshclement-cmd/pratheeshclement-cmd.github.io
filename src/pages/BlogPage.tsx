@@ -81,11 +81,15 @@ export const BlogPage: React.FC = () => {
                   color: 'var(--text-primary)',
                   marginBottom: 12,
                   lineHeight: 1.3,
-                  cursor: 'pointer',
                 }}
-                onClick={() => navigateTo(`/blog/${article.slug}/`)}
               >
-                {article.title}
+                <a
+                  href={`/blog/${article.slug}/`}
+                  onClick={e => { e.preventDefault(); navigateTo(`/blog/${article.slug}/`); }}
+                  style={{ color: 'inherit', textDecoration: 'none' }}
+                >
+                  {article.title}
+                </a>
               </h3>
 
               <ContentP style={{ fontSize: '0.96rem', marginBottom: 20 }}>
@@ -105,24 +109,22 @@ export const BlogPage: React.FC = () => {
               <span style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: 6, fontWeight: 500 }}>
                 <User size={13} color="var(--accent-primary)" /> By {article.author}
               </span>
-              <button
-                onClick={() => navigateTo(`/blog/${article.slug}/`)}
+              <a
+                href={`/blog/${article.slug}/`}
+                onClick={e => { e.preventDefault(); navigateTo(`/blog/${article.slug}/`); }}
                 style={{
                   display: 'inline-flex',
                   alignItems: 'center',
                   gap: 6,
-                  background: 'none',
-                  border: 'none',
                   color: 'var(--accent-primary)',
                   fontWeight: 600,
                   fontSize: '0.88rem',
-                  cursor: 'pointer',
-                  padding: 0,
+                  textDecoration: 'none',
                   fontFamily: 'var(--font-body)',
                 }}
               >
-                Read Article <ArrowRight size={15} />
-              </button>
+                Read Article <ArrowRight size={14} />
+              </a>
             </div>
           </article>
         ))}

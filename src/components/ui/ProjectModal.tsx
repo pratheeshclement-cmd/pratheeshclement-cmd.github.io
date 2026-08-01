@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useCallback } from 'react';
 import gsap from 'gsap';
-import * as Icons from 'lucide-react';
+import { X } from 'lucide-react';
+import { getDynamicIcon } from '../../utils/iconMap';
 import { Project } from '../../types';
 import { GlassCard } from './GlassCard';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
@@ -33,19 +34,19 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) 
       );
     }
 
-    // Focus management
-    const focusable = el.querySelectorAll<HTMLElement>(
-      'a, button, input, textarea, select, [tabindex]:not([tabindex="-1"])'
+    const focusables = el.querySelectorAll<HTMLElement>(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
     );
-    const first = focusable[0];
-    const last  = focusable[focusable.length - 1];
-    first?.focus();
+    if (focusables.length) focusables[0].focus();
 
     const trap = (e: KeyboardEvent) => {
       if (e.key === 'Tab') {
-        if (e.shiftKey ? document.activeElement === first : document.activeElement === last) {
-          e.preventDefault();
-          (e.shiftKey ? last : first)?.focus();
+        const first = focusables[0];
+        const last  = focusables[focusables.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault(); last?.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault(); first?.focus();
         }
       }
       if (e.key === 'Escape') handleClose();
@@ -65,12 +66,7 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) 
     }
   }, [reduced, onClose]);
 
-  const iconKey = project.icon
-    .split('-')
-    .map(w => w.charAt(0).toUpperCase() + w.slice(1))
-    .join('');
-  const IconComp = ((Icons as unknown) as Record<string, React.FC<{ size?: number; color?: string }>>)[iconKey]
-    ?? Icons.Layers as unknown as React.FC<{ size?: number; color?: string }>;
+  const IconComp = getDynamicIcon(project.icon);
 
   return (
     <div
@@ -101,7 +97,7 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) 
               aria-label="Close project details"
               style={{ background: 'rgba(0,0,0,0.06)', border: 'none', borderRadius: '50%', width: 36, height: 36, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}
             >
-              <Icons.X size={18} />
+              <X size={18} />
             </button>
           </div>
 

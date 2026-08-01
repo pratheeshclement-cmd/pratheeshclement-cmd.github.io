@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
-import * as Icons from 'lucide-react';
+import { ArrowRight, FolderKanban } from 'lucide-react';
 import gsap from 'gsap';
+import { getDynamicIcon } from '../../utils/iconMap';
 import { SplitText } from '../ui/SplitText';
 import { GlassCard } from '../ui/GlassCard';
 import { ProjectModal } from '../ui/ProjectModal';
@@ -23,9 +24,7 @@ const ProjectCard: React.FC<{ project: Project; index: number; onOpen: (p: Proje
     );
   }, [index, reduced]);
 
-  const IconEl = ((Icons as unknown) as Record<string, React.FC<{ size?: number; color?: string }>>)[
-    project.icon.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join('')
-  ] ?? (Icons.Layers as unknown as React.FC<{ size?: number; color?: string }>);
+  const IconEl = getDynamicIcon(project.icon);
 
   return (
     <div ref={ref} style={{ opacity: reduced ? 1 : 0 }}>
@@ -68,7 +67,7 @@ const ProjectCard: React.FC<{ project: Project; index: number; onOpen: (p: Proje
 
         {/* CTA indicator */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 20, color: project.accentColor, fontSize: '0.85rem', fontWeight: 600 }}>
-          View Case Study <Icons.ArrowRight size={14} />
+          View Case Study <ArrowRight size={14} />
         </div>
       </GlassCard>
     </div>
@@ -87,7 +86,7 @@ const ProjectsScene: React.FC<{ id: string }> = ({ id }) => {
       <div className="scene-inner">
         <div style={{ marginBottom: 56 }}>
           <span className="section-label">
-            <Icons.FolderKanban size={13} />
+            <FolderKanban size={13} />
             Case Studies
           </span>
           <SplitText

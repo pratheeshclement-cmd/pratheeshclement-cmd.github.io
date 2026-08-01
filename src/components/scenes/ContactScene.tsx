@@ -313,30 +313,42 @@ const ContactScene: React.FC<{ id: string }> = ({ id }) => {
             </div>
 
             <div style={{ display: 'flex', gap: 20 }}>
-              <button
-                onClick={() => window.dispatchEvent(new CustomEvent('open-legal-modal', { detail: 'privacy' }))}
-                style={{ background: 'none', border: 'none', color: 'var(--text-tertiary)', cursor: 'pointer', padding: 0, fontSize: '0.8rem' }}
+              <a
+                href="/privacy-policy/"
+                onClick={e => {
+                  e.preventDefault();
+                  window.dispatchEvent(new CustomEvent('open-legal-modal', { detail: 'privacy' }));
+                }}
+                style={{ color: 'var(--text-tertiary)', textDecoration: 'none', fontSize: '0.8rem', transition: 'color 0.2s ease' }}
                 onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent-primary)')}
                 onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-tertiary)')}
               >
                 Privacy Policy
-              </button>
-              <button
-                onClick={() => window.dispatchEvent(new CustomEvent('open-legal-modal', { detail: 'terms' }))}
-                style={{ background: 'none', border: 'none', color: 'var(--text-tertiary)', cursor: 'pointer', padding: 0, fontSize: '0.8rem' }}
+              </a>
+              <a
+                href="/terms/"
+                onClick={e => {
+                  e.preventDefault();
+                  window.dispatchEvent(new CustomEvent('open-legal-modal', { detail: 'terms' }));
+                }}
+                style={{ color: 'var(--text-tertiary)', textDecoration: 'none', fontSize: '0.8rem', transition: 'color 0.2s ease' }}
                 onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent-primary)')}
                 onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-tertiary)')}
               >
                 Terms of Service
-              </button>
-              <button
-                onClick={() => window.dispatchEvent(new CustomEvent('open-cookie-preferences'))}
-                style={{ background: 'none', border: 'none', color: 'var(--text-tertiary)', cursor: 'pointer', padding: 0, fontSize: '0.8rem' }}
+              </a>
+              <a
+                href="/cookie-policy/"
+                onClick={e => {
+                  e.preventDefault();
+                  window.dispatchEvent(new CustomEvent('open-cookie-preferences'));
+                }}
+                style={{ color: 'var(--text-tertiary)', textDecoration: 'none', fontSize: '0.8rem', transition: 'color 0.2s ease' }}
                 onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent-primary)')}
                 onMouseLeave={e => (e.currentTarget.style.color = 'var(--text-tertiary)')}
               >
                 Cookie Preferences
-              </button>
+              </a>
             </div>
           </div>
         </footer>

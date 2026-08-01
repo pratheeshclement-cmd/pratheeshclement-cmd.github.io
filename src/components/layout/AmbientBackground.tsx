@@ -13,8 +13,10 @@ export const AmbientBackground: React.FC = () => {
   const orb3Ref = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion();
 
+  const isMobile = typeof window !== 'undefined' && (window.innerWidth <= 768 || 'ontouchstart' in window);
+
   useEffect(() => {
-    if (reduced) return;
+    if (reduced || isMobile) return;
 
     const onMouseMove = (e: MouseEvent) => {
       const normX = (e.clientX / window.innerWidth - 0.5) * 2;
@@ -51,7 +53,7 @@ export const AmbientBackground: React.FC = () => {
 
     window.addEventListener('mousemove', onMouseMove);
     return () => window.removeEventListener('mousemove', onMouseMove);
-  }, [reduced]);
+  }, [reduced, isMobile]);
 
   return (
     <div

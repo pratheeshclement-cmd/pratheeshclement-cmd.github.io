@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import { Cpu } from 'lucide-react';
-import * as Icons from 'lucide-react';
 import gsap from 'gsap';
+import { getDynamicIcon } from '../../utils/iconMap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { SplitText } from '../ui/SplitText';
 import { GlassCard } from '../ui/GlassCard';
@@ -31,9 +31,7 @@ const SkillCard: React.FC<{ cat: SkillCategory; index: number }> = ({ cat, index
     );
   }, [index, reduced]);
 
-  const IconEl = ((Icons as unknown) as Record<string, React.FC<{ size?: number; color?: string }>>)[
-    cat.icon.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join('')
-  ] ?? (Icons.Code as unknown as React.FC<{ size?: number; color?: string }>);
+  const IconEl = getDynamicIcon(cat.icon);
 
   return (
     <div ref={ref} style={{ opacity: reduced ? 1 : 0 }}>

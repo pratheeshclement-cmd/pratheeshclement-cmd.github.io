@@ -30,6 +30,7 @@ export class AnimeMasterEngine {
     // Scrub scroll progress hook for Master Anime.js engine
   }
   public assembleSection(sectionEl: HTMLElement, style: TransitionStyle = 'blur-clear', duration = 1000) {
+    const isMobile    = typeof window !== 'undefined' && window.innerWidth <= 768;
     const background  = sectionEl.querySelectorAll('.parallax-bg, .scene-inner');
     const profileImg  = sectionEl.querySelectorAll('img');
     const headings    = sectionEl.querySelectorAll('h1, h2');
@@ -41,15 +42,15 @@ export class AnimeMasterEngine {
 
     const tl = anime.timeline({
       easing: 'easeOutQuart',
-      duration,
+      duration: isMobile ? duration * 0.7 : duration,
     });
 
     // 1. Background Entrance
     if (background.length > 0) {
-      const bgProps = style === 'slide-left' ? { translateX: [80, 0] }
-        : style === 'slide-right' ? { translateX: [-80, 0] }
-        : style === 'scale-up' ? { scale: [0.9, 1] }
-        : { translateY: [40, 0] };
+      const bgProps = style === 'slide-left' ? { translateX: [isMobile ? 30 : 80, 0] }
+        : style === 'slide-right' ? { translateX: [isMobile ? -30 : -80, 0] }
+        : style === 'scale-up' ? { scale: [0.95, 1] }
+        : { translateY: [isMobile ? 20 : 40, 0] };
 
       tl.add({
         targets: background,
@@ -59,13 +60,17 @@ export class AnimeMasterEngine {
       }, 0);
     }
 
-    // 2. Profile Image Assembly
+    // 2. Profile Image Assembly (No filter blurs on mobile)
     if (profileImg.length > 0) {
-      tl.add({
-        targets: profileImg,
+      const imgProps = isMobile ? { opacity: [0, 1] } : {
         scale: [0.88, 1],
         filter: ['blur(12px)', 'blur(0px)'],
         opacity: [0, 1],
+      };
+
+      tl.add({
+        targets: profileImg,
+        ...imgProps,
         duration: duration * 0.5,
       }, 100);
     }
@@ -74,9 +79,9 @@ export class AnimeMasterEngine {
     if (headings.length > 0) {
       tl.add({
         targets: headings,
-        translateY: [35, 0],
+        translateY: [isMobile ? 15 : 35, 0],
         opacity: [0, 1],
-        delay: anime.stagger(30),
+        delay: anime.stagger(isMobile ? 15 : 30),
         duration: duration * 0.45,
       }, 200);
     }
@@ -85,26 +90,34 @@ export class AnimeMasterEngine {
     if (subheadings.length > 0) {
       tl.add({
         targets: subheadings,
-        translateY: [25, 0],
+        translateY: [isMobile ? 10 : 25, 0],
         opacity: [0, 1],
-        delay: anime.stagger(20),
+        delay: anime.stagger(isMobile ? 10 : 20),
         duration: duration * 0.4,
       }, 280);
     }
 
-    // 5. Cards Slide In / Scale Reveal based on section style
+    // 5. Cards Slide In / Scale Reveal based on section style (No filter blurs on mobile)
     if (cards.length > 0) {
-      const cardTranslateX = style === 'slide-left' ? [60, 0] : style === 'slide-right' ? [-60, 0] : 0;
-      const cardTranslateY = style === 'slide-left' || style === 'slide-right' ? 0 : [45, 0];
+      const cardTranslateX = style === 'slide-left' ? [isMobile ? 25 : 60, 0] : style === 'slide-right' ? [isMobile ? -25 : -60, 0] : 0;
+      const cardTranslateY = style === 'slide-left' || style === 'slide-right' ? 0 : [isMobile ? 20 : 45, 0];
 
-      tl.add({
-        targets: cards,
+      const cardProps = isMobile ? {
+        translateX: cardTranslateX,
+        translateY: cardTranslateY,
+        opacity: [0, 1],
+      } : {
         translateX: cardTranslateX,
         translateY: cardTranslateY,
         scale: style === 'scale-up' ? [0.92, 1] : [0.96, 1],
         filter: ['blur(8px)', 'blur(0px)'],
         opacity: [0, 1],
-        delay: anime.stagger(70),
+      };
+
+      tl.add({
+        targets: cards,
+        ...cardProps,
+        delay: anime.stagger(isMobile ? 30 : 70),
         duration: duration * 0.55,
       }, 350);
     }

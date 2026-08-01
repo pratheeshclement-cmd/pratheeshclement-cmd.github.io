@@ -14,20 +14,21 @@ const HeroGlobe: React.FC = () => {
 
     const W = container.clientWidth  || 600;
     const H = container.clientHeight || 600;
+    const isMobile = window.innerWidth <= 768;
 
     // Scene
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(60, W / H, 0.1, 1000);
     camera.position.z = 3.2;
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    const renderer = new THREE.WebGLRenderer({ antialias: !isMobile, alpha: true, powerPreference: 'high-performance' });
     renderer.setSize(W, H);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(isMobile ? 1.0 : Math.min(window.devicePixelRatio, 2));
     renderer.setClearColor(0x000000, 0);
     container.appendChild(renderer.domElement);
 
     // Sphere particle system
-    const COUNT = 3000;
+    const COUNT = isMobile ? 1000 : 3000;
     const geo = new THREE.BufferGeometry();
     const positions = new Float32Array(COUNT * 3);
     const colors    = new Float32Array(COUNT * 3);
@@ -59,7 +60,7 @@ const HeroGlobe: React.FC = () => {
     geo.setAttribute('color',    new THREE.BufferAttribute(colors, 3));
 
     const mat = new THREE.PointsMaterial({
-      size: 0.022,
+      size: isMobile ? 0.028 : 0.022,
       vertexColors: true,
       transparent: true,
       opacity: 0.75,
@@ -71,23 +72,56 @@ const HeroGlobe: React.FC = () => {
 
     // Mouse tracking
     let mouseX = 0, mouseY = 0;
-    const onMouseMove = (e: MouseEvent) => {
+    const onMouseMove = !isMobile ? (e: MouseEvent) => {
       mouseX = (e.clientX / window.innerWidth  - 0.5) * 2;
       mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
-    };
-    window.addEventListener('mousemove', onMouseMove);
+    } : null;
+    if (onMouseMove) window.addEventListener('mousemove', onMouseMove);
 
-    // Animation loop
+    // Visibility & Intersection Observer & Mobile Menu Pausing Loop
     let frameId: number;
+    let isVisible = true;
+    let isTabActive = !document.hidden;
+    let isMenuOpen = false;
+    let isFastScrolling = false;
+
+    const onMenuToggle = (e: Event) => {
+      const customEv = e as CustomEvent<{ open: boolean }>;
+      isMenuOpen = customEv.detail?.open ?? false;
+    };
+    const onScrollState = (e: Event) => {
+      const customEv = e as CustomEvent<{ scrolling: boolean }>;
+      isFastScrolling = customEv.detail?.scrolling ?? false;
+    };
+    window.addEventListener('mobile-menu-state-changed', onMenuToggle);
+    window.addEventListener('mobile-scroll-state', onScrollState);
+
     const animate = () => {
+      if (isVisible && isTabActive && !isMenuOpen && !isFastScrolling) {
+        globe.rotation.y += 0.0015;
+        globe.rotation.x += 0.0005;
+        if (!isMobile) {
+          globe.rotation.y += (mouseX * 0.3 - globe.rotation.y) * 0.02;
+          globe.rotation.x += (-mouseY * 0.2 - globe.rotation.x) * 0.02;
+        }
+        renderer.render(scene, camera);
+      }
       frameId = requestAnimationFrame(animate);
-      globe.rotation.y += 0.0015;
-      globe.rotation.x += 0.0005;
-      globe.rotation.y += (mouseX * 0.3 - globe.rotation.y) * 0.02;
-      globe.rotation.x += (-mouseY * 0.2 - globe.rotation.x) * 0.02;
-      renderer.render(scene, camera);
     };
     animate();
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        isVisible = entry.isIntersecting;
+      },
+      { threshold: 0.05 }
+    );
+    observer.observe(container);
+
+    const onVisibilityChange = () => {
+      isTabActive = !document.hidden;
+    };
+    document.addEventListener('visibilitychange', onVisibilityChange);
 
     // Resize
     const onResize = () => {
@@ -101,8 +135,12 @@ const HeroGlobe: React.FC = () => {
 
     return () => {
       cancelAnimationFrame(frameId);
-      window.removeEventListener('mousemove', onMouseMove);
+      if (onMouseMove) window.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('visibilitychange', onVisibilityChange);
+      window.removeEventListener('mobile-menu-state-changed', onMenuToggle);
+      window.removeEventListener('mobile-scroll-state', onScrollState);
       window.removeEventListener('resize', onResize);
+      observer.disconnect();
       renderer.dispose();
       geo.dispose();
       mat.dispose();

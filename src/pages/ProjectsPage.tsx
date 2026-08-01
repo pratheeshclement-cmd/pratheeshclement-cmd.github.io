@@ -91,7 +91,13 @@ export const ProjectsPage: React.FC = () => {
                 </span>
 
                 <h3 style={{ fontSize: '1.3rem', fontFamily: 'var(--font-display)', color: 'var(--text-primary)', marginBottom: 10, lineHeight: 1.3 }}>
-                  {project.title}
+                  <a
+                    href={`/projects/${project.id}/`}
+                    onClick={e => { e.preventDefault(); navigateTo(`/projects/${project.id}/`); }}
+                    style={{ color: 'inherit', textDecoration: 'none' }}
+                  >
+                    {project.title}
+                  </a>
                 </h3>
 
                 <ContentP style={{ fontSize: '0.94rem', marginBottom: 20 }}>
@@ -107,24 +113,22 @@ export const ProjectsPage: React.FC = () => {
                 </div>
               </div>
 
-              <button
-                onClick={() => navigateTo(`/projects/${project.id}/`)}
+              <a
+                href={`/projects/${project.id}/`}
+                onClick={e => { e.preventDefault(); navigateTo(`/projects/${project.id}/`); }}
                 style={{
                   display: 'inline-flex',
                   alignItems: 'center',
                   gap: 8,
-                  background: 'none',
-                  border: 'none',
                   color: project.accentColor,
                   fontWeight: 600,
                   fontSize: '0.92rem',
-                  cursor: 'pointer',
-                  padding: 0,
+                  textDecoration: 'none',
                   fontFamily: 'var(--font-body)',
                 }}
               >
                 Read Full Case Study <ArrowRight size={15} />
-              </button>
+              </a>
             </div>
           );
         })}

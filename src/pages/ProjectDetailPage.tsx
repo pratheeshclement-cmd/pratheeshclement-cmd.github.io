@@ -121,30 +121,177 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ slug }) =>
           </ContentP>
         </InfoCard>
 
+        {/* Related Expertise & Articles Cluster */}
+        <div style={{ padding: 28, borderRadius: 20, background: 'var(--bg-secondary)', border: '1px solid var(--bg-tertiary)', marginTop: 40, marginBottom: 40 }}>
+          <h3 style={{ fontSize: '1.1rem', fontFamily: 'var(--font-display)', color: 'var(--text-primary)', marginBottom: 14, display: 'flex', alignItems: 'center', gap: 8 }}>
+            <Layers size={18} color="var(--accent-primary)" />
+            Related Services & Educational Insights
+          </h3>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
+            {project.id === 'pratheesh-os' && [
+              { label: 'Web Development & Frontend Architecture', href: '/web-development/' },
+              { label: 'Technical SEO Strategy', href: '/seo/' },
+              { label: 'UI/UX Interface Design', href: '/ui-ux-design/' },
+              { label: 'Blog: Building Search-Friendly React Portfolios', href: '/blog/building-search-friendly-react-portfolios/' },
+              { label: 'Blog: SPA Technical SEO', href: '/blog/how-i-approach-technical-seo/' },
+            ].map(link => (
+              <a
+                key={link.href}
+                href={link.href}
+                onClick={e => { e.preventDefault(); navigateTo(link.href); }}
+                style={{
+                  display: 'inline-block',
+                  padding: '8px 14px',
+                  borderRadius: 999,
+                  background: 'var(--glass-bg)',
+                  border: '1px solid var(--glass-border)',
+                  color: 'var(--text-primary)',
+                  fontSize: '0.85rem',
+                  fontWeight: 500,
+                  textDecoration: 'none',
+                  fontFamily: 'var(--font-body)',
+                  transition: 'all 0.2s ease',
+                }}
+              >
+                {link.label} →
+              </a>
+            ))}
+
+            {project.id === 'seo-growth-campaign' && [
+              { label: 'Technical SEO Strategy', href: '/seo/' },
+              { label: 'Google Search Console Architecture', href: '/google-search-console/' },
+              { label: 'Digital Marketing Strategy', href: '/digital-marketing/' },
+              { label: 'Blog: How I Approach Technical SEO', href: '/blog/how-i-approach-technical-seo/' },
+            ].map(link => (
+              <a
+                key={link.href}
+                href={link.href}
+                onClick={e => { e.preventDefault(); navigateTo(link.href); }}
+                style={{
+                  display: 'inline-block',
+                  padding: '8px 14px',
+                  borderRadius: 999,
+                  background: 'var(--glass-bg)',
+                  border: '1px solid var(--glass-border)',
+                  color: 'var(--text-primary)',
+                  fontSize: '0.85rem',
+                  fontWeight: 500,
+                  textDecoration: 'none',
+                  fontFamily: 'var(--font-body)',
+                  transition: 'all 0.2s ease',
+                }}
+              >
+                {link.label} →
+              </a>
+            ))}
+
+            {project.id === 'restaurant-branding-web' && [
+              { label: 'UI/UX Interface Design', href: '/ui-ux-design/' },
+              { label: 'Web Development Services', href: '/web-development/' },
+              { label: 'Blog: Performant React Websites', href: '/blog/building-search-friendly-react-portfolios/' },
+            ].map(link => (
+              <a
+                key={link.href}
+                href={link.href}
+                onClick={e => { e.preventDefault(); navigateTo(link.href); }}
+                style={{
+                  display: 'inline-block',
+                  padding: '8px 14px',
+                  borderRadius: 999,
+                  background: 'var(--glass-bg)',
+                  border: '1px solid var(--glass-border)',
+                  color: 'var(--text-primary)',
+                  fontSize: '0.85rem',
+                  fontWeight: 500,
+                  textDecoration: 'none',
+                  fontFamily: 'var(--font-body)',
+                  transition: 'all 0.2s ease',
+                }}
+              >
+                {link.label} →
+              </a>
+            ))}
+
+            {project.id === 'b2b-conversion-funnel' && [
+              { label: 'Meta Ads & Pixel Tracking', href: '/meta-ads/' },
+              { label: 'Google Ads Search Strategy', href: '/google-ads/' },
+              { label: 'Digital Marketing Strategy', href: '/digital-marketing/' },
+              { label: 'Blog: Meta Pixel & Conversion Tracking', href: '/blog/how-meta-pixel-and-conversion-tracking-work/' },
+            ].map(link => (
+              <a
+                key={link.href}
+                href={link.href}
+                onClick={e => { e.preventDefault(); navigateTo(link.href); }}
+                style={{
+                  display: 'inline-block',
+                  padding: '8px 14px',
+                  borderRadius: 999,
+                  background: 'var(--glass-bg)',
+                  border: '1px solid var(--glass-border)',
+                  color: 'var(--text-primary)',
+                  fontSize: '0.85rem',
+                  fontWeight: 500,
+                  textDecoration: 'none',
+                  fontFamily: 'var(--font-body)',
+                  transition: 'all 0.2s ease',
+                }}
+              >
+                {link.label} →
+              </a>
+            ))}
+
+            {project.id === 'portfolio-redesign' && [
+              { label: 'UI/UX Interface Design', href: '/ui-ux-design/' },
+              { label: 'Web Development Services', href: '/web-development/' },
+              { label: 'Technical SEO Guide', href: '/seo/' },
+              { label: 'Blog: Search Friendly React Apps', href: '/blog/building-search-friendly-react-portfolios/' },
+            ].map(link => (
+              <a
+                key={link.href}
+                href={link.href}
+                onClick={e => { e.preventDefault(); navigateTo(link.href); }}
+                style={{
+                  display: 'inline-block',
+                  padding: '8px 14px',
+                  borderRadius: 999,
+                  background: 'var(--glass-bg)',
+                  border: '1px solid var(--glass-border)',
+                  color: 'var(--text-primary)',
+                  fontSize: '0.85rem',
+                  fontWeight: 500,
+                  textDecoration: 'none',
+                  fontFamily: 'var(--font-body)',
+                  transition: 'all 0.2s ease',
+                }}
+              >
+                {link.label} →
+              </a>
+            ))}
+          </div>
+        </div>
+
         {/* Next Project Navigation */}
-        <div style={{ marginTop: 56, paddingTop: 32, borderTop: '1px solid var(--bg-tertiary)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 16 }}>
+        <div style={{ marginTop: 40, paddingTop: 32, borderTop: '1px solid var(--bg-tertiary)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 16 }}>
           <div>
             <div style={{ fontSize: '0.78rem', color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 4 }}>
               Next Case Study
             </div>
-            <button
-              onClick={() => navigateTo(`/projects/${nextProject.id}/`)}
+            <a
+              href={`/projects/${nextProject.id}/`}
+              onClick={e => { e.preventDefault(); navigateTo(`/projects/${nextProject.id}/`); }}
               style={{
-                background: 'none',
-                border: 'none',
                 color: 'var(--accent-primary)',
                 fontSize: '1.1rem',
                 fontFamily: 'var(--font-display)',
                 fontWeight: 700,
-                cursor: 'pointer',
-                padding: 0,
+                textDecoration: 'none',
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: 8,
               }}
             >
               {nextProject.title} <ArrowRight size={16} />
-            </button>
+            </a>
           </div>
         </div>
 

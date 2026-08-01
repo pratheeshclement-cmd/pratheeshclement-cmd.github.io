@@ -4,6 +4,7 @@ import { StructuredData, webPageSchema } from '../seo/StructuredData';
 import { PageLayout, ProseContainer, ContentH2, ContentH3, ContentP, InfoCard, SkillGrid, PageCTA } from './components/PageLayout';
 import { Breadcrumb } from './components/Breadcrumb';
 import { Target, Shield, Layers } from 'lucide-react';
+import { navigateTo } from '../router/useRouter';
 
 export const MetaAdsPage: React.FC = () => {
   useSEOMeta(PAGE_SEO.metaAds);
@@ -102,6 +103,44 @@ export const MetaAdsPage: React.FC = () => {
         <ContentP>
           See how custom audience profiling and Meta Pixel event tracking were applied in the <a href="/projects/b2b-conversion-funnel/" style={{ color: 'var(--accent-primary)', textDecoration: 'none', fontWeight: 600 }}>Social Media B2B Conversion Funnel</a> case study to reduce cost-per-lead and eliminate spam form submissions.
         </ContentP>
+
+        {/* Explore Related Topic Pillars Hub */}
+        <div style={{ padding: 28, borderRadius: 20, background: 'var(--bg-secondary)', border: '1px solid var(--bg-tertiary)', marginBottom: 40 }}>
+          <h3 style={{ fontSize: '1.1rem', fontFamily: 'var(--font-display)', color: 'var(--text-primary)', marginBottom: 14, display: 'flex', alignItems: 'center', gap: 8 }}>
+            <Layers size={18} color="var(--accent-primary)" />
+            Explore Related Discipline Guides & Case Studies
+          </h3>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
+            {[
+              { label: 'Google Ads Paid Search Strategy', href: '/google-ads/' },
+              { label: 'Digital Marketing Strategy', href: '/digital-marketing/' },
+              { label: 'Blog: Meta Pixel Tracking Guide', href: '/blog/how-meta-pixel-and-conversion-tracking-work/' },
+              { label: 'B2B Lead Funnel Case Study', href: '/projects/b2b-conversion-funnel/' },
+              { label: 'Freelance Ad Campaign Consulting', href: '/freelancing/' },
+            ].map(link => (
+              <a
+                key={link.href}
+                href={link.href}
+                onClick={e => { e.preventDefault(); navigateTo(link.href); }}
+                style={{
+                  display: 'inline-block',
+                  padding: '8px 14px',
+                  borderRadius: 999,
+                  background: 'var(--glass-bg)',
+                  border: '1px solid var(--glass-border)',
+                  color: 'var(--text-primary)',
+                  fontSize: '0.85rem',
+                  fontWeight: 500,
+                  textDecoration: 'none',
+                  fontFamily: 'var(--font-body)',
+                  transition: 'all 0.2s ease',
+                }}
+              >
+                {link.label} →
+              </a>
+            ))}
+          </div>
+        </div>
 
         <PageCTA
           heading="Need Help Managing Meta Ad Campaigns?"

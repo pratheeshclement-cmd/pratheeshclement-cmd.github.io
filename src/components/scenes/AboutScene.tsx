@@ -185,8 +185,7 @@ const AboutScene: React.FC<{ id: string }> = ({ id }) => {
                   <span
                     className="pill"
                     style={{
-                      background: 'rgba(255, 255, 255, 0.25)',
-                      backdropFilter: 'blur(12px)',
+                      background: 'rgba(15, 23, 42, 0.65)',
                       color: '#fff',
                       border: '1px solid rgba(255, 255, 255, 0.4)',
                       fontSize: '0.75rem',

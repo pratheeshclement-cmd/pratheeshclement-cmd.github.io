@@ -23,28 +23,41 @@ const HeroScene: React.FC<{ id: string }> = ({ id }) => {
   useEffect(() => {
     if (reduced) return;
 
-    // 1. Anime.js Profile Image Assembly Sequence:
-    if (heroImageRef.current) {
-      anime.timeline({ easing: 'easeOutQuart' })
-        .add({
-          targets: heroImageRef.current,
-          scale: [0.85, 1],
-          rotateY: [-20, 0],
-          opacity: [0, 1],
-          filter: ['blur(15px)', 'blur(0px)'],
-          duration: 1200,
-          delay: 300,
-        });
+    const isMobile = window.innerWidth <= 768;
 
-      // Floating ambient motion
-      anime({
-        targets: heroImageRef.current,
-        translateY: ['-8px', '8px'],
-        direction: 'alternate',
-        loop: true,
-        easing: 'easeInOutSine',
-        duration: 4500,
-      });
+    // 1. Profile Image Assembly Sequence (No blur filters on mobile):
+    if (heroImageRef.current) {
+      if (isMobile) {
+        anime({
+          targets: heroImageRef.current,
+          opacity: [0, 1],
+          translateY: [20, 0],
+          duration: 800,
+          delay: 200,
+          easing: 'easeOutQuart',
+        });
+      } else {
+        anime.timeline({ easing: 'easeOutQuart' })
+          .add({
+            targets: heroImageRef.current,
+            scale: [0.85, 1],
+            rotateY: [-20, 0],
+            opacity: [0, 1],
+            filter: ['blur(15px)', 'blur(0px)'],
+            duration: 1200,
+            delay: 300,
+          });
+
+        // Floating ambient motion (Desktop only)
+        anime({
+          targets: heroImageRef.current,
+          translateY: ['-8px', '8px'],
+          direction: 'alternate',
+          loop: true,
+          easing: 'easeInOutSine',
+          duration: 4500,
+        });
+      }
     }
 
     // 2. Text entry stagger
@@ -54,7 +67,7 @@ const HeroScene: React.FC<{ id: string }> = ({ id }) => {
       .fromTo(bodyRef.current,    { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' }, '-=0.2')
       .fromTo(ctaRef.current,     { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' }, '-=0.2');
 
-    // 3. Image scroll disassembly parallax
+    // 3. Image scroll disassembly parallax (No blur filters on mobile)
     const st = ScrollTrigger.create({
       trigger: sectionRef.current,
       start: 'top top',
@@ -66,10 +79,10 @@ const HeroScene: React.FC<{ id: string }> = ({ id }) => {
         }
         if (heroImageRef.current) {
           gsap.set(heroImageRef.current, {
-            y: self.progress * 120,
-            scale: 1 + self.progress * 0.1,
+            y: self.progress * (isMobile ? 40 : 120),
+            scale: isMobile ? 1 : 1 + self.progress * 0.1,
             opacity: 1 - self.progress * 1.2,
-            filter: `blur(${self.progress * 12}px)`,
+            filter: isMobile ? 'none' : `blur(${self.progress * 12}px)`,
           });
         }
       },

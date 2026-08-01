@@ -20,13 +20,15 @@ export const CinematicParticleCanvas: React.FC = () => {
 
     let width  = (canvas.width  = window.innerWidth);
     let height = (canvas.height = window.innerHeight);
+    const isMobile = width <= 768;
+    const isTablet = width > 480 && width <= 768;
+    const isMobilePhone = width <= 480;
+    const PARTICLE_COUNT = isMobilePhone ? 20 : isTablet ? 50 : 100;
 
     let mouseX = width / 2;
     let mouseY = height / 2;
     let targetMouseX = mouseX;
     let targetMouseY = mouseY;
-
-    const PARTICLE_COUNT = 60;
     interface Particle {
       x: number;
       y: number;
@@ -54,7 +56,7 @@ export const CinematicParticleCanvas: React.FC = () => {
         y: ry,
         baseX: rx,
         baseY: ry,
-        size: Math.random() * 2.5 + 1,
+        size: Math.random() * (isMobile ? 2.0 : 2.5) + 1,
         speedX: (Math.random() - 0.5) * 0.4,
         speedY: (Math.random() - 0.5) * 0.4,
         opacity: Math.random() * 0.5 + 0.2,
@@ -63,15 +65,39 @@ export const CinematicParticleCanvas: React.FC = () => {
     });
 
     let animId: number;
+    let isTabActive = !document.hidden;
+    let isMenuOpen = false;
+    let isFastScrolling = false;
     let lastScrollY = window.scrollY;
 
-    const onMouseMove = (e: MouseEvent) => {
+    const onMenuToggle = (e: Event) => {
+      const customEv = e as CustomEvent<{ open: boolean }>;
+      isMenuOpen = customEv.detail?.open ?? false;
+    };
+    const onScrollState = (e: Event) => {
+      const customEv = e as CustomEvent<{ scrolling: boolean }>;
+      isFastScrolling = customEv.detail?.scrolling ?? false;
+    };
+    window.addEventListener('mobile-menu-state-changed', onMenuToggle);
+    window.addEventListener('mobile-scroll-state', onScrollState);
+
+    const onMouseMove = !isMobile ? (e: MouseEvent) => {
       targetMouseX = e.clientX;
       targetMouseY = e.clientY;
+    } : null;
+    if (onMouseMove) window.addEventListener('mousemove', onMouseMove);
+
+    const onVisibilityChange = () => {
+      isTabActive = !document.hidden;
+      if (isTabActive && !isMenuOpen && !isFastScrolling && !animId) {
+        render();
+      }
     };
-    window.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('visibilitychange', onVisibilityChange);
 
     const render = () => {
+      if (!isTabActive || isMenuOpen || isFastScrolling) return;
+
       ctx.clearRect(0, 0, width, height);
 
       mouseX += (targetMouseX - mouseX) * 0.05;
@@ -103,8 +129,12 @@ export const CinematicParticleCanvas: React.FC = () => {
         ctx.beginPath();
         ctx.arc(drawX, drawY, p.size, 0, Math.PI * 2);
         ctx.fillStyle = `${p.color}${p.opacity})`;
-        ctx.shadowBlur = p.size * 4;
-        ctx.shadowColor = `${p.color}0.8)`;
+
+        // Omit expensive shadowBlur on mobile
+        if (!isMobile) {
+          ctx.shadowBlur = p.size * 4;
+          ctx.shadowColor = `${p.color}0.8)`;
+        }
         ctx.fill();
       }
 
@@ -122,7 +152,10 @@ export const CinematicParticleCanvas: React.FC = () => {
 
     return () => {
       cancelAnimationFrame(animId);
-      window.removeEventListener('mousemove', onMouseMove);
+      if (onMouseMove) window.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('visibilitychange', onVisibilityChange);
+      window.removeEventListener('mobile-menu-state-changed', onMenuToggle);
+      window.removeEventListener('mobile-scroll-state', onScrollState);
       window.removeEventListener('resize', onResize);
     };
   }, [reduced]);

@@ -102,6 +102,29 @@ html, body {
   outline-offset: 4px;
 }
 
+/* Mobile Settings Menu Modal Lock */
+body.menu-open {
+  overflow: hidden !important;
+  touch-action: none !important;
+  overscroll-behavior: none !important;
+  height: 100vh !important;
+}
+
+body.menu-open #camera-perspective,
+body.menu-open #main-world {
+  pointer-events: none !important;
+}
+
+/* Sharp Crisp Mobile Image Rendering System (Prevents Chrome Android Raster Blur) */
+img {
+  filter: none !important;
+  backdrop-filter: none !important;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  will-change: transform;
+  image-rendering: auto;
+}
+
 /* Glass Mixin Utility */
 .glass {
   background: var(--glass-bg);
@@ -111,6 +134,26 @@ html, body {
   box-shadow: inset 0 1px 1px var(--glass-highlight), var(--glass-shadow);
   border-radius: var(--radius-lg);
   transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+@media (max-width: 768px) {
+  .glass {
+    backdrop-filter: blur(8px) saturate(140%);
+    -webkit-backdrop-filter: blur(8px) saturate(140%);
+    background: var(--bg-secondary);
+  }
+
+  .showcase-frame,
+  .showcase-status-badge,
+  .showcase-corner-tag,
+  .showcase-ambient-light,
+  .showcase-spotlight,
+  .showcase-shimmer,
+  .showcase-img-box {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    filter: none !important;
+  }
 }
 
 .glass:hover {
@@ -487,15 +530,65 @@ h1, h2, h3, h4 {
   opacity: 1;
 }
 
+/* Pixel-Perfect Control Buttons (Theme & Gear Centering & Hit Targets) */
+.nav-control-btn {
+  position: relative;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 40px !important;
+  height: 40px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border-radius: 50% !important;
+  box-sizing: border-box !important;
+  flex-shrink: 0 !important;
+  line-height: 0 !important;
+}
+
+.nav-control-btn::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  pointer-events: auto;
+}
+
+.nav-control-btn svg {
+  display: block !important;
+  margin: 0 auto !important;
+  padding: 0 !important;
+  flex-shrink: 0 !important;
+  width: 20px !important;
+  height: 20px !important;
+}
+
 /* ── Responsive Mobile Navigation ────────────────────────────── */
 @media (max-width: 768px) {
+  .main-header {
+    width: min(calc(100% - 24px), 420px) !important;
+    max-width: 420px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    top: max(12px, env(safe-area-inset-top, 12px)) !important;
+  }
+
+  .nav-capsule {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+    padding-top: 6px !important;
+    padding-bottom: 6px !important;
+  }
+
   .desktop-only-nav {
     display: none !important;
   }
+
   .mobile-only-gear {
     display: flex !important;
   }
 }
+
 @media (min-width: 769px) {
   .mobile-only-gear {
     display: none !important;
@@ -616,8 +709,8 @@ body.dark-theme .showcase-frame {
   object-fit: cover;
   object-position: center 12%;
   display: block;
-  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), filter 0.6s ease;
-  will-change: transform, filter;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
 }
 
 /* Spotlight Follow Layer */

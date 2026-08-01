@@ -3,7 +3,8 @@ import { useSEOMeta } from '../seo/useSEOMeta';
 import { StructuredData, webPageSchema } from '../seo/StructuredData';
 import { PageLayout, ProseContainer, ContentH2, ContentH3, ContentP, InfoCard, SkillGrid, PageCTA } from './components/PageLayout';
 import { Breadcrumb } from './components/Breadcrumb';
-import { Briefcase, CheckCircle2, UserCheck, Mail, MapPin } from 'lucide-react';
+import { Briefcase, CheckCircle2, UserCheck, Mail, MapPin, Layers } from 'lucide-react';
+import { navigateTo } from '../router/useRouter';
 import { IDENTITY } from '../data/identity';
 
 export const FreelancingPage: React.FC = () => {
@@ -129,8 +130,47 @@ export const FreelancingPage: React.FC = () => {
 
         <ContentH2>3. Verified Credentials & Experience</ContentH2>
         <ContentP>
-          Currently serving as Digital Marketer at JBHL Pvt Ltd, with prior experience as Store/Production Associate at Nexteer Automotive India (steering systems manufacturer). Degree: Bachelor of Computer Applications (BCA). Verified Google Skillshop Certification in Fundamentals of Digital Marketing (ID: 453421024).
+          Currently serving as Digital Marketer at JBHL Pvt Ltd, with prior experience as Store/Production Associate at Nexteer Automotive India (steering systems manufacturer). Degree: Bachelor of Computer Applications (BCA). Verified Google Skillshop Certification in Fundamentals of Digital Marketing (ID: 453421024). Explore <a href="/certifications/" style={{ color: 'var(--accent-primary)', textDecoration: 'none', fontWeight: 600 }}>Certifications & Qualifications</a>.
         </ContentP>
+
+        {/* Explore Related Topic Pillars Hub */}
+        <div style={{ padding: 28, borderRadius: 20, background: 'var(--bg-secondary)', border: '1px solid var(--bg-tertiary)', marginBottom: 40 }}>
+          <h3 style={{ fontSize: '1.1rem', fontFamily: 'var(--font-display)', color: 'var(--text-primary)', marginBottom: 14, display: 'flex', alignItems: 'center', gap: 8 }}>
+            <Layers size={18} color="var(--accent-primary)" />
+            Explore Services & Portfolio Case Studies
+          </h3>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
+            {[
+              { label: 'Services Overview', href: '/services/' },
+              { label: 'Technical SEO Audits', href: '/seo/' },
+              { label: 'React Web Development', href: '/web-development/' },
+              { label: 'Google Search Ads', href: '/google-ads/' },
+              { label: 'Meta Ads & Conversion Pixel', href: '/meta-ads/' },
+              { label: 'Featured Projects', href: '/projects/' },
+            ].map(link => (
+              <a
+                key={link.href}
+                href={link.href}
+                onClick={e => { e.preventDefault(); navigateTo(link.href); }}
+                style={{
+                  display: 'inline-block',
+                  padding: '8px 14px',
+                  borderRadius: 999,
+                  background: 'var(--glass-bg)',
+                  border: '1px solid var(--glass-border)',
+                  color: 'var(--text-primary)',
+                  fontSize: '0.85rem',
+                  fontWeight: 500,
+                  textDecoration: 'none',
+                  fontFamily: 'var(--font-body)',
+                  transition: 'all 0.2s ease',
+                }}
+              >
+                {link.label} →
+              </a>
+            ))}
+          </div>
+        </div>
 
         <PageCTA
           heading="Have a Project to Discuss?"

@@ -32,12 +32,14 @@ export const CinematicProfileShowcase: React.FC<CinematicProfileShowcaseProps> =
 
     if (!container || !frame || !img || reducedMotion) return;
 
+    const isMobile = window.innerWidth <= 768;
+
     // Set initial entrance state
     gsap.set(container, { opacity: 1 });
     gsap.set(frame, {
       opacity: 0,
-      scale: 0.9,
-      filter: 'blur(14px)',
+      scale: isMobile ? 0.96 : 0.9,
+      filter: isMobile ? 'none' : 'blur(14px)',
       clipPath: 'polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)',
     });
     gsap.set(ambientLight, { opacity: 0, scale: 0.7 });
@@ -63,13 +65,13 @@ export const CinematicProfileShowcase: React.FC<CinematicProfileShowcaseProps> =
       0
     );
 
-    // 2. Glass Frame Clip-Path & Blur Assembly
+    // 2. Glass Frame Clip-Path Assembly
     scrollTimeline.to(
       frame,
       {
         opacity: 1,
         scale: 1,
-        filter: 'blur(0px)',
+        filter: 'none',
         clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
         duration: 1.1,
         ease: 'power4.out',
@@ -77,16 +79,25 @@ export const CinematicProfileShowcase: React.FC<CinematicProfileShowcaseProps> =
       0.15
     );
 
-    // 3. Image Focus Reveal
-    scrollTimeline.fromTo(
-      img,
-      { scale: 1.12, filter: 'blur(8px)' },
-      { scale: 1.0, filter: 'blur(0px)', duration: 1.0, ease: 'power3.out' },
-      0.25
-    );
+    // 3. Image Focus Reveal (Sharp on mobile, no filter blur rasterization)
+    if (isMobile) {
+      scrollTimeline.fromTo(
+        img,
+        { opacity: 0 },
+        { opacity: 1, duration: 0.6, ease: 'power2.out' },
+        0.25
+      );
+    } else {
+      scrollTimeline.fromTo(
+        img,
+        { scale: 1.12, filter: 'blur(8px)' },
+        { scale: 1.0, filter: 'blur(0px)', duration: 1.0, ease: 'power3.out' },
+        0.25
+      );
+    }
 
-    // 4. Idle Floating Loop (Sine wave float + breathing scale)
-    const idleTween = gsap.to(frame, {
+    // 4. Idle Floating Loop (Desktop only)
+    const idleTween = !isMobile ? gsap.to(frame, {
       y: -8,
       rotation: 0.8,
       duration: 3.5,
@@ -94,11 +105,11 @@ export const CinematicProfileShowcase: React.FC<CinematicProfileShowcaseProps> =
       yoyo: true,
       ease: 'sine.easeInOut',
       delay: 1.2,
-    });
+    }) : null;
 
     return () => {
       scrollTimeline.kill();
-      idleTween.kill();
+      idleTween?.kill();
     };
   }, [reducedMotion]);
 
