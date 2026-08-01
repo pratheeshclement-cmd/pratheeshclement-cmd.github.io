@@ -44,7 +44,7 @@ export function useSEOMeta(meta: SEOMeta) {
     const { title, description, canonical, ogType = 'website', ogImage, ogImageAlt, noindex, articlePublished, articleModified } = meta;
 
     // Title
-    document.title = `${title} | ${SITE_NAME}`;
+    document.title = title.includes(SITE_NAME) ? title : `${title} | ${SITE_NAME}`;
 
     // Core meta
     setMeta('description', description);
@@ -81,7 +81,7 @@ export function useSEOMeta(meta: SEOMeta) {
 
     // Restore canonical on unmount (back to homepage)
     return () => {
-      document.title = 'Pratheesh Clement | Digital Marketing Specialist & AI Enthusiast';
+      document.title = 'Pratheesh Clement | SEO, Digital Marketing & Web Development';
       setLink('canonical', `${BASE_URL}/`);
       setMeta('robots', 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1');
     };
@@ -91,134 +91,134 @@ export function useSEOMeta(meta: SEOMeta) {
 // Pre-defined SEO configurations for each route
 export const PAGE_SEO = {
   home: {
-    title: 'Digital Marketing Specialist & AI Enthusiast',
-    description: 'Official portfolio of Pratheesh Clement — Digital Marketing Specialist, Technical SEO, Meta Ads, Google Ads, Web Development, and AI Automation expert based in Vadalur, Tamil Nadu, India.',
+    title: 'Pratheesh Clement | SEO, Digital Marketing & Web Development',
+    description: 'Official Portfolio of Pratheesh Clement (also known as Pratheesh) — Digital Marketing Specialist, Technical SEO Expert, UI/UX Designer, Frontend Developer, and AI Enthusiast based in Vadalur, Tamil Nadu, India.',
     canonical: '/',
     ogImage: '/assets/pratheesh4k2.jpeg',
     ogImageAlt: 'Pratheesh Clement — Digital Marketing Specialist',
   },
   about: {
-    title: 'About Pratheesh Clement',
-    description: 'Learn about Pratheesh Clement — his background in digital marketing, SEO, web development, and AI automation. Currently Digital Marketer at JBHL Pvt Ltd, based in Vadalur, Tamil Nadu.',
+    title: 'About Pratheesh Clement | Technical SEO & Digital Marketing Specialist',
+    description: 'Learn about Pratheesh Clement (Pratheesh) — creator of Pratheesh OS, Digital Marketing Specialist, Technical SEO Expert, Frontend Developer, and AI Enthusiast based in Vadalur, Tamil Nadu.',
     canonical: '/about/',
     ogImage: '/assets/pratheesh4k2.jpeg',
     ogImageAlt: 'Pratheesh Clement — About',
   },
   projects: {
-    title: 'Projects & Case Studies',
-    description: 'Real digital marketing and web development projects by Pratheesh Clement — SEO growth campaigns, responsive web design, Meta Ads B2B funnels, and cinematic portfolio development.',
+    title: 'Projects & Case Studies | Pratheesh Clement',
+    description: 'Real digital marketing and web development projects by Pratheesh Clement — SEO growth campaigns, responsive web design, Meta Ads B2B funnels, and cinematic portfolio architecture.',
     canonical: '/projects/',
     ogImage: '/assets/pratheesh4k2.jpeg',
     ogImageAlt: 'Pratheesh Clement — Projects',
   },
   services: {
-    title: 'Digital Marketing & Web Development Services',
-    description: 'Explore services offered by Pratheesh Clement: Technical SEO, Google Ads, Meta Ads, React web development, AI automation, performance optimization, and personal branding.',
+    title: 'Digital Marketing & Web Development Services | Pratheesh Clement',
+    description: 'Explore services offered by Pratheesh Clement: Technical SEO, Google Ads, Meta Ads, React web development, AI automation, and UI/UX design.',
     canonical: '/services/',
     ogImage: '/assets/pratheesh4k2.jpeg',
     ogImageAlt: 'Pratheesh Clement — Services',
   },
   seo: {
-    title: 'SEO & Search Optimization',
-    description: 'Comprehensive Technical SEO services and knowledge — on-page optimization, schema markup, Core Web Vitals, keyword research, and search strategy by Pratheesh Clement.',
+    title: 'Technical SEO & Search Optimization | Pratheesh Clement',
+    description: 'Technical SEO services and search optimization strategy by Pratheesh Clement (Pratheesh) — on-page SEO, JSON-LD schema graphs, Core Web Vitals, and search indexation.',
     canonical: '/seo/',
     ogImage: '/assets/pratheesh4k2.jpeg',
     ogImageAlt: 'Pratheesh Clement — SEO Services',
   },
   digitalMarketing: {
-    title: 'Digital Marketing Strategy',
-    description: 'Full-funnel digital marketing strategy, channel planning, analytics, and conversion optimization by Pratheesh Clement — helping businesses grow their online presence measurably.',
+    title: 'Digital Marketing Strategy | Pratheesh Clement',
+    description: 'Full-funnel digital marketing strategy, multi-channel growth, analytics, and conversion optimization by Pratheesh Clement (Pratheesh) — helping businesses grow online.',
     canonical: '/digital-marketing/',
     ogImage: '/assets/pratheesh4k2.jpeg',
     ogImageAlt: 'Pratheesh Clement — Digital Marketing',
   },
   metaAds: {
-    title: 'Meta Ads — Facebook & Instagram Advertising',
-    description: 'Meta Ads campaign management: custom audiences, Meta Pixel tracking, lead generation, retargeting, and CPL optimization by Pratheesh Clement.',
+    title: 'Meta Ads & Facebook Marketing | Pratheesh Clement',
+    description: 'Meta Ads campaign management, Meta Pixel conversion tracking, custom audiences, and CPL optimization by Pratheesh Clement (Pratheesh).',
     canonical: '/meta-ads/',
     ogImage: '/assets/pratheesh4k2.jpeg',
     ogImageAlt: 'Pratheesh Clement — Meta Ads',
   },
   googleAds: {
-    title: 'Google Ads — Search & Display Campaigns',
-    description: 'Google Ads campaign strategy: keyword planning, search intent, conversion tracking, bidding, and ongoing optimization by Pratheesh Clement.',
+    title: 'Google Ads & Paid Search Strategy | Pratheesh Clement',
+    description: 'Google Ads campaign strategy, keyword planning, search intent, conversion tracking, and PPC optimization by Pratheesh Clement (Pratheesh).',
     canonical: '/google-ads/',
     ogImage: '/assets/pratheesh4k2.jpeg',
     ogImageAlt: 'Pratheesh Clement — Google Ads',
   },
   webDev: {
-    title: 'Web Development',
-    description: 'Modern web development using React, TypeScript, Vite, GSAP, and accessible HTML/CSS. Performance-first, SEO-ready frontend development by Pratheesh Clement.',
+    title: 'Web Development & Frontend Architecture | Pratheesh Clement',
+    description: 'Modern web development using React, TypeScript, Vite, and GSAP by Pratheesh Clement (Pratheesh) — performance-first, SEO-ready frontend applications.',
     canonical: '/web-development/',
     ogImage: '/assets/pratheesh4k2.jpeg',
     ogImageAlt: 'Pratheesh Clement — Web Development',
   },
   aiAutomation: {
-    title: 'AI Tools & Automation',
-    description: 'AI-assisted workflows, prompt engineering, API integrations, and automation pipelines combining marketing and development — by Pratheesh Clement.',
+    title: 'AI Tools & Workflow Automation | Pratheesh Clement',
+    description: 'AI-assisted workflows, prompt engineering, API integrations, and automation pipelines combining marketing and development by Pratheesh Clement (Pratheesh).',
     canonical: '/ai-automation/',
     ogImage: '/assets/pratheesh4k2.jpeg',
     ogImageAlt: 'Pratheesh Clement — AI Automation',
   },
   uiUxDesign: {
-    title: 'UI/UX Design & Interface Architecture',
-    description: 'Explore UI/UX design principles, responsive layouts, glassmorphism systems, component accessibility, and micro-interactions by Pratheesh Clement.',
+    title: 'UI/UX Design & Interface Architecture | Pratheesh Clement',
+    description: 'Explore UI/UX design principles, responsive layouts, glassmorphism systems, component accessibility, and micro-interactions by Pratheesh Clement (Pratheesh).',
     canonical: '/ui-ux-design/',
     ogImage: '/assets/pratheesh4k2.jpeg',
     ogImageAlt: 'Pratheesh Clement — UI/UX Design',
   },
   googleSearchConsole: {
-    title: 'Google Search Console & Indexing Architecture',
-    description: 'Master Google Search Console, URL inspection, index coverage, XML sitemap auditing, canonical URL resolution, and Core Web Vitals performance.',
+    title: 'Google Search Console & Indexing Guide | Pratheesh Clement',
+    description: 'Master Google Search Console, URL inspection, index coverage, XML sitemap auditing, canonical URL resolution, and Core Web Vitals with Pratheesh Clement.',
     canonical: '/google-search-console/',
     ogImage: '/assets/pratheesh4k2.jpeg',
     ogImageAlt: 'Pratheesh Clement — Google Search Console Guide',
   },
   freelancing: {
-    title: 'Freelance Digital Marketing & Web Development Services',
-    description: 'Professional freelance consulting in Technical SEO, React web development, Meta & Google Ads campaigns, and AI automation by Pratheesh Clement.',
+    title: 'Freelance Digital Marketing & Web Development | Pratheesh Clement',
+    description: 'Professional freelance consulting in Technical SEO, React web development, Meta & Google Ads campaigns, and AI automation by Pratheesh Clement (Pratheesh).',
     canonical: '/freelancing/',
     ogImage: '/assets/pratheesh4k2.jpeg',
     ogImageAlt: 'Pratheesh Clement — Freelance Digital Marketing & Development',
   },
   certifications: {
-    title: 'Certifications & Education',
-    description: 'Verified credentials of Pratheesh Clement — Google Skillshop Fundamentals of Digital Marketing (ID: 453421024, accredited by IAB Europe & The Open University) and BCA degree.',
+    title: 'Certifications & Qualifications | Pratheesh Clement',
+    description: 'Verified credentials of Pratheesh Clement — Google Skillshop Fundamentals of Digital Marketing (ID: 453421024) and BCA degree.',
     canonical: '/certifications/',
     ogImage: '/assets/pratheesh4k2.jpeg',
     ogImageAlt: 'Pratheesh Clement — Certifications',
   },
   blog: {
-    title: 'SEO, Marketing & Development Insights',
-    description: 'Educational articles on Technical SEO, Meta Ads, Google Ads, web development, and AI automation by Pratheesh Clement — practical knowledge from real project experience.',
+    title: 'SEO, Marketing & Development Insights | Blog',
+    description: 'Educational articles on Technical SEO, Meta Ads, Google Ads, web development, and AI automation by Pratheesh Clement (Pratheesh).',
     canonical: '/blog/',
     ogImage: '/assets/pratheesh4k2.jpeg',
     ogImageAlt: 'Pratheesh Clement — Blog',
   },
   contact: {
-    title: 'Contact Pratheesh Clement',
-    description: 'Get in touch with Pratheesh Clement for digital marketing, SEO, web development, or AI automation projects. Available for remote collaboration worldwide from Vadalur, Tamil Nadu.',
+    title: 'Contact Pratheesh Clement | Digital Marketing & Web Development',
+    description: 'Get in touch with Pratheesh Clement (Pratheesh) for digital marketing, SEO, web development, or AI automation projects based in Vadalur, Tamil Nadu.',
     canonical: '/contact/',
     ogImage: '/assets/pratheesh4k2.jpeg',
     ogImageAlt: 'Pratheesh Clement — Contact',
   },
   privacy: {
-    title: 'Privacy Policy',
-    description: 'Privacy policy for pratheeshclement-cmd.github.io — how your data is handled, cookie usage, Google Analytics 4, and Meta Pixel consent gating.',
+    title: 'Privacy Policy | Pratheesh Clement',
+    description: 'Privacy policy for pratheeshclement-cmd.github.io — data protection, cookie usage, Google Analytics 4, and Meta Pixel consent gating.',
     canonical: '/privacy-policy/',
   },
   terms: {
-    title: 'Terms of Service',
+    title: 'Terms of Service | Pratheesh Clement',
     description: 'Terms of service for Pratheesh Clement\'s portfolio — usage terms, intellectual property, and AI Concierge usage guidelines.',
     canonical: '/terms/',
   },
   cookies: {
-    title: 'Cookie Policy',
+    title: 'Cookie Policy | Pratheesh Clement',
     description: 'Detailed cookie policy covering necessary, analytics (GA4), and marketing (Meta Pixel) cookies used on this website.',
     canonical: '/cookie-policy/',
   },
   notFound: {
-    title: 'Page Not Found',
+    title: 'Page Not Found | Pratheesh Clement',
     description: 'The page you are looking for does not exist. Navigate to the Pratheesh OS homepage or explore projects, services, and blog.',
     canonical: '/',
     noindex: true,

@@ -53,7 +53,7 @@ export const AboutPage: React.FC = () => {
             maxWidth: 760,
           }}
         >
-          Digital Marketing Specialist, Technical SEO Expert, Frontend Developer, and AI Enthusiast based in {IDENTITY.location.display}.
+          <strong>Pratheesh Clement</strong>, also known professionally by his short name <strong>Pratheesh</strong>, is the digital creator behind <strong>Pratheesh OS</strong> — an authority portfolio showcasing multidisciplinary expertise across <a href="/services/" style={{ color: 'var(--accent-primary)', textDecoration: 'none', fontWeight: 600 }}>Services</a>, <a href="/seo/" style={{ color: 'var(--accent-primary)', textDecoration: 'none', fontWeight: 600 }}>SEO & Technical SEO</a>, <a href="/digital-marketing/" style={{ color: 'var(--accent-primary)', textDecoration: 'none', fontWeight: 600 }}>Digital Marketing</a>, <a href="/ui-ux-design/" style={{ color: 'var(--accent-primary)', textDecoration: 'none', fontWeight: 600 }}>UI/UX Design</a>, <a href="/web-development/" style={{ color: 'var(--accent-primary)', textDecoration: 'none', fontWeight: 600 }}>Web Development</a>, featured <a href="/projects/" style={{ color: 'var(--accent-primary)', textDecoration: 'none', fontWeight: 600 }}>Projects</a>, and educational <a href="/blog/" style={{ color: 'var(--accent-primary)', textDecoration: 'none', fontWeight: 600 }}>Blog</a> insights. Based in {IDENTITY.location.display}.
         </p>
       </div>
 

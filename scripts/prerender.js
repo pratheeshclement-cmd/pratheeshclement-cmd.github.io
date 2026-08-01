@@ -10,10 +10,10 @@ const BASE_URL = 'https://pratheeshclement-cmd.github.io';
 const ROUTES = [
   {
     path: '/about/',
-    title: 'About Pratheesh Clement | Digital Marketing & Frontend Developer',
-    description: 'Learn about Pratheesh Clement — Digital Marketing Specialist, Technical SEO Expert, Frontend Developer, and AI Enthusiast based in Vadalur, Tamil Nadu.',
+    title: 'About Pratheesh Clement | Technical SEO & Digital Marketing Specialist',
+    description: 'Learn about Pratheesh Clement (Pratheesh) — creator of Pratheesh OS, Digital Marketing Specialist, Technical SEO Expert, Frontend Developer, and AI Enthusiast based in Vadalur, Tamil Nadu.',
     h1: 'About Pratheesh Clement',
-    content: 'Pratheesh Clement (legal name Mariya Pratheesh) is a multidisciplinary digital professional specializing in Digital Marketing, Technical SEO, UI/UX Design, React Web Development, and AI Automation.',
+    content: 'Pratheesh Clement, also known professionally by his short name Pratheesh, is the digital creator behind Pratheesh OS — an authority portfolio showcasing multidisciplinary expertise in Technical SEO, Digital Marketing strategy, UI/UX Design, React Web Development, paid advertising (Google Ads & Meta Ads), and AI Automation.',
   },
   {
     path: '/services/',
@@ -227,7 +227,7 @@ ROUTES.forEach(route => {
         </nav>
         <h1>${route.h1}</h1>
         <p>${route.content}</p>
-        <p>Pratheesh Clement — Digital Marketing Specialist, Technical SEO Expert, Frontend Developer, and AI Enthusiast based in Vadalur, Tamil Nadu, India.</p>
+        <p>Pratheesh Clement, also known professionally as Pratheesh, works across SEO, digital marketing, UI/UX design, web development, paid advertising, and AI-assisted workflows.</p>
         <p>Explore <a href="/services/">Services</a>, <a href="/seo/">Technical SEO</a>, <a href="/projects/">Projects</a>, <a href="/blog/">Blog</a>, and <a href="/contact/">Contact</a>.</p>
       </main>
     </div>

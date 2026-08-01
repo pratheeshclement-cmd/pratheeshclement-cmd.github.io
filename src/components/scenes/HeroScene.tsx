@@ -155,7 +155,7 @@ const HeroScene: React.FC<{ id: string }> = ({ id }) => {
                 maxWidth: 580, marginBottom: 36, opacity: 0,
               }}
             >
-              {IDENTITY.subtitle} — creating high-performance digital ecosystems that bridge software engineering, technical SEO, and AI automation.
+              Pratheesh Clement, also known professionally as Pratheesh, works across SEO, digital marketing, UI/UX design, web development, paid advertising, and AI-assisted workflows.
             </p>
 
             {/* CTAs */}

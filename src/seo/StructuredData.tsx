@@ -42,7 +42,7 @@ export const PERSON_SCHEMA = {
   '@type': 'Person',
   '@id': PERSON_ID,
   name: 'Pratheesh Clement',
-  alternateName: 'Mariya Pratheesh',
+  alternateName: ['Pratheesh', 'Mariya Pratheesh'],
   jobTitle: 'Digital Marketing Specialist & AI Enthusiast',
   description:
     'Digital Marketing Specialist, Technical SEO Expert, Frontend Developer, and AI Enthusiast based in Vadalur, Tamil Nadu, India.',
@@ -81,17 +81,36 @@ export const PERSON_SCHEMA = {
     'https://www.facebook.com/profile.php?id=61576255974969',
   ],
   knowsAbout: [
-    'Digital Marketing',
-    'Search Engine Optimization',
+    'SEO',
     'Technical SEO',
-    'Google Analytics 4',
-    'Meta Ads',
+    'Digital Marketing',
     'Google Ads',
+    'Meta Ads',
+    'Google Search Console',
+    'UI/UX Design',
+    'Web Development',
     'Frontend Development',
-    'React',
-    'TypeScript',
-    'AI Workflow Automation',
+    'AI Automation',
+    'Google Analytics 4',
+    'Meta Pixel',
+    'Conversion Tracking',
   ],
+};
+
+export const WEBSITE_SCHEMA = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  '@id': `${BASE_URL}/#website`,
+  url: `${BASE_URL}/`,
+  name: 'Pratheesh OS',
+  alternateName: 'Pratheesh Clement Portfolio',
+  description: 'Cinematic Digital Portfolio & Authority Hub of Pratheesh Clement — Architect of Digital Ecosystems.',
+  publisher: {
+    '@id': PERSON_ID,
+  },
+  author: {
+    '@id': PERSON_ID,
+  },
 };
 
 export function webPageSchema(opts: {
