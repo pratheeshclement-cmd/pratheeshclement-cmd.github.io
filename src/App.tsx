@@ -32,7 +32,13 @@ import { AppRouter } from './router/AppRouter';
 gsap.registerPlugin(ScrollTrigger);
 
 export const AppContent: React.FC = () => {
-  const [bootDone, setBootDone] = useState(false);
+  const [bootDone, setBootDone] = useState(() => {
+    try {
+      return sessionStorage.getItem('pratheesh_boot_done') === 'true';
+    } catch (e) {
+      return false;
+    }
+  });
   const [scrollProgress, setScrollProgress] = useState(0);
 
   // ── Mount 3D Virtual Camera & Lenis Smooth Scroll ──────────────────
@@ -106,7 +112,19 @@ export const AppContent: React.FC = () => {
     <>
       {/* Boot sequence — fixed overlay */}
       <Suspense fallback={null}>
-        {!bootDone && <BootScene id="scene-boot" onLeave={() => setBootDone(true)} />}
+        {!bootDone && (
+          <BootScene
+            id="scene-boot"
+            onLeave={() => {
+              try {
+                sessionStorage.setItem('pratheesh_boot_done', 'true');
+              } catch (e) {
+                // Ignore storage restriction
+              }
+              setBootDone(true);
+            }}
+          />
+        )}
       </Suspense>
 
       {/* ── 3D Virtual Camera Perspective Container ───────────────────── */}

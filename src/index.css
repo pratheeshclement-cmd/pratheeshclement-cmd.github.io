@@ -25,12 +25,18 @@
 
   --font-display: 'Space Grotesk', -apple-system, sans-serif;
   --font-body: 'Inter', -apple-system, sans-serif;
+  --font-accent: 'Instrument Serif', Georgia, serif;
   --font-mono: 'JetBrains Mono', monospace;
 
   --radius-sm: 12px;
   --radius-md: 20px;
   --radius-lg: 28px;
   --radius-full: 9999px;
+}
+
+.font-accent {
+  font-family: var(--font-accent);
+  font-style: italic;
 }
 
 /* Dark Theme Tokens (Full Multi-Theme Support) */
