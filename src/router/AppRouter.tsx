@@ -1,6 +1,10 @@
 import React, { Suspense, lazy } from 'react';
 import { useRouter, normalisePath } from '../router/useRouter';
 
+// ── DMOS Admin App ─────────────────────────────────────────────────────────
+// Lazy-loaded, completely isolated render tree — no shared styles with portfolio
+const AdminApp = lazy(() => import('../admin/AdminApp').then(m => ({ default: m.AdminApp })));
+
 const AboutPage = lazy(() => import('../pages/AboutPage'));
 const ServicesPage = lazy(() => import('../pages/ServicesPage'));
 const SEOPage = lazy(() => import('../pages/SEOPage'));
@@ -30,6 +34,21 @@ interface AppRouterProps {
 export const AppRouter: React.FC<AppRouterProps> = ({ homeComponent }) => {
   const { currentPath, getSlug } = useRouter();
   const normPath = normalisePath(currentPath);
+
+  // ── /admin/* → DMOS admin panel (isolated render tree) ─────────────────
+  if (normPath.startsWith('/admin')) {
+    return (
+      <Suspense fallback={
+        <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#0B1220', color: '#94A3B8', fontSize: '0.9rem', fontFamily: 'Inter, sans-serif', flexDirection: 'column', gap: 16 }}>
+          <div style={{ width: 36, height: 36, border: '3px solid #2E5AFF', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+          <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+          Loading DMOS…
+        </div>
+      }>
+        <AdminApp />
+      </Suspense>
+    );
+  }
 
   // If at root '/', render main Pratheesh OS cinematic homepage
   if (normPath === '/') {

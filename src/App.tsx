@@ -5,6 +5,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useTheme } from './hooks/useTheme';
 import { camera } from './engine/CameraController';
 import { animeEngine } from './engine/AnimeMasterEngine';
+import { useRouter, normalisePath } from './router/useRouter';
 
 // Layout
 import { Navbar }                 from './components/layout/Navbar';
@@ -14,6 +15,10 @@ import { CursorLighting }         from './components/layout/CursorLighting';
 import { ConsentBanner }          from './utils/ConsentBanner';
 import { LegalModal, LegalModalType } from './components/ui/LegalModal';
 import { CommandPaletteModal }    from './components/ui/CommandPaletteModal';
+
+// Router & Admin
+import { AppRouter } from './router/AppRouter';
+const AdminApp = React.lazy(() => import('./admin/AdminApp').then(m => ({ default: m.AdminApp })));
 
 // Scenes — lazy for code splitting
 const BootScene         = React.lazy(() => import('./components/scenes/BootScene'));
@@ -27,10 +32,9 @@ const TestimonialsScene = React.lazy(() => import('./components/scenes/Testimoni
 const ContactScene      = React.lazy(() => import('./components/scenes/ContactScene'));
 const AIConcierge       = React.lazy(() => import('./components/ai/AIConcierge'));
 
-import { AppRouter } from './router/AppRouter';
-
 gsap.registerPlugin(ScrollTrigger);
 
+// ── Public Portfolio Homepage Content ───────────────────────────────────────
 export const AppContent: React.FC = () => {
   const [bootDone, setBootDone] = useState(() => {
     try {
@@ -39,15 +43,14 @@ export const AppContent: React.FC = () => {
       return false;
     }
   });
-  const [scrollProgress, setScrollProgress] = useState(0);
+  const [, setScrollProgress] = useState(0);
 
-  // ── Mount 3D Virtual Camera & Lenis Smooth Scroll ──────────────────
+  // ── Mount 3D Virtual Camera & Lenis Smooth Scroll (Portfolio Only) ───────
   useEffect(() => {
     camera.mount('camera-perspective', 'main-world');
 
     const isMobile = window.innerWidth <= 768 || 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 
-    // Mobile: Disable Lenis completely to enforce native 60 FPS touch scrolling without RAF lag
     if (isMobile) {
       let lastScrollY = window.scrollY;
       let scrollTimer: number;
@@ -79,7 +82,6 @@ export const AppContent: React.FC = () => {
       };
     }
 
-    // Desktop: Initialize Lenis smooth scroll timeline engine
     const lenis = new Lenis({
       duration: 1.2,
       easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
@@ -110,7 +112,6 @@ export const AppContent: React.FC = () => {
 
   return (
     <>
-      {/* Boot sequence — fixed overlay */}
       <Suspense fallback={null}>
         {!bootDone && (
           <BootScene
@@ -127,9 +128,7 @@ export const AppContent: React.FC = () => {
         )}
       </Suspense>
 
-      {/* ── 3D Virtual Camera Perspective Container ───────────────────── */}
       <div id="camera-perspective" style={{ width: '100%', minHeight: '100vh', overflowX: 'hidden' }}>
-        {/* ── Main 3D Scroll World Space ──────────────────────────────── */}
         <main id="main-world" role="main">
           <Suspense fallback={null}>
             <HeroScene         id="scene-hero" />
@@ -144,19 +143,25 @@ export const AppContent: React.FC = () => {
         </main>
       </div>
 
-      {/* Cookie Consent Banner — displays center screen after loading finishes */}
       <ConsentBanner bootDone={bootDone} />
     </>
   );
 };
 
+// ── Root Entry Point: Isolated Render Trees for Admin vs Portfolio ─────────
 export const App: React.FC = () => {
+  const { currentPath } = useRouter();
+  const normPath = normalisePath(currentPath);
+  const isAdmin = normPath.startsWith('/admin');
+
   const [legalModalType, setLegalModalType] = useState<LegalModalType>(null);
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
   const { theme, toggleTheme } = useTheme('light');
 
-  // Listen for open-legal-modal & command palette events
+  // Listen for open-legal-modal & command palette events (Portfolio Only)
   useEffect(() => {
+    if (isAdmin) return;
+
     const handleOpenLegal = (e: CustomEvent<LegalModalType>) => {
       if (e.detail) {
         setLegalModalType(e.detail);
@@ -183,41 +188,43 @@ export const App: React.FC = () => {
       window.removeEventListener('open-command-palette' as any, handleOpenPalette);
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, []);
+  }, [isAdmin]);
 
+  // ── BRANCH 1: DMOS Admin App (100% Isolated Render Tree) ────────────────
+  if (isAdmin) {
+    return (
+      <Suspense fallback={
+        <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#0B1220', color: '#94A3B8', fontSize: '0.9rem', fontFamily: 'Inter, sans-serif', flexDirection: 'column', gap: 16 }}>
+          <div style={{ width: 36, height: 36, border: '3px solid #2E5AFF', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+          <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+          Loading DMOS Enterprise…
+        </div>
+      }>
+        <AdminApp />
+      </Suspense>
+    );
+  }
+
+  // ── BRANCH 2: Public Portfolio App (Includes Navbar, Particles, Concierge) ─
   return (
     <>
-      {/* Accessibility skip link */}
       <a className="skip-link" href="#main-world">Skip to content</a>
-
-      {/* Fixed ambient background layer */}
       <AmbientBackground />
-
-      {/* Floating ambient particle canvas layer */}
       <CinematicParticleCanvas />
-
-      {/* Custom cursor lighting */}
       <CursorLighting />
-
-      {/* Floating glass navbar persistent across all routes */}
       <Navbar
         scrollProgress={0}
         theme={theme}
         onToggleTheme={toggleTheme}
       />
 
-      {/* Router renders Homepage (AppContent) at / or dedicated page at /about/, /blog/, etc. */}
       <AppRouter homeComponent={<AppContent />} />
 
-      {/* Persistent AI Concierge */}
       <Suspense fallback={null}>
         <AIConcierge />
       </Suspense>
 
-      {/* SEO Legal Documents Modal */}
       <LegalModal type={legalModalType} onClose={() => setLegalModalType(null)} />
-
-      {/* Command Palette Spotlight Search Modal (⌘K) */}
       <CommandPaletteModal
         isOpen={isCommandPaletteOpen}
         onClose={() => setIsCommandPaletteOpen(false)}
@@ -227,4 +234,3 @@ export const App: React.FC = () => {
     </>
   );
 };
-

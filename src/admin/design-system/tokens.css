@@ -1,0 +1,598 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   DMOS Enterprise OS v6 — Design System Foundation
+   Premium dark enterprise UI tokens + utility class system
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+/* ─────────────────────────────────────────────────────────────────────────── */
+/*  ROOT TOKENS                                                                */
+/* ─────────────────────────────────────────────────────────────────────────── */
+:root,
+.dmos-root {
+  /* ── Background Hierarchy (5 levels) ────────────────────────────── */
+  --dmos-bg:               #070C18;
+  --dmos-surface:          #0C1221;
+  --dmos-surface-2:        #101827;
+  --dmos-card:             #141E2E;
+  --dmos-card-hover:       #182437;
+  --dmos-card-elevated:    #1C2940;
+  --dmos-card-raised:      #1F2E47;
+
+  /* ── Borders ──────────────────────────────────────────────────────── */
+  --dmos-border:           rgba(255, 255, 255, 0.06);
+  --dmos-border-strong:    rgba(255, 255, 255, 0.11);
+  --dmos-border-focus:     rgba(46, 90, 255, 0.55);
+  --dmos-border-active:    rgba(46, 90, 255, 0.35);
+
+  /* ── Brand / Primary ─────────────────────────────────────────────── */
+  --dmos-primary:          #2E5AFF;
+  --dmos-primary-dark:     #1E40E0;
+  --dmos-primary-hover:    #3D68FF;
+  --dmos-primary-light:    #6B8FFF;
+  --dmos-primary-subtle:   rgba(46, 90, 255, 0.08);
+  --dmos-primary-glow:     rgba(46, 90, 255, 0.22);
+  --dmos-primary-ring:     rgba(46, 90, 255, 0.40);
+
+  /* ── Secondary (teal/cyan) ───────────────────────────────────────── */
+  --dmos-secondary:        #17B4CE;
+  --dmos-secondary-light:  #3DC8DF;
+  --dmos-secondary-subtle: rgba(23, 180, 206, 0.10);
+  --dmos-secondary-glow:   rgba(23, 180, 206, 0.18);
+
+  /* ── Accent ──────────────────────────────────────────────────────── */
+  --dmos-accent:           #7C3AED;
+  --dmos-accent-light:     #A78BFA;
+  --dmos-accent-subtle:    rgba(124, 58, 237, 0.10);
+  --dmos-accent-glow:      rgba(124, 58, 237, 0.20);
+
+  /* ── Semantic ────────────────────────────────────────────────────── */
+  --dmos-success:          #22C55E;
+  --dmos-success-dark:     #16A34A;
+  --dmos-success-light:    #4ADE80;
+  --dmos-success-bg:       rgba(34, 197, 94, 0.10);
+  --dmos-success-border:   rgba(34, 197, 94, 0.22);
+
+  --dmos-warning:          #F59E0B;
+  --dmos-warning-dark:     #D97706;
+  --dmos-warning-light:    #FCD34D;
+  --dmos-warning-bg:       rgba(245, 158, 11, 0.10);
+  --dmos-warning-border:   rgba(245, 158, 11, 0.22);
+
+  --dmos-danger:           #EF4444;
+  --dmos-danger-dark:      #DC2626;
+  --dmos-danger-light:     #F87171;
+  --dmos-danger-bg:        rgba(239, 68, 68, 0.10);
+  --dmos-danger-border:    rgba(239, 68, 68, 0.22);
+
+  --dmos-info:             #38BDF8;
+  --dmos-info-dark:        #0284C7;
+  --dmos-info-bg:          rgba(56, 189, 248, 0.10);
+  --dmos-info-border:      rgba(56, 189, 248, 0.22);
+
+  /* ── Text ────────────────────────────────────────────────────────── */
+  --dmos-text:             #F1F5F9;
+  --dmos-text-secondary:   #CBD5E1;
+  --dmos-text-muted:       #94A3B8;
+  --dmos-text-subtle:      #64748B;
+  --dmos-text-disabled:    #374151;
+  --dmos-text-inverse:     #0B1220;
+
+  /* ── Typography ─────────────────────────────────────────────────── */
+  --dmos-font-sans:        'Inter', 'SF Pro Display', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --dmos-font-mono:        'JetBrains Mono', 'Fira Code', 'SF Mono', monospace;
+  --dmos-font-display:     'Inter', system-ui, sans-serif;
+
+  /* ── Spacing Scale ───────────────────────────────────────────────── */
+  --dmos-space-1:    4px;
+  --dmos-space-2:    8px;
+  --dmos-space-3:    12px;
+  --dmos-space-4:    16px;
+  --dmos-space-5:    20px;
+  --dmos-space-6:    24px;
+  --dmos-space-8:    32px;
+  --dmos-space-10:   40px;
+  --dmos-space-12:   48px;
+
+  /* ── Border Radius ───────────────────────────────────────────────── */
+  --dmos-radius-xs:  4px;
+  --dmos-radius-sm:  6px;
+  --dmos-radius:     10px;
+  --dmos-radius-md:  14px;
+  --dmos-radius-lg:  18px;
+  --dmos-radius-xl:  24px;
+  --dmos-radius-2xl: 32px;
+  --dmos-radius-full:9999px;
+
+  /* ── Shadows ─────────────────────────────────────────────────────── */
+  --dmos-shadow-xs:      0 1px 2px rgba(0,0,0,0.35);
+  --dmos-shadow-sm:      0 1px 4px rgba(0,0,0,0.40), 0 0 0 1px rgba(255,255,255,0.03);
+  --dmos-shadow:         0 4px 16px rgba(0,0,0,0.45), 0 1px 4px rgba(0,0,0,0.30);
+  --dmos-shadow-md:      0 8px 32px rgba(0,0,0,0.55), 0 2px 8px rgba(0,0,0,0.30);
+  --dmos-shadow-lg:      0 20px 60px rgba(0,0,0,0.65), 0 4px 16px rgba(0,0,0,0.40);
+  --dmos-shadow-xl:      0 32px 80px rgba(0,0,0,0.70), 0 8px 24px rgba(0,0,0,0.45);
+  --dmos-shadow-primary: 0 4px 20px rgba(46, 90, 255, 0.40);
+  --dmos-shadow-glow:    0 0 40px rgba(46, 90, 255, 0.12);
+  --dmos-shadow-inset:   inset 0 1px 0 rgba(255,255,255,0.06), inset 0 -1px 0 rgba(0,0,0,0.20);
+
+  /* ── Glass ───────────────────────────────────────────────────────── */
+  --dmos-glass-bg:     rgba(20, 30, 46, 0.72);
+  --dmos-glass-blur:   blur(20px) saturate(180%);
+  --dmos-glass-border: rgba(255, 255, 255, 0.08);
+
+  /* ── Layout ──────────────────────────────────────────────────────── */
+  --dmos-sidebar-width:      260px;
+  --dmos-sidebar-collapsed:  72px;
+  --dmos-topbar-height:      60px;
+  --dmos-statusbar-height:   28px;
+  --dmos-mobile-nav-height:  64px;
+  --dmos-page-max-width:     1400px;
+  --dmos-page-padding:       28px;
+  --dmos-page-padding-mobile:16px;
+
+  /* ── Transitions ─────────────────────────────────────────────────── */
+  --dmos-ease:           cubic-bezier(0.4, 0, 0.2, 1);
+  --dmos-ease-out:       cubic-bezier(0, 0, 0.2, 1);
+  --dmos-ease-in:        cubic-bezier(0.4, 0, 1, 1);
+  --dmos-ease-spring:    cubic-bezier(0.34, 1.56, 0.64, 1);
+  --dmos-ease-bounce:    cubic-bezier(0.34, 1.8, 0.64, 1);
+  --dmos-duration-fast:  120ms;
+  --dmos-duration:       200ms;
+  --dmos-duration-slow:  350ms;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────── */
+/*  LIGHT THEME OVERRIDES                                                      */
+/* ─────────────────────────────────────────────────────────────────────────── */
+:root[data-theme="light"],
+[data-theme="light"] .dmos-root,
+html[data-theme="light"] body {
+  /* ── Background Hierarchy (Light Mode) ─────────────────────────── */
+  --dmos-bg:               #F8FAFC;
+  --dmos-surface:          #FFFFFF;
+  --dmos-surface-2:        #F1F5F9;
+  --dmos-card:             #FFFFFF;
+  --dmos-card-hover:       #F8FAFC;
+  --dmos-card-elevated:    #FFFFFF;
+  --dmos-card-raised:      #FFFFFF;
+
+  /* ── Borders (Light Mode) ───────────────────────────────────────── */
+  --dmos-border:           rgba(15, 23, 42, 0.08);
+  --dmos-border-strong:    rgba(15, 23, 42, 0.16);
+  --dmos-border-focus:     rgba(46, 90, 255, 0.65);
+  --dmos-border-active:    rgba(46, 90, 255, 0.40);
+
+  /* ── Brand / Primary Light Tuning ───────────────────────────────── */
+  --dmos-primary:          #2E5AFF;
+  --dmos-primary-dark:     #1E40E0;
+  --dmos-primary-hover:    #1D4ED8;
+  --dmos-primary-light:    #2563EB;
+  --dmos-primary-subtle:   rgba(46, 90, 255, 0.08);
+  --dmos-primary-glow:     rgba(46, 90, 255, 0.15);
+  --dmos-primary-ring:     rgba(46, 90, 255, 0.25);
+
+  /* ── Text (Light Mode) ──────────────────────────────────────────── */
+  --dmos-text:             #0F172A;
+  --dmos-text-secondary:   #334155;
+  --dmos-text-muted:       #475569;
+  --dmos-text-subtle:      #64748B;
+  --dmos-text-disabled:    #94A3B8;
+  --dmos-text-inverse:     #FFFFFF;
+
+  /* ── Shadows (Light Mode) ───────────────────────────────────────── */
+  --dmos-shadow-xs:      0 1px 2px rgba(0,0,0,0.05);
+  --dmos-shadow-sm:      0 1px 4px rgba(0,0,0,0.06), 0 0 0 1px rgba(0,0,0,0.04);
+  --dmos-shadow:         0 4px 16px rgba(0,0,0,0.06), 0 1px 4px rgba(0,0,0,0.04);
+  --dmos-shadow-md:      0 8px 24px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.04);
+  --dmos-shadow-lg:      0 16px 40px rgba(0,0,0,0.12);
+  --dmos-shadow-xl:      0 24px 60px rgba(0,0,0,0.15);
+  --dmos-shadow-primary: 0 4px 16px rgba(46, 90, 255, 0.25);
+  --dmos-shadow-glow:    0 0 30px rgba(46, 90, 255, 0.08);
+  --dmos-shadow-inset:   inset 0 1px 0 rgba(255,255,255,0.8), inset 0 -1px 0 rgba(0,0,0,0.04);
+
+  /* ── Glass (Light Mode) ─────────────────────────────────────────── */
+  --dmos-glass-bg:     rgba(255, 255, 255, 0.88);
+  --dmos-glass-blur:   blur(20px) saturate(180%);
+  --dmos-glass-border: rgba(0, 0, 0, 0.08);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────── */
+/*  GLOBAL RESET & BASE                                                        */
+/* ─────────────────────────────────────────────────────────────────────────── */
+html, body, .dmos-root {
+  overflow-x: hidden;
+  max-width: 100vw;
+  font-family: var(--dmos-font-sans);
+  background-color: var(--dmos-bg);
+  color: var(--dmos-text);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: 'ss01', 'ss02', 'cv01';
+}
+
+.dmos-root * {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────── */
+/*  CARD UTILITIES                                                             */
+/* ─────────────────────────────────────────────────────────────────────────── */
+.dmos-card {
+  background: var(--dmos-card);
+  border: 1px solid var(--dmos-border);
+  border-radius: var(--dmos-radius-md);
+  box-shadow: var(--dmos-shadow-sm);
+  position: relative;
+  overflow: hidden;
+}
+
+.dmos-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent);
+  pointer-events: none;
+}
+
+.dmos-card-elevated {
+  background: var(--dmos-card-elevated);
+  border: 1px solid var(--dmos-border-strong);
+  border-radius: var(--dmos-radius-md);
+  box-shadow: var(--dmos-shadow-md);
+}
+
+.dmos-card-glass {
+  background: var(--dmos-glass-bg);
+  backdrop-filter: var(--dmos-glass-blur);
+  -webkit-backdrop-filter: var(--dmos-glass-blur);
+  border: 1px solid var(--dmos-glass-border);
+  border-radius: var(--dmos-radius-md);
+}
+
+.dmos-card-primary {
+  background: linear-gradient(135deg, rgba(46,90,255,0.12), rgba(46,90,255,0.06));
+  border: 1px solid rgba(46,90,255,0.22);
+  border-radius: var(--dmos-radius-md);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────── */
+/*  BADGE UTILITIES                                                            */
+/* ─────────────────────────────────────────────────────────────────────────── */
+.dmos-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  font-family: var(--dmos-font-sans);
+  padding: 3px 8px;
+  border-radius: var(--dmos-radius-full);
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  line-height: 1;
+}
+
+.dmos-badge-success  { background: var(--dmos-success-bg);  color: var(--dmos-success-light); border: 1px solid var(--dmos-success-border); }
+.dmos-badge-warning  { background: var(--dmos-warning-bg);  color: var(--dmos-warning-light); border: 1px solid var(--dmos-warning-border); }
+.dmos-badge-danger   { background: var(--dmos-danger-bg);   color: var(--dmos-danger-light);  border: 1px solid var(--dmos-danger-border); }
+.dmos-badge-primary  { background: var(--dmos-primary-subtle); color: var(--dmos-primary-light); border: 1px solid var(--dmos-primary-ring); }
+.dmos-badge-secondary{ background: var(--dmos-secondary-subtle); color: var(--dmos-secondary-light); border: 1px solid var(--dmos-secondary-glow); }
+.dmos-badge-accent   { background: var(--dmos-accent-subtle); color: var(--dmos-accent-light); border: 1px solid var(--dmos-accent-glow); }
+.dmos-badge-neutral  { background: rgba(255,255,255,0.06); color: var(--dmos-text-muted); border: 1px solid var(--dmos-border-strong); }
+.dmos-badge-info     { background: var(--dmos-info-bg); color: var(--dmos-info); border: 1px solid var(--dmos-info-border); }
+
+/* ─────────────────────────────────────────────────────────────────────────── */
+/*  BUTTON UTILITIES                                                           */
+/* ─────────────────────────────────────────────────────────────────────────── */
+.dmos-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  font-family: var(--dmos-font-sans);
+  font-weight: 600;
+  border-radius: var(--dmos-radius);
+  cursor: pointer;
+  transition: all var(--dmos-duration) var(--dmos-ease);
+  white-space: nowrap;
+  min-height: 36px;
+  border: none;
+  outline: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.dmos-btn:focus-visible {
+  outline: 2px solid var(--dmos-border-focus);
+  outline-offset: 2px;
+}
+
+.dmos-btn-primary {
+  background: var(--dmos-primary);
+  color: #fff;
+  box-shadow: var(--dmos-shadow-primary);
+}
+.dmos-btn-primary:hover { background: var(--dmos-primary-hover); }
+.dmos-btn-primary:active { transform: scale(0.98); }
+
+.dmos-btn-secondary {
+  background: rgba(255,255,255,0.06);
+  color: var(--dmos-text);
+  border: 1px solid var(--dmos-border-strong);
+}
+.dmos-btn-secondary:hover { background: rgba(255,255,255,0.10); }
+
+.dmos-btn-ghost {
+  background: transparent;
+  color: var(--dmos-text-muted);
+  border: 1px solid transparent;
+}
+.dmos-btn-ghost:hover { background: rgba(255,255,255,0.06); color: var(--dmos-text); }
+
+.dmos-btn-danger {
+  background: var(--dmos-danger-bg);
+  color: var(--dmos-danger-light);
+  border: 1px solid var(--dmos-danger-border);
+}
+.dmos-btn-danger:hover { background: rgba(239,68,68,0.18); }
+
+/* ─────────────────────────────────────────────────────────────────────────── */
+/*  INPUT UTILITIES                                                            */
+/* ─────────────────────────────────────────────────────────────────────────── */
+.dmos-input {
+  width: 100%;
+  padding: 9px 13px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--dmos-border-strong);
+  border-radius: var(--dmos-radius);
+  color: var(--dmos-text);
+  font-family: var(--dmos-font-sans);
+  font-size: 0.875rem;
+  outline: none;
+  transition: border-color var(--dmos-duration) var(--dmos-ease), box-shadow var(--dmos-duration) var(--dmos-ease);
+}
+
+.dmos-input:focus {
+  border-color: var(--dmos-border-focus);
+  box-shadow: 0 0 0 3px var(--dmos-primary-glow);
+}
+
+.dmos-input::placeholder { color: var(--dmos-text-subtle); }
+
+/* ─────────────────────────────────────────────────────────────────────────── */
+/*  SCROLLBAR STYLING                                                          */
+/* ─────────────────────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.10); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.18); }
+
+/* ─────────────────────────────────────────────────────────────────────────── */
+/*  KEYFRAME ANIMATIONS                                                        */
+/* ─────────────────────────────────────────────────────────────────────────── */
+@keyframes dmos-spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes dmos-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@keyframes dmos-ping {
+  75%, 100% { transform: scale(2); opacity: 0; }
+}
+
+@keyframes dmos-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes dmos-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes dmos-slide-in-left {
+  from { opacity: 0; transform: translateX(-12px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes dmos-glow-pulse {
+  0%, 100% { box-shadow: 0 0 8px var(--dmos-primary-glow); }
+  50% { box-shadow: 0 0 24px var(--dmos-primary-glow), 0 0 48px rgba(46,90,255,0.08); }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────── */
+/*  SKELETON LOADING                                                           */
+/* ─────────────────────────────────────────────────────────────────────────── */
+.dmos-skeleton {
+  background: linear-gradient(90deg,
+    rgba(255,255,255,0.04) 25%,
+    rgba(255,255,255,0.08) 50%,
+    rgba(255,255,255,0.04) 75%
+  );
+  background-size: 200% 100%;
+  animation: dmos-shimmer 1.6s infinite;
+  border-radius: var(--dmos-radius);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────── */
+/*  STATUS DOT                                                                 */
+/* ─────────────────────────────────────────────────────────────────────────── */
+.dmos-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.dmos-status-dot.success { background: var(--dmos-success); }
+.dmos-status-dot.warning { background: var(--dmos-warning); }
+.dmos-status-dot.danger  { background: var(--dmos-danger); }
+.dmos-status-dot.neutral { background: var(--dmos-text-subtle); }
+
+.dmos-status-dot.pulse::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: inherit;
+  animation: dmos-ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────── */
+/*  TOUCH TARGETS (WCAG 2.5.5)                                                */
+/* ─────────────────────────────────────────────────────────────────────────── */
+.dmos-touch-target,
+button,
+input[type="button"],
+input[type="submit"] {
+  min-height: 44px;
+}
+
+/* Prevent iOS font zoom on inputs */
+input, select, textarea {
+  font-size: 16px !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────── */
+/*  LAYOUT UTILITIES                                                           */
+/* ─────────────────────────────────────────────────────────────────────────── */
+.dmos-page-shell {
+  padding: var(--dmos-page-padding);
+  max-width: var(--dmos-page-max-width);
+  margin: 0 auto;
+  width: 100%;
+}
+
+.dmos-section-gap { margin-bottom: 24px; }
+.dmos-flex-center { display: flex; align-items: center; justify-content: center; }
+.dmos-flex-between { display: flex; align-items: center; justify-content: space-between; }
+.dmos-flex-wrap { display: flex; flex-wrap: wrap; gap: 12px; }
+
+/* ─────────────────────────────────────────────────────────────────────────── */
+/*  MOBILE BOTTOM NAVIGATION                                                   */
+/* ─────────────────────────────────────────────────────────────────────────── */
+.dmos-mobile-nav-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: var(--dmos-mobile-nav-height);
+  background: rgba(10, 15, 28, 0.97);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-top: 1px solid var(--dmos-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  z-index: 95;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  box-shadow: 0 -1px 0 rgba(255,255,255,0.04);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────── */
+/*  RESPONSIVE TABLE                                                           */
+/* ─────────────────────────────────────────────────────────────────────────── */
+.dmos-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+}
+
+.dmos-table th {
+  padding: 10px 16px;
+  text-align: left;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--dmos-text-subtle);
+  border-bottom: 1px solid var(--dmos-border);
+  background: rgba(255,255,255,0.02);
+}
+
+.dmos-table td {
+  padding: 13px 16px;
+  border-bottom: 1px solid var(--dmos-border);
+  color: var(--dmos-text);
+  vertical-align: middle;
+}
+
+.dmos-table tr:hover td {
+  background: rgba(255,255,255,0.02);
+}
+
+.dmos-table tr:last-child td {
+  border-bottom: none;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────── */
+/*  DIVIDER                                                                    */
+/* ─────────────────────────────────────────────────────────────────────────── */
+.dmos-divider {
+  height: 1px;
+  background: var(--dmos-border);
+  margin: 16px 0;
+}
+
+.dmos-divider-strong {
+  height: 1px;
+  background: var(--dmos-border-strong);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────── */
+/*  FOCUS RING (ACCESSIBILITY)                                                 */
+/* ─────────────────────────────────────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--dmos-border-focus);
+  outline-offset: 2px;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────── */
+/*  RESPONSIVE BREAKPOINTS                                                     */
+/* ─────────────────────────────────────────────────────────────────────────── */
+@media (max-width: 767px) {
+  .dmos-table-desktop { display: none !important; }
+  .dmos-table-mobile-cards {
+    display: flex !important;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .dmos-page-shell {
+    padding: var(--dmos-page-padding-mobile) !important;
+    padding-bottom: 80px !important;
+  }
+  .dmos-grid-responsive {
+    grid-template-columns: 1fr !important;
+  }
+  .dmos-hide-mobile { display: none !important; }
+}
+
+@media (min-width: 768px) {
+  .dmos-table-desktop { display: table !important; }
+  .dmos-table-mobile-cards { display: none !important; }
+  .dmos-mobile-nav-bar { display: none !important; }
+  .dmos-hide-desktop { display: none !important; }
+  .dmos-page-shell {
+    padding: 28px 32px 48px !important;
+  }
+}
+
+@media (min-width: 1280px) {
+  .dmos-page-shell {
+    padding: 32px 40px 56px !important;
+  }
+}
+
+@media (min-width: 1920px) {
+  .dmos-page-shell {
+    padding: 36px 48px 64px !important;
+  }
+}
