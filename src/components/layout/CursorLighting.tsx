@@ -12,7 +12,7 @@ export const CursorLighting: React.FC = () => {
     if (!dot) return;
 
     const onMove = (e: MouseEvent) => {
-      gsap.to(dot, { x: e.clientX - 10, y: e.clientY - 10, duration: 0.2, ease: 'power2.out' });
+      gsap.to(dot, { x: e.clientX - 10, y: e.clientY - 10, duration: 0.18, ease: 'power2.out', overwrite: 'auto' });
     };
 
     const onEnter = () => dot.classList.add('hovered');

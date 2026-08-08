@@ -66,7 +66,7 @@ export const CookiePolicyPage: React.FC = () => {
               2. Analytics Cookies (Gated — Requires Consent)
             </h4>
             <ContentP style={{ fontSize: '0.92rem', margin: 0 }}>
-              Google Analytics 4 (GA4) — helps us understand page visit counts, Core Web Vitals performance, and traffic sources anonymously. Enabled only upon explicit user consent.
+              Google Analytics 4 (GA4) & Microsoft Clarity (Project ID: xz1njtkayn) — helps us understand page visit counts, visitor interaction metrics, and heatmaps anonymously. Enabled strictly upon explicit user consent.
             </ContentP>
           </InfoCard>
 

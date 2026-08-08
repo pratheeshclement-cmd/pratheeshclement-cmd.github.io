@@ -2,8 +2,74 @@
 
 import { Router, Request, Response } from 'express';
 import axios from 'axios';
+import { requireAdminAuth } from '../middleware/auth';
+import { GitHubIntegrationService } from '../services/integrations/githubService';
 
 export const githubRouter = Router();
+
+// Protected Admin Endpoints
+githubRouter.get('/status', requireAdminAuth as any, async (req: Request, res: Response) => {
+  try {
+    const status = await GitHubIntegrationService.verify();
+    res.json(status);
+  } catch (e: any) {
+    res.status(500).json({ success: false, error: e.message });
+  }
+});
+
+githubRouter.get('/health', requireAdminAuth as any, async (req: Request, res: Response) => {
+  try {
+    const status = await GitHubIntegrationService.verify();
+    res.json({ success: true, details: status });
+  } catch (e: any) {
+    res.status(500).json({ success: false, error: e.message });
+  }
+});
+
+githubRouter.get('/admin/repository', requireAdminAuth as any, async (req: Request, res: Response) => {
+  try {
+    const repo = await GitHubIntegrationService.getRepository();
+    res.json(repo);
+  } catch (e: any) {
+    res.status(500).json({ success: false, error: e.message });
+  }
+});
+
+githubRouter.get('/admin/commits', requireAdminAuth as any, async (req: Request, res: Response) => {
+  try {
+    const commits = await GitHubIntegrationService.getCommits();
+    res.json(commits);
+  } catch (e: any) {
+    res.status(500).json({ success: false, error: e.message });
+  }
+});
+
+githubRouter.get('/admin/issues', requireAdminAuth as any, async (req: Request, res: Response) => {
+  try {
+    const issues = await GitHubIntegrationService.getIssues();
+    res.json(issues);
+  } catch (e: any) {
+    res.status(500).json({ success: false, error: e.message });
+  }
+});
+
+githubRouter.get('/admin/pulls', requireAdminAuth as any, async (req: Request, res: Response) => {
+  try {
+    const pulls = await GitHubIntegrationService.getPullRequests();
+    res.json(pulls);
+  } catch (e: any) {
+    res.status(500).json({ success: false, error: e.message });
+  }
+});
+
+githubRouter.get('/admin/rate-limit', requireAdminAuth as any, async (req: Request, res: Response) => {
+  try {
+    const rate = await GitHubIntegrationService.getRateLimit();
+    res.json(rate);
+  } catch (e: any) {
+    res.status(500).json({ success: false, error: e.message });
+  }
+});
 
 // Helper to construct authenticated GitHub API headers
 function getGitHubHeaders() {

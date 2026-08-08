@@ -43,11 +43,10 @@ export const AppContent: React.FC = () => {
       return false;
     }
   });
-  const [, setScrollProgress] = useState(0);
-
   // ── Mount 3D Virtual Camera & Lenis Smooth Scroll (Portfolio Only) ───────
   useEffect(() => {
     camera.mount('camera-perspective', 'main-world');
+    const scrollProgressRef = { current: 0 };  // track without triggering renders
 
     const isMobile = window.innerWidth <= 768 || 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 
@@ -62,7 +61,7 @@ export const AppContent: React.FC = () => {
         const velocity = (currentScrollY - lastScrollY) * 0.1;
         lastScrollY = currentScrollY;
 
-        setScrollProgress(progress);
+        scrollProgressRef.current = progress;
         camera.updateCamera(progress, velocity);
         animeEngine.scrubScroll(progress);
         ScrollTrigger.update();
@@ -91,7 +90,7 @@ export const AppContent: React.FC = () => {
     (window as any).__lenis__ = lenis;
 
     const onScroll = (e: { progress: number; velocity: number }) => {
-      setScrollProgress(e.progress);
+      scrollProgressRef.current = e.progress;
       camera.updateCamera(e.progress, e.velocity);
       animeEngine.scrubScroll(e.progress);
       ScrollTrigger.update();

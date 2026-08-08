@@ -24,8 +24,8 @@ export class ConnectionService {
       name: p.name,
       category: p.category,
       status: p.status,
-      latencyMs: p.latencyMs || Math.floor(Math.random() * 35) + 15,
-      lastSync: 'Just Now',
+      latencyMs: p.latencyMs || 0,
+      lastSync: p.lastSync || '—',
     }));
   }
 

@@ -10,30 +10,26 @@ let storage: admin.storage.Storage | null = null;
 let adminAuth: admin.auth.Auth | null = null;
 
 try {
-  if (!admin.apps.length) {
-    const serviceAccountJson = process.env.FIREBASE_SERVICE_ACCOUNT_JSON;
+  const serviceAccountJson = process.env.FIREBASE_SERVICE_ACCOUNT_JSON;
 
-    if (serviceAccountJson) {
+  if (serviceAccountJson && serviceAccountJson.trim().length > 0) {
+    if (!admin.apps.length) {
       const serviceAccount = JSON.parse(serviceAccountJson);
       admin.initializeApp({
         credential: admin.credential.cert(serviceAccount),
         storageBucket: process.env.FIREBASE_STORAGE_BUCKET || 'pratheesh-os.firebasestorage.app',
       });
-    } else {
-      admin.initializeApp({
-        projectId: process.env.FIREBASE_PROJECT_ID || 'pratheesh-os',
-        storageBucket: process.env.FIREBASE_STORAGE_BUCKET || 'pratheesh-os.firebasestorage.app',
-      });
     }
+    db = admin.firestore();
+    db.settings({ ignoreUndefinedProperties: true });
+    storage = admin.storage();
+    adminAuth = admin.auth();
+    console.log('[DMOS Backend] Firebase Admin SDK initialized with Service Account Credentials.');
+  } else {
+    console.log('[DMOS Backend] FIREBASE_SERVICE_ACCOUNT_JSON unconfigured. Running in Admin Auth mock mode.');
   }
-
-  db = admin.firestore();
-  db.settings({ ignoreUndefinedProperties: true });
-  storage = admin.storage();
-  adminAuth = admin.auth();
-  console.log('[DMOS Backend] Firebase Admin SDK initialized with ignoreUndefinedProperties.');
-} catch (e) {
-  console.warn('[DMOS Backend] Firebase Admin SDK running in offline mode:', e);
+} catch (e: any) {
+  console.warn('[DMOS Backend] Firebase Admin SDK initialization notice:', e.message);
 }
 
 export { admin, db, storage, adminAuth, db as adminDb };

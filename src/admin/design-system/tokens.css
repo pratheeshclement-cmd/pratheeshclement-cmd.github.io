@@ -10,29 +10,40 @@
 /* ─────────────────────────────────────────────────────────────────────────── */
 :root,
 .dmos-root {
-  /* ── Background Hierarchy (5 levels) ────────────────────────────── */
-  --dmos-bg:               #070C18;
-  --dmos-surface:          #0C1221;
-  --dmos-surface-2:        #101827;
-  --dmos-card:             #141E2E;
-  --dmos-card-hover:       #182437;
-  --dmos-card-elevated:    #1C2940;
-  --dmos-card-raised:      #1F2E47;
+  /* ── Admin New Design Tokens ─────────────────────────────────────── */
+  --admin-bg:              #080B12;
+  --admin-surface:         #0D111A;
+  --admin-surface-2:       #121824;
+  --admin-card:            #151C29;
+  --admin-border:          rgba(255, 255, 255, 0.08);
+  --admin-text:            #F5F7FA;
+  --admin-text-secondary:  #A7B0C0;
+  --admin-text-muted:      #697386;
+  --admin-accent:          #3B63FF;
+
+  /* ── Background Hierarchy ──────────────────────────────────────── */
+  --dmos-bg:               var(--admin-bg);
+  --dmos-surface:          var(--admin-surface);
+  --dmos-surface-2:        var(--admin-surface-2);
+  --dmos-card:             var(--admin-card);
+  --dmos-card-hover:       #182335;
+  --dmos-card-elevated:    #1B273D;
+  --dmos-card-raised:      #202E47;
 
   /* ── Borders ──────────────────────────────────────────────────────── */
-  --dmos-border:           rgba(255, 255, 255, 0.06);
-  --dmos-border-strong:    rgba(255, 255, 255, 0.11);
-  --dmos-border-focus:     rgba(46, 90, 255, 0.55);
-  --dmos-border-active:    rgba(46, 90, 255, 0.35);
+  --dmos-border:           var(--admin-border);
+  --dmos-border-strong:    rgba(255, 255, 255, 0.14);
+  --dmos-border-focus:     rgba(59, 99, 255, 0.55);
+  --dmos-border-active:    rgba(59, 99, 255, 0.35);
 
   /* ── Brand / Primary ─────────────────────────────────────────────── */
-  --dmos-primary:          #2E5AFF;
-  --dmos-primary-dark:     #1E40E0;
-  --dmos-primary-hover:    #3D68FF;
-  --dmos-primary-light:    #6B8FFF;
-  --dmos-primary-subtle:   rgba(46, 90, 255, 0.08);
-  --dmos-primary-glow:     rgba(46, 90, 255, 0.22);
-  --dmos-primary-ring:     rgba(46, 90, 255, 0.40);
+  --dmos-primary:          #3B63FF;
+  --dmos-primary-dark:     #2547D9;
+  --dmos-primary-hover:    #4F73FF;
+  --dmos-primary-light:    #7593FF;
+  --dmos-primary-subtle:   rgba(59, 99, 255, 0.10);
+  --dmos-primary-glow:     rgba(59, 99, 255, 0.22);
+  --dmos-primary-ring:     rgba(59, 99, 255, 0.40);
 
   /* ── Secondary (teal/cyan) ───────────────────────────────────────── */
   --dmos-secondary:        #17B4CE;
@@ -500,6 +511,12 @@ input, select, textarea {
 /* ─────────────────────────────────────────────────────────────────────────── */
 /*  RESPONSIVE TABLE                                                           */
 /* ─────────────────────────────────────────────────────────────────────────── */
+.dmos-table-container {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
 .dmos-table {
   width: 100%;
   border-collapse: collapse;

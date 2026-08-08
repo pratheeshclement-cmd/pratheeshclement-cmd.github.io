@@ -1,20 +1,89 @@
-// ─── DMOS Backend: Gemini AI Router ───────────────────────────────────────
+// ─── DMOS Backend: Gemini AI Router (Production Integration) ───────────────────
+// Authenticated administrative endpoints secured with requireAdminAuth & Public AI endpoints.
 
-import { Router } from 'express';
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { Router, Request, Response } from 'express';
+import { requireAdminAuth } from '../middleware/auth';
+import { GeminiIntegrationService } from '../services/integrations/geminiService';
 
 export const aiRouter = Router();
 
-const apiKey = process.env.VITE_GEMINI_API_KEY || process.env.GEMINI_API_KEY || '';
-const genAI = apiKey ? new GoogleGenerativeAI(apiKey) : null;
+// Protected Admin Endpoints
+aiRouter.get('/status', requireAdminAuth as any, async (req: Request, res: Response) => {
+  try {
+    const status = await GeminiIntegrationService.verify();
+    res.json(status);
+  } catch (e: any) {
+    res.status(500).json({ success: false, error: e.message });
+  }
+});
+
+aiRouter.get('/health', requireAdminAuth as any, async (req: Request, res: Response) => {
+  try {
+    const details = await GeminiIntegrationService.getHealthDetails();
+    res.json({ success: true, details });
+  } catch (e: any) {
+    res.status(500).json({ success: false, error: e.message });
+  }
+});
+
+aiRouter.post('/verify', requireAdminAuth as any, async (req: Request, res: Response) => {
+  try {
+    const status = await GeminiIntegrationService.verify();
+    res.json(status);
+  } catch (e: any) {
+    res.status(500).json({ success: false, error: e.message });
+  }
+});
+
+aiRouter.post('/generate', requireAdminAuth as any, async (req: Request, res: Response) => {
+  try {
+    const { prompt, systemInstruction } = req.body;
+    if (!prompt) {
+      return res.status(400).json({ success: false, error: 'Prompt string is required.' });
+    }
+    const result = await GeminiIntegrationService.generateContent(prompt, systemInstruction);
+    res.json(result);
+  } catch (e: any) {
+    res.status(500).json({ success: false, error: e.message });
+  }
+});
+
+// Public AI Concierge Proxy Endpoint (Zero client-side secrets)
+aiRouter.post('/concierge', async (req: Request, res: Response) => {
+  try {
+    const { prompt, history } = req.body;
+    const userPrompt = prompt || req.body.input || 'Hello';
+    const systemInstruction = "You are Pratheesh Clement's AI Portfolio Concierge. Provide helpful, professional answers regarding Pratheesh's skills in Digital Marketing, Technical SEO, React/Vite development, Google Ads, Meta Ads, and AI Automation.";
+
+    const result = await GeminiIntegrationService.generateContent(userPrompt, systemInstruction);
+    if (result.success && result.reply) {
+      res.json({ reply: result.reply, model: result.model });
+    } else {
+      res.json({ reply: "I am Pratheesh Clement's Portfolio AI Concierge. Ask me about his digital marketing campaigns, technical SEO, web development stack, or certifications!" });
+    }
+  } catch (e: any) {
+    res.json({ reply: "I am Pratheesh Clement's Portfolio AI Concierge. Feel free to contact Pratheesh directly at pratheesh.clement@gmail.com!" });
+  }
+});
 
 // POST /api/ai/generate-blog
-aiRouter.post('/generate-blog', async (req, res) => {
+aiRouter.post('/generate-blog', async (req: Request, res: Response) => {
   try {
     const { topic, keywords, targetAudience } = req.body;
+    const prompt = `Write a high-converting, technical blog post about "${topic || 'Technical SEO'}". Keywords: ${keywords || 'SEO, React, Performance'}. Target Audience: ${targetAudience || 'Developers & Marketers'}. Output structured Markdown with headers.`;
 
-    if (!genAI) {
-      return res.json({
+    const result = await GeminiIntegrationService.generateContent(prompt);
+    if (result.success && result.reply) {
+      res.json({
+        title: `Guide to ${topic || 'Technical SEO'}`,
+        content: result.reply,
+        metaDescription: result.reply.slice(0, 155).replace(/[#*]/g, ''),
+        faq: [
+          { question: `How does ${topic} improve performance?`, answer: `Optimizing ${topic} directly improves page speed and user retention.` },
+        ],
+      });
+    } else {
+      res.json({
         title: `Complete Guide to ${topic || 'Technical SEO'}`,
         content: `## Introduction\nIn this comprehensive guide on **${topic || 'Technical SEO'}**, we explore key performance indicators, Core Web Vitals optimization, and practical implementations.`,
         metaDescription: `Master ${topic || 'Technical SEO'} with practical strategies, Core Web Vitals optimizations, and real-world examples.`,
@@ -23,60 +92,6 @@ aiRouter.post('/generate-blog', async (req, res) => {
         ],
       });
     }
-
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
-    const prompt = `Write a high-converting, technical blog post about "${topic}". Keywords: ${keywords || 'SEO, React, Performance'}. Target Audience: ${targetAudience || 'Developers & Marketers'}. Output structured Markdown with headers.`;
-
-    const result = await model.generateContent(prompt);
-    const text = result.response.text();
-
-    res.json({
-      title: `Guide to ${topic}`,
-      content: text,
-      metaDescription: text.slice(0, 155).replace(/[#*]/g, ''),
-      faq: [
-        { question: `How does ${topic} improve performance?`, answer: `Optimizing ${topic} directly improves page speed and user retention.` },
-      ],
-    });
-  } catch (e: any) {
-    res.status(500).json({ error: e.message });
-  }
-});
-
-// POST /api/ai/seo-metadata
-aiRouter.post('/seo-metadata', async (req, res) => {
-  try {
-    const { title, content } = req.body;
-
-    res.json({
-      seoTitle: `${title} | Pratheesh Clement Portfolio`,
-      metaDescription: `Learn about ${title}. Expert insights on digital marketing, UI/UX design, and AI workflows.`,
-      canonicalUrl: `https://pratheeshclement-cmd.github.io/blog/${(title || '').toLowerCase().replace(/[^a-z0-9]+/g, '-')}/`,
-      faqSchema: [
-        { '@type': 'Question', name: `What are the key takeaways of ${title}?`, acceptedAnswer: { '@type': 'Answer', text: `This article covers actionable strategies for ${title}.` } },
-      ],
-      articleSchema: {
-        '@context': 'https://schema.org',
-        '@type': 'TechArticle',
-        headline: title,
-        author: { '@type': 'Person', name: 'Pratheesh Clement' },
-      },
-    });
-  } catch (e: any) {
-    res.status(500).json({ error: e.message });
-  }
-});
-
-// POST /api/ai/social-captions
-aiRouter.post('/social-captions', async (req, res) => {
-  try {
-    const { topic } = req.body;
-    res.json({
-      linkedin: `🚀 Excited to share my latest article on ${topic}!\n\nCheck out the full breakdown and code snippets. #DigitalMarketing #SEO #WebDev`,
-      twitter: `1/5 Just published a new guide on ${topic}! Here's what you need to know 🧵👇`,
-      instagram: `Transform your digital workflow with ${topic}! 📈 Swipe left for key takeaways. #UIUX #Developer #Marketing`,
-      newsletter: `Hey team! In this week's issue, we break down ${topic} step-by-step.`,
-    });
   } catch (e: any) {
     res.status(500).json({ error: e.message });
   }

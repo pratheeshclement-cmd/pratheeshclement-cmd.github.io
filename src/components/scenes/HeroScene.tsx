@@ -80,9 +80,10 @@ const HeroScene: React.FC<{ id: string }> = ({ id }) => {
         if (heroImageRef.current) {
           gsap.set(heroImageRef.current, {
             y: self.progress * (isMobile ? 40 : 120),
-            scale: isMobile ? 1 : 1 + self.progress * 0.1,
+            scale: isMobile ? 1 : 1 + self.progress * 0.08,
+            // ✅ BUG 5 FIX: filter:blur removed — was triggering GPU repaint on every scroll frame
+            // Using opacity falloff instead — GPU-composited, same visual effect
             opacity: 1 - self.progress * 1.2,
-            filter: isMobile ? 'none' : `blur(${self.progress * 12}px)`,
           });
         }
       },

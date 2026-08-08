@@ -156,7 +156,7 @@ export const ContentStudioPage: React.FC = () => {
           <Card style={{ width: 440, maxWidth: '100%', padding: 24 }}>
             <SectionHeader title="Schedule New Post" subtitle="Save directly to Firestore collection: content_queue" />
             <div style={{ display: 'flex', flexDirection: 'column', gap: 14, margin: '16px 0 20px' }}>
-              <Input label="Post Title" value={title} onChange={e => setTitle(e.target.value)} placeholder="e.g. How I Built DMOS with React & TypeScript" />
+              <Input label="Post Title" value={title} onChange={e => setTitle(e.target.value)} placeholder="e.g. How I Built My Portfolio with React & TypeScript" />
               <div>
                 <label style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--dmos-text-muted)', display: 'block', marginBottom: 6 }}>Target Platform</label>
                 <select className="dmos-input" value={platform} onChange={e => setPlatform(e.target.value)}>

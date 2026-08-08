@@ -84,7 +84,7 @@ export const Topbar: React.FC<TopbarProps> = ({
 
   const overview = ConnectionService.getHealthOverview();
   const systemStatus = overview.authRequired > 0 || overview.disconnected > 2 ? 'warning' : 'healthy';
-  const pageTitle = MODULE_LABELS[activeModule] || 'DMOS';
+  const pageTitle = MODULE_LABELS[activeModule] || 'Admin';
   const avatarChar = user?.displayName?.[0]?.toUpperCase() || user?.email?.[0]?.toUpperCase() || 'A';
 
   return (
@@ -120,7 +120,7 @@ export const Topbar: React.FC<TopbarProps> = ({
       {/* ── Page Breadcrumb (Desktop) ── */}
       {!isMobile && (
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
-          <span style={{ fontSize: '0.7rem', color: 'var(--dmos-text-subtle)', fontWeight: 500 }}>DMOS</span>
+          <span style={{ fontSize: '0.7rem', color: 'var(--dmos-text-subtle)', fontWeight: 500 }}>Pratheesh</span>
           <span style={{ color: 'var(--dmos-border-strong)', fontSize: '0.7rem' }}>/</span>
           <span style={{ fontSize: '0.84rem', fontWeight: 700, color: 'var(--dmos-text)' }}>{pageTitle}</span>
         </div>

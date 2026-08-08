@@ -171,12 +171,12 @@ export const UsersPage: React.FC = () => {
     <div className="dmos-page-shell">
       <PageHeader
         title="User & Access Management"
-        subtitle="Firestore: users · Realtime updates · Express Admin API endpoints"
+        subtitle="Firestore Team Management & Role Delegations"
         badge={<Badge variant="primary">{users.length} Users</Badge>}
         actions={<Button variant="primary" onClick={() => setShowInviteModal(true)} leftIcon={<Plus size={14} />}>Invite Admin</Button>}
       />
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.6fr', gap: 20 }}>
+      <div className="admin-responsive-grid-2" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 20 }}>
         {/* Roles */}
         <div>
           <h2 style={{ fontSize: '0.8rem', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--dmos-text-subtle)', marginBottom: 14 }}>Role Permission Matrix</h2>
@@ -207,7 +207,7 @@ export const UsersPage: React.FC = () => {
               </div>
             ) : (
               users.map(u => (
-                <div key={u.id} style={{ padding: '16px', display: 'flex', alignItems: 'center', gap: 14, borderBottom: '1px solid var(--dmos-border)' }}>
+                <div key={u.id} style={{ padding: '16px', display: 'flex', flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: 14, borderBottom: '1px solid var(--dmos-border)' }}>
                   <div style={{
                     width: 38, height: 38, borderRadius: '50%',
                     background: 'linear-gradient(135deg, var(--dmos-primary), var(--dmos-secondary))',

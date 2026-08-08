@@ -11,6 +11,7 @@ import '../design-system/tokens.css';
 // Lazy-load modules
 const DashboardPage     = lazy(() => import('../modules/dashboard/DashboardPage').then(m => ({ default: m.DashboardPage })));
 const AnalyticsPage     = lazy(() => import('../modules/analytics/AnalyticsPage').then(m => ({ default: m.AnalyticsPage })));
+const ClarityAnalyticsPage = lazy(() => import('../modules/analytics/ClarityAnalyticsPage').then(m => ({ default: m.ClarityAnalyticsPage })));
 const PerformancePage   = lazy(() => import('../modules/performance/PerformancePage').then(m => ({ default: m.PerformancePage })));
 const WebsiteMonitorPage= lazy(() => import('../modules/monitor/WebsiteMonitorPage').then(m => ({ default: m.WebsiteMonitorPage })));
 const MarketingHubPage  = lazy(() => import('../modules/marketing/MarketingHubPage').then(m => ({ default: m.MarketingHubPage })));
@@ -34,6 +35,7 @@ const ProfilePage       = lazy(() => import('../modules/profile/ProfilePage').th
 const MODULE_MAP: Record<string, React.FC> = {
   dashboard:        DashboardPage     as React.FC,
   analytics:        AnalyticsPage     as React.FC,
+  clarity:          ClarityAnalyticsPage as React.FC,
   performance:      PerformancePage   as React.FC,
   monitor:          WebsiteMonitorPage as React.FC,
   marketing:        MarketingHubPage  as React.FC,
@@ -86,7 +88,7 @@ export const AdminLayout: React.FC = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
     if (typeof window === 'undefined') return false;
     if (window.innerWidth < 768) return true;
-    const saved = localStorage.getItem('dmos_sidebar_collapsed');
+    const saved = localStorage.getItem('pratheesh_admin_sidebar_collapsed') || localStorage.getItem('dmos_sidebar_collapsed');
     return saved ? JSON.parse(saved) : false;
   });
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
@@ -95,7 +97,7 @@ export const AdminLayout: React.FC = () => {
   const toggleSidebar = () => {
     setSidebarCollapsed((prev: boolean) => {
       const next = !prev;
-      localStorage.setItem('dmos_sidebar_collapsed', JSON.stringify(next));
+      localStorage.setItem('pratheesh_admin_sidebar_collapsed', JSON.stringify(next));
       return next;
     });
   };
@@ -187,10 +189,10 @@ export const AdminLayout: React.FC = () => {
           <AnimatePresence mode="wait">
             <motion.div
               key={activeModule}
-              initial={{ opacity: 0, y: 10 }}
+              initial={{ opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -6 }}
-              transition={{ duration: 0.2, ease: [0, 0, 0.2, 1] }}
+              exit={{ opacity: 0, y: -4 }}
+              transition={{ duration: 0.18, ease: [0, 0, 0.2, 1] }}
               style={{ minHeight: '100%' }}
             >
               <Suspense fallback={<ModuleFallback name={activeModule} />}>

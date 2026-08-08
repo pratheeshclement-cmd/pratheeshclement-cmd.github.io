@@ -1,146 +1,358 @@
-// ─── DMOS SEO Center v6 — Search Console & PageSpeed Integration ──────────────
+// ─── DMOS SEO Center v6 — Search Console & PageSpeed Command Center ───────────
+// Authenticated Google Search Console API v3 & URL Inspection Engine.
 
 import React, { useState, useEffect } from 'react';
-import { Search, TrendingUp, TrendingDown, Minus, CheckCircle2, AlertCircle, XCircle, RefreshCw, ExternalLink } from 'lucide-react';
-import { Card, Badge, Button, Gauge, PageHeader, SectionHeader, Tabs, DataTable, Column, ProgressBar } from '../../design-system/components';
-import { SEOService } from '../../services/seo/SEOService';
+import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
+import { Search, TrendingUp, RefreshCw, ExternalLink, Globe, Monitor, Smartphone, AlertTriangle, FileText, CheckCircle2, ShieldCheck } from 'lucide-react';
+import { Card, Badge, Button, Gauge, PageHeader, SectionHeader, Tabs, DataTable, Column, MetricCard } from '../../design-system/components';
+import { auth } from '../../../lib/firebase';
+import { GSCOverviewData, GSCPerformancePoint, GSCRowMetric, GSCSitemapInfo, GSCInspectionResult } from '../../../../server/services/integrations/gscService';
+
+const CHART_COLORS = { primary: '#2E5AFF', secondary: '#17B4CE', accent: '#7C3AED', success: '#22C55E' };
+const API_BASE = (import.meta.env.VITE_API_BASE_URL as string) || (import.meta.env.VITE_BACKEND_URL as string) || 'http://localhost:5000/api';
 
 export const SEOPage: React.FC = () => {
-  const [queries, setQueries] = useState<any[]>([]);
-  const [pageSpeed, setPageSpeed] = useState<any>({ performance: 94, accessibility: 100, bestPractices: 100, seo: 100 });
-  const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('overview');
-  const [refreshing, setRefreshing] = useState(false);
+  const [days, setDays] = useState<number>(28);
+  const [activeTab, setActiveTab] = useState<string>('overview');
+  const [loading, setLoading] = useState<boolean>(true);
+  const [configured, setConfigured] = useState<boolean>(true);
+  const [statusMessage, setStatusMessage] = useState<string>('');
 
-  const load = () => {
-    setRefreshing(true);
-    Promise.all([SEOService.getSearchQueries(), SEOService.getPageSpeed()])
-      .then(([qRes, psRes]) => {
-        if (Array.isArray(qRes) && qRes.length > 0) setQueries(qRes);
-        if (psRes) setPageSpeed(psRes);
-        setLoading(false); setRefreshing(false);
-      }).catch(() => { setLoading(false); setRefreshing(false); });
+  const [overview, setOverview] = useState<GSCOverviewData | null>(null);
+  const [performance, setPerformance] = useState<GSCPerformancePoint[]>([]);
+  const [queries, setQueries] = useState<GSCRowMetric[]>([]);
+  const [pages, setPages] = useState<GSCRowMetric[]>([]);
+  const [countries, setCountries] = useState<GSCRowMetric[]>([]);
+  const [devices, setDevices] = useState<GSCRowMetric[]>([]);
+  const [sitemaps, setSitemaps] = useState<GSCSitemapInfo[]>([]);
+
+  // URL Inspection State
+  const [inspectInputUrl, setInspectInputUrl] = useState<string>('https://pratheeshclement-cmd.github.io/');
+  const [inspectLoading, setInspectLoading] = useState<boolean>(false);
+  const [inspectionResult, setInspectionResult] = useState<GSCInspectionResult | null>(null);
+
+  const loadGSCData = async () => {
+    setLoading(true);
+    try {
+      const idToken = (await auth.currentUser?.getIdToken()) || 'admin_session_token';
+      const headers = { Authorization: `Bearer ${idToken}` };
+
+      // 1. Status Check
+      const statusRes = await fetch(`${API_BASE}/admin/search-console/status`, { headers }).then(r => r.json()).catch(() => null);
+      if (statusRes && statusRes.configured === false) {
+        setConfigured(false);
+        setStatusMessage(statusRes.message || 'Configure GSC_SITE_URL & OAuth credentials in server/.env');
+        setLoading(false);
+        return;
+      }
+      setConfigured(true);
+
+      // 2. Fetch Datasets
+      const [ovRes, perfRes, qRes, pgRes, cRes, devRes, smRes] = await Promise.all([
+        fetch(`${API_BASE}/admin/search-console/overview?days=${days}`, { headers }).then(r => r.json()),
+        fetch(`${API_BASE}/admin/search-console/performance?days=${days}`, { headers }).then(r => r.json()),
+        fetch(`${API_BASE}/admin/search-console/queries?days=${days}`, { headers }).then(r => r.json()),
+        fetch(`${API_BASE}/admin/search-console/pages?days=${days}`, { headers }).then(r => r.json()),
+        fetch(`${API_BASE}/admin/search-console/countries?days=${days}`, { headers }).then(r => r.json()),
+        fetch(`${API_BASE}/admin/search-console/devices?days=${days}`, { headers }).then(r => r.json()),
+        fetch(`${API_BASE}/admin/search-console/sitemaps`, { headers }).then(r => r.json()),
+      ]);
+
+      if (ovRes.data) setOverview(ovRes.data);
+      if (Array.isArray(perfRes.data)) setPerformance(perfRes.data);
+      if (Array.isArray(qRes.data)) setQueries(qRes.data);
+      if (Array.isArray(pgRes.data)) setPages(pgRes.data);
+      if (Array.isArray(cRes.data)) setCountries(cRes.data);
+      if (Array.isArray(devRes.data)) setDevices(devRes.data);
+      if (Array.isArray(smRes.data)) setSitemaps(smRes.data);
+
+    } catch (e: any) {
+      console.warn('[SEOPage] Exception loading Search Console analytics:', e);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  useEffect(() => { load(); }, []);
+  const handleInspectUrl = async () => {
+    if (!inspectInputUrl || !inspectInputUrl.startsWith('http')) return;
+    setInspectLoading(true);
+    setInspectionResult(null);
 
-  const SCORE_COLOR = (v: number) => v >= 90 ? 'var(--dmos-success)' : v >= 50 ? 'var(--dmos-warning)' : 'var(--dmos-danger)';
+    try {
+      const idToken = (await auth.currentUser?.getIdToken()) || 'admin_session_token';
+      const res = await fetch(`${API_BASE}/admin/search-console/inspect-url`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${idToken}`,
+        },
+        body: JSON.stringify({ url: inspectInputUrl }),
+      });
+      const json = await res.json();
+      if (json.data) {
+        setInspectionResult(json.data);
+      } else {
+        alert(`URL Inspection Notice: ${json.message || json.error || 'Failed to inspect URL'}`);
+      }
+    } catch (e: any) {
+      alert(`URL Inspection Exception: ${e.message}`);
+    } finally {
+      setInspectLoading(false);
+    }
+  };
 
-  const auditItems = [
-    { check: 'Meta Title & Description',    status: 'pass', detail: 'All pages have unique titles' },
-    { check: 'Canonical URLs',              status: 'pass', detail: 'Canonical tags present on all pages' },
-    { check: 'Open Graph Tags',             status: 'pass', detail: 'og:title, og:image, og:description set' },
-    { check: 'JSON-LD Schema Markup',       status: 'pass', detail: 'Person + WebSite schemas present' },
-    { check: 'sitemap.xml',                 status: 'pass', detail: 'Submitted to Google Search Console' },
-    { check: 'robots.txt',                  status: 'pass', detail: 'Allows all known search crawlers' },
-    { check: 'Core Web Vitals',             status: 'pass', detail: 'LCP 1.2s, INP 42ms, CLS 0.01' },
-    { check: 'HTTPS / TLS 1.3',            status: 'pass', detail: 'A+ SSL certificate active via GitHub Pages' },
-    { check: 'Image Alt Attributes',        status: 'warn', detail: '3 images missing alt text' },
-    { check: 'Structured Data Errors',      status: 'pass', detail: '0 rich result errors in GSC' },
+  useEffect(() => {
+    loadGSCData();
+  }, [days]);
+
+  const queryColumns: Column<GSCRowMetric>[] = [
+    { key: 'key', label: 'Search Keyword', render: r => <span style={{ fontWeight: 600, color: 'var(--dmos-text)' }}>{r.key}</span> },
+    { key: 'clicks', label: 'Clicks', align: 'right', render: r => <span style={{ fontWeight: 700, color: 'var(--dmos-primary-light)' }}>{r.clicks.toLocaleString()}</span> },
+    { key: 'impressions', label: 'Impressions', align: 'right', render: r => <span style={{ color: 'var(--dmos-text-muted)' }}>{r.impressions.toLocaleString()}</span> },
+    { key: 'ctr', label: 'CTR', align: 'right', render: r => <span style={{ color: 'var(--dmos-text-muted)' }}>{r.ctr}%</span> },
+    { key: 'position', label: 'Avg. Position', align: 'right', render: r => {
+      const color = r.position <= 3 ? 'var(--dmos-success)' : r.position <= 10 ? 'var(--dmos-warning)' : 'var(--dmos-danger)';
+      return <span style={{ fontWeight: 700, color }}>{r.position}</span>;
+    }},
   ];
 
-  const queryColumns: Column<any>[] = [
-    { key: 'query', label: 'Keyword', render: r => <span style={{ fontWeight: 600, color: 'var(--dmos-text)' }}>{r.query || r.keys?.[0] || '—'}</span> },
-    { key: 'clicks', label: 'Clicks', align: 'right', render: r => <span style={{ fontWeight: 700, color: 'var(--dmos-primary-light)' }}>{r.clicks ?? '—'}</span> },
-    { key: 'impressions', label: 'Impressions', align: 'right', render: r => <span style={{ color: 'var(--dmos-text-muted)' }}>{r.impressions ?? '—'}</span> },
-    { key: 'position', label: 'Avg. Position', align: 'right', render: r => {
-      const pos = r.position ?? r.keys?.position;
-      const color = pos <= 3 ? 'var(--dmos-success)' : pos <= 10 ? 'var(--dmos-warning)' : 'var(--dmos-danger)';
-      return <span style={{ fontWeight: 700, color }}>{typeof pos === 'number' ? pos.toFixed(1) : '—'}</span>;
-    }},
-    { key: 'ctr', label: 'CTR', align: 'right', render: r => <span style={{ color: 'var(--dmos-text-muted)' }}>{r.ctr != null ? `${(r.ctr * 100).toFixed(1)}%` : '—'}</span> },
+  const pageColumns: Column<GSCRowMetric>[] = [
+    { key: 'key', label: 'Landing Page', render: r => <span style={{ fontWeight: 600, fontFamily: 'var(--dmos-font-mono)', color: 'var(--dmos-text)', fontSize: '0.82rem' }}>{r.key}</span> },
+    { key: 'clicks', label: 'Clicks', align: 'right', render: r => <span style={{ fontWeight: 700, color: 'var(--dmos-primary-light)' }}>{r.clicks.toLocaleString()}</span> },
+    { key: 'impressions', label: 'Impressions', align: 'right', render: r => <span style={{ color: 'var(--dmos-text-muted)' }}>{r.impressions.toLocaleString()}</span> },
+    { key: 'ctr', label: 'CTR', align: 'right', render: r => <span style={{ color: 'var(--dmos-text-muted)' }}>{r.ctr}%</span> },
+    { key: 'position', label: 'Avg. Position', align: 'right', render: r => <span style={{ fontWeight: 700, color: 'var(--dmos-secondary)' }}>{r.position}</span> },
   ];
 
   return (
     <div className="dmos-page-shell">
       <PageHeader
-        title="SEO Command Center"
-        subtitle="Google Search Console · PageSpeed Insights · Core Web Vitals"
-        badge={<Badge variant="success" dot>Score: 87</Badge>}
-        actions={<Button variant="secondary" size="sm" onClick={load} loading={refreshing} leftIcon={<RefreshCw size={14} />}>Refresh</Button>}
+        title="SEO & Search Console Center"
+        subtitle="Google Search Console API v3 · Search Analytics · URL Inspection"
+        badge={
+          configured
+            ? <Badge variant="success" dot pulse size="sm">Search Console API Active</Badge>
+            : <Badge variant="warning" size="sm">Authentication Required</Badge>
+        }
+        actions={
+          <div style={{ display: 'flex', gap: 10 }}>
+            <Tabs
+              tabs={[
+                { id: '7', label: '7 Days' },
+                { id: '28', label: '28 Days' },
+                { id: '90', label: '90 Days' },
+              ]}
+              active={String(days)}
+              onChange={(val) => setDays(parseInt(val, 10))}
+            />
+            <Button variant="secondary" size="sm" onClick={loadGSCData} loading={loading} leftIcon={<RefreshCw size={14} />}>
+              Refresh
+            </Button>
+          </div>
+        }
       />
 
+      {/* Unconfigured / Auth Required State Card */}
+      {!configured && (
+        <Card variant="primary" style={{ padding: 24, marginBottom: 24, display: 'flex', alignItems: 'center', gap: 16, border: '1px solid var(--dmos-warning-border)' }}>
+          <div style={{ width: 44, height: 44, borderRadius: 12, background: 'var(--dmos-warning-bg)', border: '1px solid var(--dmos-warning-border)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <AlertTriangle size={22} color="var(--dmos-warning)" />
+          </div>
+          <div>
+            <div style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--dmos-text)' }}>Search Console API Not Configured</div>
+            <div style={{ fontSize: '0.84rem', color: 'var(--dmos-text-muted)', marginTop: 4 }}>
+              {statusMessage || 'To enable server-side Search Console analytics, configure GSC_SITE_URL, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, & GOOGLE_REFRESH_TOKEN in server/.env.'}
+            </div>
+          </div>
+        </Card>
+      )}
+
+      {/* Primary Navigation Tabs */}
       <Tabs
         tabs={[
-          { id: 'overview', label: 'Lighthouse Scores' },
-          { id: 'audit', label: 'SEO Audit' },
-          { id: 'keywords', label: 'Keywords' },
+          { id: 'overview', label: 'Overview' },
+          { id: 'performance', label: 'Performance' },
+          { id: 'queries', label: `Queries (${queries.length})` },
+          { id: 'pages', label: `Pages (${pages.length})` },
+          { id: 'sitemaps', label: `Sitemaps (${sitemaps.length})` },
+          { id: 'inspection', label: 'URL Inspection' },
         ]}
         active={activeTab}
         onChange={setActiveTab}
         style={{ marginBottom: 24 }}
       />
 
+      {/* OVERVIEW TAB */}
       {activeTab === 'overview' && (
         <>
-          {/* Lighthouse Gauge Row */}
-          <Card style={{ padding: 28, marginBottom: 20 }}>
-            <SectionHeader title="Google Lighthouse Scores" subtitle="PageSpeed Insights API · Live scores for pratheeshclement-cmd.github.io" style={{ marginBottom: 28 }} />
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 32, justifyContent: 'center' }}>
-              {[
-                { label: 'Performance',    value: pageSpeed.performance   ?? 94,  sublabel: '/100' },
-                { label: 'Accessibility',  value: pageSpeed.accessibility  ?? 100, sublabel: '/100' },
-                { label: 'Best Practices', value: pageSpeed.bestPractices  ?? 100, sublabel: '/100' },
-                { label: 'SEO',            value: pageSpeed.seo            ?? 100, sublabel: '/100' },
-              ].map(g => (
-                <Gauge key={g.label} value={g.value} label={g.label} sublabel={g.sublabel} size={130} strokeWidth={12} />
-              ))}
-            </div>
-          </Card>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 16, marginBottom: 24 }}>
+            {[
+              { label: `Total Clicks (${days}d)`,     value: overview?.clicks ? overview.clicks.toLocaleString() : '—', icon: <Search size={16} color={CHART_COLORS.primary} />, iconBg: 'var(--dmos-primary-subtle)' },
+              { label: 'Total Impressions',           value: overview?.impressions ? overview.impressions.toLocaleString() : '—', icon: <TrendingUp size={16} color={CHART_COLORS.secondary} />, iconBg: 'var(--dmos-secondary-subtle)' },
+              { label: 'Average CTR',                 value: overview?.ctr ? `${overview.ctr}%` : '—', icon: <Globe size={16} color="#A78BFA" />, iconBg: 'var(--dmos-accent-subtle)' },
+              { label: 'Average Position',            value: overview?.position ? overview.position : '—', icon: <ShieldCheck size={16} color={CHART_COLORS.success} />, iconBg: 'var(--dmos-success-bg)' },
+            ].map(m => <MetricCard key={m.label} {...m} loading={loading} />)}
+          </div>
 
-          {/* CWV Metrics */}
-          <Card style={{ padding: 20 }}>
-            <SectionHeader title="Core Web Vitals" style={{ marginBottom: 16 }} />
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 16 }}>
-              {[
-                { label: 'LCP', value: '1.2s', status: 'Good', threshold: '< 2.5s', pct: 85, color: 'var(--dmos-success)' },
-                { label: 'INP', value: '42ms', status: 'Good', threshold: '< 200ms', pct: 90, color: 'var(--dmos-success)' },
-                { label: 'CLS', value: '0.01', status: 'Good', threshold: '< 0.1', pct: 98, color: 'var(--dmos-success)' },
-                { label: 'FCP', value: '0.9s', status: 'Good', threshold: '< 1.8s', pct: 92, color: 'var(--dmos-success)' },
-              ].map(m => (
-                <div key={m.label} style={{ padding: 16, background: 'rgba(255,255,255,0.03)', borderRadius: 'var(--dmos-radius)', border: '1px solid var(--dmos-border)' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
-                    <span style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--dmos-text)' }}>{m.label}</span>
-                    <Badge variant="success" size="sm">{m.status}</Badge>
-                  </div>
-                  <div style={{ fontSize: '1.4rem', fontWeight: 800, color: m.color, letterSpacing: '-0.02em' }}>{m.value}</div>
-                  <div style={{ fontSize: '0.68rem', color: 'var(--dmos-text-subtle)', marginTop: 4, marginBottom: 8 }}>Target: {m.threshold}</div>
-                  <ProgressBar value={m.pct} color={m.color} height={4} />
-                </div>
-              ))}
-            </div>
+          <Card style={{ padding: 24, marginBottom: 24 }}>
+            <SectionHeader title="Search Analytics Performance Trend" subtitle={`Daily clicks & impressions timeline (${days} day view)`} style={{ marginBottom: 20 }} />
+            {performance.length > 0 ? (
+              <div style={{ height: 220 }}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={performance} margin={{ top: 4, right: 4, bottom: 0, left: -20 }}>
+                    <defs>
+                      <linearGradient id="gClicks" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor={CHART_COLORS.primary} stopOpacity={0.25} />
+                        <stop offset="95%" stopColor={CHART_COLORS.primary} stopOpacity={0} />
+                      </linearGradient>
+                      <linearGradient id="gImpressions" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor={CHART_COLORS.secondary} stopOpacity={0.2} />
+                        <stop offset="95%" stopColor={CHART_COLORS.secondary} stopOpacity={0} />
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" />
+                    <XAxis dataKey="date" tick={{ fontSize: 10, fill: 'var(--dmos-text-subtle)' }} axisLine={false} tickLine={false} />
+                    <YAxis tick={{ fontSize: 10, fill: 'var(--dmos-text-subtle)' }} axisLine={false} tickLine={false} />
+                    <Tooltip contentStyle={{ background: 'var(--dmos-card-elevated)', border: '1px solid var(--dmos-border-strong)', borderRadius: 10, fontSize: '0.78rem' }} />
+                    <Area type="monotone" dataKey="clicks" stroke={CHART_COLORS.primary} strokeWidth={2} fill="url(#gClicks)" name="Clicks" />
+                    <Area type="monotone" dataKey="impressions" stroke={CHART_COLORS.secondary} strokeWidth={2} fill="url(#gImpressions)" name="Impressions" />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
+            ) : (
+              <div style={{ padding: '40px 0', textAlign: 'center', color: 'var(--dmos-text-muted)', fontSize: '0.84rem' }}>
+                {configured ? 'No Search Console performance trend returned for this date range.' : 'Configure Search Console credentials in server/.env to populate live search analytics.'}
+              </div>
+            )}
           </Card>
         </>
       )}
 
-      {activeTab === 'audit' && (
-        <Card style={{ padding: 0, overflow: 'hidden' }}>
-          <div style={{ padding: '20px 20px 16px' }}>
-            <SectionHeader title="SEO Audit Checklist" subtitle={`${auditItems.filter(a => a.status === 'pass').length} passed · ${auditItems.filter(a => a.status === 'warn').length} warnings`} />
-          </div>
-          {auditItems.map((a, i) => (
-            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 14, padding: '13px 20px', borderTop: '1px solid var(--dmos-border)' }}>
-              {a.status === 'pass' && <CheckCircle2 size={18} color="var(--dmos-success)" />}
-              {a.status === 'warn' && <AlertCircle size={18} color="var(--dmos-warning)" />}
-              {a.status === 'fail' && <XCircle size={18} color="var(--dmos-danger)" />}
-              <div style={{ flex: 1 }}>
-                <div style={{ fontSize: '0.84rem', fontWeight: 600, color: 'var(--dmos-text)' }}>{a.check}</div>
-                <div style={{ fontSize: '0.72rem', color: 'var(--dmos-text-subtle)', marginTop: 2 }}>{a.detail}</div>
-              </div>
-              <Badge variant={a.status === 'pass' ? 'success' : a.status === 'warn' ? 'warning' : 'danger'} size="sm">
-                {a.status === 'pass' ? 'Pass' : a.status === 'warn' ? 'Warning' : 'Fail'}
-              </Badge>
+      {/* PERFORMANCE TAB */}
+      {activeTab === 'performance' && (
+        <Card style={{ padding: 24 }}>
+          <SectionHeader title="Detailed Search Performance Timeline" style={{ marginBottom: 20 }} />
+          {performance.length > 0 ? (
+            <div style={{ height: 320 }}>
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={performance} margin={{ top: 4, right: 4, bottom: 0, left: -20 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" />
+                  <XAxis dataKey="date" tick={{ fontSize: 10, fill: 'var(--dmos-text-subtle)' }} axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fontSize: 10, fill: 'var(--dmos-text-subtle)' }} axisLine={false} tickLine={false} />
+                  <Tooltip contentStyle={{ background: 'var(--dmos-card-elevated)', border: '1px solid var(--dmos-border-strong)', borderRadius: 10, fontSize: '0.78rem' }} />
+                  <Area type="monotone" dataKey="clicks" stroke={CHART_COLORS.primary} strokeWidth={2} name="Clicks" />
+                  <Area type="monotone" dataKey="impressions" stroke={CHART_COLORS.secondary} strokeWidth={2} name="Impressions" />
+                </AreaChart>
+              </ResponsiveContainer>
             </div>
-          ))}
+          ) : (
+            <div style={{ padding: '40px 0', textAlign: 'center', color: 'var(--dmos-text-muted)', fontSize: '0.84rem' }}>
+              No performance data returned.
+            </div>
+          )}
         </Card>
       )}
 
-      {activeTab === 'keywords' && (
-        <Card style={{ padding: 0, overflow: 'hidden' }}>
-          <div style={{ padding: '20px 20px 16px' }}>
-            <SectionHeader title="Search Console Queries" subtitle="Top keywords from Google Search Console API" />
+      {/* QUERIES TAB */}
+      {activeTab === 'queries' && (
+        <Card style={{ padding: 20 }}>
+          <SectionHeader title="Top Search Queries" subtitle="Organic search keywords driving impressions & clicks" style={{ marginBottom: 16 }} />
+          <DataTable data={queries} columns={queryColumns} loading={loading} emptyMessage="No Search Console queries recorded for this property." />
+        </Card>
+      )}
+
+      {/* PAGES TAB */}
+      {activeTab === 'pages' && (
+        <Card style={{ padding: 20 }}>
+          <SectionHeader title="Top Performing Landing Pages" subtitle="Pages indexed & receiving Google Search traffic" style={{ marginBottom: 16 }} />
+          <DataTable data={pages} columns={pageColumns} loading={loading} emptyMessage="No Search Console page metrics recorded." />
+        </Card>
+      )}
+
+      {/* SITEMAPS TAB */}
+      {activeTab === 'sitemaps' && (
+        <Card style={{ padding: 20 }}>
+          <SectionHeader title="Submitted XML Sitemaps" subtitle="Search Console index submission status" style={{ marginBottom: 16 }} />
+          {sitemaps.length > 0 ? (
+            <div style={{ display: 'grid', gap: 12 }}>
+              {sitemaps.map(s => (
+                <div key={s.path} style={{ padding: '14px 18px', background: 'rgba(255,255,255,0.02)', border: '1px solid var(--dmos-border)', borderRadius: 10, display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div>
+                    <div style={{ fontSize: '0.88rem', fontWeight: 600, color: 'var(--dmos-text)', fontFamily: 'var(--dmos-font-mono)' }}>{s.path}</div>
+                    <div style={{ fontSize: '0.74rem', color: 'var(--dmos-text-muted)', marginTop: 3 }}>
+                      Last Submitted: {s.lastSubmitted} · Last Downloaded: {s.lastDownloaded}
+                    </div>
+                  </div>
+                  <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                    {s.errors > 0 ? (
+                      <Badge variant="danger">{s.errors} Errors</Badge>
+                    ) : (
+                      <Badge variant="success" dot>Success</Badge>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div style={{ padding: '30px 0', textAlign: 'center', color: 'var(--dmos-text-muted)', fontSize: '0.84rem' }}>
+              {configured ? 'No submitted sitemaps returned for this property.' : 'Configure Search Console in server/.env'}
+            </div>
+          )}
+        </Card>
+      )}
+
+      {/* URL INSPECTION TAB */}
+      {activeTab === 'inspection' && (
+        <Card style={{ padding: 24 }}>
+          <SectionHeader title="Official Google URL Inspection Tool" subtitle="Inspect index status, canonical URLs, and crawl state" style={{ marginBottom: 20 }} />
+          <div style={{ display: 'flex', gap: 12, marginBottom: 24 }}>
+            <input
+              type="url"
+              value={inspectInputUrl}
+              onChange={(e) => setInspectInputUrl(e.target.value)}
+              placeholder="https://pratheeshclement-cmd.github.io/about/"
+              style={{
+                flex: 1,
+                padding: '10px 14px',
+                borderRadius: 8,
+                border: '1px solid var(--dmos-border)',
+                background: 'rgba(255,255,255,0.03)',
+                color: 'var(--dmos-text)',
+                fontFamily: 'var(--dmos-font-mono)',
+                fontSize: '0.84rem',
+              }}
+            />
+            <Button variant="primary" size="sm" onClick={handleInspectUrl} loading={inspectLoading} leftIcon={<Search size={14} />}>
+              Inspect URL
+            </Button>
           </div>
-          <DataTable columns={queryColumns} data={queries} loading={loading} emptyMessage="No keyword data available. Connect Google Search Console API." />
+
+          {inspectionResult && (
+            <div style={{ padding: 20, background: 'rgba(255,255,255,0.02)', border: '1px solid var(--dmos-border)', borderRadius: 12 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
+                <CheckCircle2 size={20} color="var(--dmos-success)" />
+                <div style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--dmos-text)' }}>Inspection Verdict: {inspectionResult.verdict}</div>
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 16 }}>
+                <div>
+                  <div style={{ fontSize: '0.72rem', color: 'var(--dmos-text-muted)', textTransform: 'uppercase' }}>Coverage State</div>
+                  <div style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--dmos-text)', marginTop: 3 }}>{inspectionResult.coverageState}</div>
+                </div>
+                <div>
+                  <div style={{ fontSize: '0.72rem', color: 'var(--dmos-text-muted)', textTransform: 'uppercase' }}>Indexing State</div>
+                  <div style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--dmos-text)', marginTop: 3 }}>{inspectionResult.indexingState}</div>
+                </div>
+                <div>
+                  <div style={{ fontSize: '0.72rem', color: 'var(--dmos-text-muted)', textTransform: 'uppercase' }}>Robots.txt State</div>
+                  <div style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--dmos-success)', marginTop: 3 }}>{inspectionResult.robotsTxtState}</div>
+                </div>
+                <div>
+                  <div style={{ fontSize: '0.72rem', color: 'var(--dmos-text-muted)', textTransform: 'uppercase' }}>Crawled As</div>
+                  <div style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--dmos-primary-light)', marginTop: 3 }}>{inspectionResult.crawledAs}</div>
+                </div>
+              </div>
+            </div>
+          )}
         </Card>
       )}
     </div>

@@ -25,6 +25,15 @@ import { profileRouter } from './routes/profile';
 import { projectsRouter } from './routes/projects';
 import { notificationsRouter } from './routes/notifications';
 import { connectionsRouter } from './routes/connections';
+import { clarityRouter } from './routes/clarity';
+import { searchConsoleRouter } from './routes/searchConsole';
+import { firebaseRouter } from './routes/firebase';
+import { metaRouter } from './routes/meta';
+import { smtpRouter } from './routes/smtp';
+import { mapsRouter } from './routes/maps';
+import { pageSpeedRouter } from './routes/pageSpeed';
+import { googleAdsRouter } from './routes/googleAds';
+import { googleBusinessRouter } from './routes/googleBusiness';
 
 dotenv.config();
 
@@ -53,12 +62,28 @@ app.use('/api/auth', authRouter);
 
 // Mount Application Routes
 app.use('/api/ai', aiRouter);
+app.use('/api/admin/gemini', aiRouter);
 app.use('/api/blog', blogRouter);
 app.use('/api/crm', crmRouter);
 app.use('/api/analytics', analyticsRouter);
+app.use('/api/admin/analytics', analyticsRouter);
+app.use('/api/clarity', clarityRouter);
+app.use('/api/admin/clarity', clarityRouter);
 app.use('/api/seo', seoRouter);
+app.use('/api/admin/search-console', searchConsoleRouter);
+app.use('/api/admin/firebase', firebaseRouter);
+app.use('/api/admin/meta', metaRouter);
 app.use('/api/github', githubRouter);
+app.use('/api/admin/github', githubRouter);
 app.use('/api/cloudflare', cloudflareRouter);
+app.use('/api/admin/cloudflare', cloudflareRouter);
+app.use('/api/admin/smtp', smtpRouter);
+app.use('/api/admin/google-maps', mapsRouter);
+app.use('/api/admin/pagespeed', pageSpeedRouter);
+app.use('/api/admin/google-ads', googleAdsRouter);
+app.use('/api/admin/google-business', googleBusinessRouter);
+app.use('/api/connections', connectionsRouter);
+app.use('/api/admin/connections', connectionsRouter);
 app.use('/api/automation', automationRouter);
 app.use('/api/media', mediaRouter);
 app.use('/api/reports', reportsRouter);

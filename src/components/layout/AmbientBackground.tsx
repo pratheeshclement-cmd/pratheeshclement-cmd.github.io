@@ -18,37 +18,40 @@ export const AmbientBackground: React.FC = () => {
   useEffect(() => {
     if (reduced || isMobile) return;
 
-    const onMouseMove = (e: MouseEvent) => {
-      const normX = (e.clientX / window.innerWidth - 0.5) * 2;
-      const normY = (e.clientY / window.innerHeight - 0.5) * 2;
+    let rafPending = false;
+    let latestNormX = 0;
+    let latestNormY = 0;
 
-      if (orb1Ref.current) {
-        gsap.to(orb1Ref.current, {
-          x: normX * 45,
-          y: normY * 45,
-          duration: 1.2,
-          ease: 'power2.out',
-          overwrite: 'auto',
-        });
-      }
-      if (orb2Ref.current) {
-        gsap.to(orb2Ref.current, {
-          x: -normX * 35,
-          y: -normY * 35,
-          duration: 1.4,
-          ease: 'power2.out',
-          overwrite: 'auto',
-        });
-      }
-      if (orb3Ref.current) {
-        gsap.to(orb3Ref.current, {
-          x: normX * 25,
-          y: normY * 25,
-          duration: 1.6,
-          ease: 'power2.out',
-          overwrite: 'auto',
-        });
-      }
+    const onMouseMove = (e: MouseEvent) => {
+      latestNormX = (e.clientX / window.innerWidth - 0.5) * 2;
+      latestNormY = (e.clientY / window.innerHeight - 0.5) * 2;
+
+      if (rafPending) return;  // ✅ FIX 9: throttle to display refresh rate
+      rafPending = true;
+      requestAnimationFrame(() => {
+        rafPending = false;
+        const normX = latestNormX;
+        const normY = latestNormY;
+
+        if (orb1Ref.current) {
+          gsap.to(orb1Ref.current, {
+            x: normX * 45, y: normY * 45,
+            duration: 1.2, ease: 'power2.out', overwrite: 'auto',
+          });
+        }
+        if (orb2Ref.current) {
+          gsap.to(orb2Ref.current, {
+            x: -normX * 35, y: -normY * 35,
+            duration: 1.4, ease: 'power2.out', overwrite: 'auto',
+          });
+        }
+        if (orb3Ref.current) {
+          gsap.to(orb3Ref.current, {
+            x: normX * 25, y: normY * 25,
+            duration: 1.6, ease: 'power2.out', overwrite: 'auto',
+          });
+        }
+      });
     };
 
     window.addEventListener('mousemove', onMouseMove);

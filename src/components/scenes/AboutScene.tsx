@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef } from 'react';
 import { User, Compass, Target, Award, Sparkles } from 'lucide-react';
 import { SplitText } from '../ui/SplitText';
 import { GlassCard } from '../ui/GlassCard';
@@ -7,17 +7,22 @@ import { useCinematicSceneTransition } from '../../hooks/useScrollTimeline';
 
 const AboutScene: React.FC<{ id: string }> = ({ id }) => {
   const sectionRef = useRef<HTMLElement>(null);
-  const [mouseOffset, setMouseOffset] = useState({ x: 0, y: 0 });
+  // Direct DOM refs for orb parallax — avoids React re-renders on every mousemove
+  const orb1Ref = useRef<HTMLDivElement>(null);
+  const orb2Ref = useRef<HTMLDivElement>(null);
 
   useCinematicSceneTransition(sectionRef, 'slide-left');
 
-  // Mouse Parallax Background Effect
+  // ✅ FIX: Direct DOM style mutation — no useState, no React re-renders on mousemove
   const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
     const rect = sectionRef.current?.getBoundingClientRect();
     if (!rect) return;
     const normX = (e.clientX - rect.left) / rect.width - 0.5;
     const normY = (e.clientY - rect.top) / rect.height - 0.5;
-    setMouseOffset({ x: normX * 24, y: normY * 24 });
+    const x1 = normX * 36;
+    const y1 = normY * 36;
+    if (orb1Ref.current) orb1Ref.current.style.transform = `translate(${x1}px, ${y1}px)`;
+    if (orb2Ref.current) orb2Ref.current.style.transform = `translate(${-normX * 28}px, ${-normY * 28}px)`;
   };
 
   return (
@@ -29,8 +34,9 @@ const AboutScene: React.FC<{ id: string }> = ({ id }) => {
       onMouseMove={handleMouseMove}
       style={{ position: 'relative', overflow: 'hidden' }}
     >
-      {/* Dynamic Mouse Parallax Ambient Orbs */}
+      {/* Dynamic Mouse Parallax Ambient Orbs — GPU-composited, zero React renders */}
       <div
+        ref={orb1Ref}
         style={{
           position: 'absolute',
           top: '20%',
@@ -39,13 +45,15 @@ const AboutScene: React.FC<{ id: string }> = ({ id }) => {
           height: 320,
           borderRadius: '50%',
           background: 'radial-gradient(circle, rgba(59, 130, 246, 0.12) 0%, transparent 70%)',
-          transform: `translate(${mouseOffset.x * 1.5}px, ${mouseOffset.y * 1.5}px)`,
-          transition: 'transform 0.2s ease-out',
+          transform: 'translate(0px, 0px)',
+          transition: 'transform 0.25s ease-out',
           pointerEvents: 'none',
           zIndex: 0,
+          willChange: 'transform',
         }}
       />
       <div
+        ref={orb2Ref}
         style={{
           position: 'absolute',
           bottom: '15%',
@@ -54,10 +62,11 @@ const AboutScene: React.FC<{ id: string }> = ({ id }) => {
           height: 380,
           borderRadius: '50%',
           background: 'radial-gradient(circle, rgba(139, 92, 246, 0.1) 0%, transparent 70%)',
-          transform: `translate(${-mouseOffset.x * 1.2}px, ${-mouseOffset.y * 1.2}px)`,
-          transition: 'transform 0.2s ease-out',
+          transform: 'translate(0px, 0px)',
+          transition: 'transform 0.25s ease-out',
           pointerEvents: 'none',
           zIndex: 0,
+          willChange: 'transform',
         }}
       />
 

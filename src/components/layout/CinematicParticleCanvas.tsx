@@ -129,12 +129,8 @@ export const CinematicParticleCanvas: React.FC = () => {
         ctx.beginPath();
         ctx.arc(drawX, drawY, p.size, 0, Math.PI * 2);
         ctx.fillStyle = `${p.color}${p.opacity})`;
-
-        // Omit expensive shadowBlur on mobile
-        if (!isMobile) {
-          ctx.shadowBlur = p.size * 4;
-          ctx.shadowColor = `${p.color}0.8)`;
-        }
+        // ✅ FIX 7: shadowBlur removed — was 100 shadow calculations per frame (6000/sec)
+        // Particles look equally good without the bloom at this small size
         ctx.fill();
       }
 

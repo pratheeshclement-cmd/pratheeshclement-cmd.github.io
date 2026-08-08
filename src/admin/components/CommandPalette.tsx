@@ -120,7 +120,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose,
             <Search size={20} color="var(--dmos-primary-light)" />
             <input
               autoFocus
-              placeholder="Search DMOS or type natural query (e.g. 'traffic today', 'compare June vs July')…"
+              placeholder="Search admin or type natural query (e.g. 'traffic today', 'compare June vs July')…"
               value={query}
               onChange={e => handleQueryChange(e.target.value)}
               style={{

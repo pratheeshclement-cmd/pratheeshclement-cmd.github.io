@@ -1,15 +1,8 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Mail, Lock, Eye, EyeOff, BarChart2, Search, Globe, Zap, ShieldCheck } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, ArrowLeft, ShieldCheck, Sparkles } from 'lucide-react';
 import { useAuth } from './AuthProvider';
 import '../design-system/tokens.css';
-
-const FEATURES = [
-  { icon: BarChart2, label: 'Analytics Dashboard', desc: 'GA4 + GSC unified view' },
-  { icon: Search, label: 'SEO Command Center', desc: 'Keywords, audits, vitals' },
-  { icon: Globe, label: 'Portfolio CMS', desc: 'Edit every section live' },
-  { icon: Zap, label: 'AI Insights', desc: 'Gemini-powered recommendations' },
-];
 
 export const LoginPage: React.FC = () => {
   const { login, loginWithGoogle, isLoading, error } = useAuth();
@@ -23,234 +16,386 @@ export const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="dmos-root" style={{ minHeight: '100vh', display: 'flex', background: 'var(--dmos-bg)' }}>
-      {/* ── Left Panel ── */}
-      <div style={{
-        flex: 1,
-        background: 'linear-gradient(135deg, #0f1c3a 0%, #0B1220 50%, #0d1f3c 100%)',
-        padding: '48px',
-        position: 'relative',
-        overflow: 'hidden',
-      }} className="dmos-login-left">
-        {/* Grid pattern */}
-        <div style={{
-          position: 'absolute', inset: 0, opacity: 0.04,
-          backgroundImage: 'linear-gradient(var(--dmos-border) 1px, transparent 1px), linear-gradient(90deg, var(--dmos-border) 1px, transparent 1px)',
-          backgroundSize: '40px 40px',
-        }} />
-        {/* Glow blobs */}
-        <div style={{ position: 'absolute', top: '20%', left: '30%', width: 300, height: 300, borderRadius: '50%', background: 'radial-gradient(circle, rgba(46,90,255,0.15) 0%, transparent 70%)', filter: 'blur(40px)' }} />
-
-        <div style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', width: '100%', height: '100%' }}>
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 48 }}>
-              <div style={{ width: 40, height: 40, borderRadius: 10, background: 'var(--dmos-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '1.1rem', color: '#fff' }}>D</div>
-              <div>
-                <div style={{ fontWeight: 700, fontSize: '1.1rem', color: 'var(--dmos-text)' }}>DMOS Enterprise</div>
-                <div style={{ fontSize: '0.72rem', color: 'var(--dmos-text-muted)', letterSpacing: '0.08em' }}>OPERATING SYSTEM v3.0</div>
-              </div>
-            </div>
-            <motion.h1
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, ease: [0, 0, 0.2, 1] }}
-              style={{ fontSize: '2.4rem', fontWeight: 800, lineHeight: 1.15, color: 'var(--dmos-text)', marginBottom: 16 }}
-            >
-              Enterprise Digital<br />Marketing OS.
-            </motion.h1>
-            <motion.p
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.1, ease: [0, 0, 0.2, 1] }}
-              style={{ fontSize: '1rem', color: 'var(--dmos-text-muted)', lineHeight: 1.65, maxWidth: 400 }}
-            >
-              Unified Firebase & Express production engine with Email/Password & Google Authentication.
-            </motion.p>
-          </div>
-
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 48 }}>
-            {FEATURES.map((f, i) => (
-              <motion.div
-                key={f.label}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.2 + i * 0.07 }}
-                style={{
-                  background: 'rgba(255,255,255,0.04)',
-                  border: '1px solid var(--dmos-border)',
-                  borderRadius: 'var(--dmos-radius-md)',
-                  padding: '16px',
-                  display: 'flex',
-                  gap: 12,
-                  alignItems: 'flex-start',
-                }}
-              >
-                <div style={{ width: 32, height: 32, borderRadius: 8, background: 'rgba(46,90,255,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  <f.icon size={16} color="var(--dmos-primary-light)" />
-                </div>
-                <div>
-                  <div style={{ fontSize: '0.82rem', fontWeight: 600, color: 'var(--dmos-text)', marginBottom: 2 }}>{f.label}</div>
-                  <div style={{ fontSize: '0.72rem', color: 'var(--dmos-text-muted)' }}>{f.desc}</div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-
-          <div style={{ fontSize: '0.75rem', color: 'var(--dmos-text-subtle)', display: 'flex', alignItems: 'center', gap: 6 }}>
-            <ShieldCheck size={14} color="var(--dmos-success)" />
-            Firebase Authenticated Production Session
-          </div>
-        </div>
-      </div>
-
-      {/* ── Right Panel — Login Form ── */}
-      <div style={{
-        flex: 1,
+    <div
+      className="dmos-root"
+      style={{
+        minHeight: '100vh',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: '40px 24px',
+        background: 'var(--admin-bg, #080B12)',
         position: 'relative',
-        background: 'var(--dmos-surface)',
-        minHeight: '100vh',
-      }}>
-        <motion.div
-          initial={{ opacity: 0, scale: 0.96 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5, ease: [0.34, 1.56, 0.64, 1] }}
-          style={{ width: '100%', maxWidth: 420 }}
-        >
-          {/* Mobile logo */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 40 }}>
-            <div style={{ width: 36, height: 36, borderRadius: 9, background: 'var(--dmos-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, color: '#fff' }}>D</div>
-            <div style={{ fontWeight: 700, fontSize: '1rem', color: 'var(--dmos-text)' }}>DMOS Admin</div>
+        overflow: 'hidden',
+        padding: '24px 16px',
+        fontFamily: 'var(--dmos-font-sans)',
+      }}
+    >
+      {/* ── Background Subtle Ambient Grid & Glow ── */}
+      <div
+        aria-hidden="true"
+        style={{
+          position: 'absolute',
+          inset: 0,
+          opacity: 0.03,
+          backgroundImage:
+            'linear-gradient(rgba(255,255,255,0.15) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.15) 1px, transparent 1px)',
+          backgroundSize: '36px 36px',
+          pointerEvents: 'none',
+        }}
+      />
+      <div
+        aria-hidden="true"
+        style={{
+          position: 'absolute',
+          top: '30%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: 440,
+          height: 440,
+          borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(59,99,255,0.12) 0%, transparent 70%)',
+          filter: 'blur(60px)',
+          pointerEvents: 'none',
+        }}
+      />
+
+      {/* ── Centered Auth Card ── */}
+      <motion.div
+        initial={{ opacity: 0, y: 16, scale: 0.98 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.35, ease: [0, 0, 0.2, 1] }}
+        style={{
+          width: '100%',
+          maxWidth: 420,
+          background: 'var(--admin-surface, #0D111A)',
+          border: '1px solid var(--admin-border, rgba(255,255,255,0.08))',
+          borderRadius: 24,
+          padding: 'clamp(24px, 6vw, 36px) clamp(20px, 5vw, 32px)',
+          boxShadow: '0 25px 60px rgba(0, 0, 0, 0.5), 0 0 40px rgba(59, 99, 255, 0.05)',
+          position: 'relative',
+          zIndex: 1,
+          boxSizing: 'border-box',
+        }}
+      >
+        {/* Header: Personal Identity Branding */}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', marginBottom: 28 }}>
+          <div
+            style={{
+              position: 'relative',
+              width: 56,
+              height: 56,
+              borderRadius: '50%',
+              padding: 2,
+              background: 'linear-gradient(135deg, var(--admin-accent, #3B63FF), rgba(139,92,246,0.6))',
+              boxShadow: '0 8px 24px rgba(59, 99, 255, 0.25)',
+              marginBottom: 16,
+            }}
+          >
+            <img
+              src="/assets/pratheesh4k1.jpeg"
+              alt="Pratheesh Clement"
+              style={{
+                width: '100%',
+                height: '100%',
+                borderRadius: '50%',
+                objectFit: 'cover',
+                display: 'block',
+              }}
+              onError={(e) => {
+                // Fallback icon if image fails
+                (e.currentTarget as HTMLElement).style.display = 'none';
+              }}
+            />
           </div>
 
-          <h2 style={{ fontSize: '1.75rem', fontWeight: 700, color: 'var(--dmos-text)', marginBottom: 8 }}>Sign In to DMOS</h2>
-          <p style={{ color: 'var(--dmos-text-muted)', fontSize: '0.9rem', marginBottom: 28 }}>Select your authentication method</p>
+          <h1
+            style={{
+              fontSize: '1.45rem',
+              fontWeight: 800,
+              color: 'var(--admin-text, #F5F7FA)',
+              letterSpacing: '-0.02em',
+              margin: 0,
+              marginBottom: 4,
+            }}
+          >
+            Pratheesh Admin
+          </h1>
+          <p style={{ fontSize: '0.82rem', color: 'var(--admin-text-muted, #697386)', margin: 0 }}>
+            Portfolio Control Center
+          </p>
+        </div>
 
-          {/* Email/password form */}
-          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-            <div>
-              <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 500, color: 'var(--dmos-text-muted)', marginBottom: 6 }}>Email Address</label>
-              <div style={{ position: 'relative' }}>
-                <Mail size={16} color="var(--dmos-text-subtle)" style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)' }} />
-                <input
-                  type="email"
-                  value={email}
-                  onChange={e => setEmail(e.target.value)}
-                  required
-                  placeholder="admin@pratheeshclement.com"
-                  style={{
-                    width: '100%', padding: '11px 14px 11px 42px',
-                    background: 'rgba(255,255,255,0.04)',
-                    border: '1px solid var(--dmos-border-strong)',
-                    borderRadius: 'var(--dmos-radius)',
-                    color: 'var(--dmos-text)', fontSize: '0.9rem',
-                    outline: 'none', fontFamily: 'var(--dmos-font-sans)',
-                    boxSizing: 'border-box',
-                  }}
-                />
-              </div>
-            </div>
+        {/* Title */}
+        <div style={{ marginBottom: 24 }}>
+          <h2 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--admin-text, #F5F7FA)', margin: 0, marginBottom: 4 }}>
+            Welcome back
+          </h2>
+          <p style={{ fontSize: '0.82rem', color: 'var(--admin-text-secondary, #A7B0C0)', margin: 0 }}>
+            Sign in to manage your digital ecosystem
+          </p>
+        </div>
 
-            <div>
-              <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 500, color: 'var(--dmos-text-muted)', marginBottom: 6 }}>Password</label>
-              <div style={{ position: 'relative' }}>
-                <Lock size={16} color="var(--dmos-text-subtle)" style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)' }} />
-                <input
-                  type={showPw ? 'text' : 'password'}
-                  value={password}
-                  onChange={e => setPassword(e.target.value)}
-                  required
-                  placeholder="••••••••"
-                  style={{
-                    width: '100%', padding: '11px 44px 11px 42px',
-                    background: 'rgba(255,255,255,0.04)',
-                    border: '1px solid var(--dmos-border-strong)',
-                    borderRadius: 'var(--dmos-radius)',
-                    color: 'var(--dmos-text)', fontSize: '0.9rem',
-                    outline: 'none', fontFamily: 'var(--dmos-font-sans)',
-                    boxSizing: 'border-box',
-                  }}
-                />
-                <button type="button" onClick={() => setShowPw(p => !p)} style={{ position: 'absolute', right: 14, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
-                  {showPw ? <EyeOff size={16} color="var(--dmos-text-subtle)" /> : <Eye size={16} color="var(--dmos-text-subtle)" />}
-                </button>
-              </div>
-            </div>
+        {/* Error Alert */}
+        {error && (
+          <div
+            style={{
+              padding: '12px 14px',
+              marginBottom: 20,
+              background: 'rgba(239, 68, 68, 0.1)',
+              border: '1px solid rgba(239, 68, 68, 0.25)',
+              borderRadius: 12,
+              fontSize: '0.82rem',
+              color: '#F87171',
+              lineHeight: 1.4,
+            }}
+          >
+            {error}
+          </div>
+        )}
 
-            {error && (
-              <div style={{ padding: '10px 14px', background: 'var(--dmos-danger-bg)', border: '1px solid var(--dmos-danger-border)', borderRadius: 'var(--dmos-radius)', fontSize: '0.82rem', color: 'var(--dmos-danger)' }}>
-                {error}
-              </div>
-            )}
-
-            <button
-              type="submit"
-              disabled={isLoading}
+        {/* Email/Password Form */}
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+          <div>
+            <label
               style={{
-                width: '100%', padding: '12px 16px',
-                background: isLoading ? 'rgba(46,90,255,0.5)' : 'var(--dmos-primary)',
-                border: 'none',
-                borderRadius: 'var(--dmos-radius)',
-                color: '#fff', fontSize: '0.9rem', fontWeight: 600,
-                cursor: isLoading ? 'not-allowed' : 'pointer',
-                fontFamily: 'var(--dmos-font-sans)',
-                boxShadow: 'var(--dmos-shadow-primary)',
-                transition: 'background 0.2s',
+                display: 'block',
+                fontSize: '0.8rem',
+                fontWeight: 600,
+                color: 'var(--admin-text-secondary, #A7B0C0)',
+                marginBottom: 8,
               }}
             >
-              {isLoading ? 'Signing In…' : 'Sign In with Email'}
-            </button>
-          </form>
-
-          {/* Divider */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12, margin: '24px 0' }}>
-            <div style={{ flex: 1, height: 1, background: 'var(--dmos-border)' }} />
-            <span style={{ fontSize: '0.78rem', color: 'var(--dmos-text-subtle)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>OR</span>
-            <div style={{ flex: 1, height: 1, background: 'var(--dmos-border)' }} />
+              Email Address
+            </label>
+            <div style={{ position: 'relative' }}>
+              <Mail
+                size={17}
+                color="var(--admin-text-muted, #697386)"
+                style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }}
+              />
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                placeholder="pratheesh.clement@gmail.com"
+                style={{
+                  width: '100%',
+                  height: 48,
+                  padding: '0 14px 0 42px',
+                  background: 'rgba(255, 255, 255, 0.04)',
+                  border: '1px solid var(--admin-border, rgba(255, 255, 255, 0.08))',
+                  borderRadius: 12,
+                  color: 'var(--admin-text, #F5F7FA)',
+                  fontSize: '0.9rem',
+                  outline: 'none',
+                  boxSizing: 'border-box',
+                  transition: 'border-color 0.2s, background 0.2s',
+                }}
+                onFocus={(e) => {
+                  e.currentTarget.style.borderColor = 'var(--admin-accent, #3B63FF)';
+                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.06)';
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.borderColor = 'var(--admin-border, rgba(255, 255, 255, 0.08))';
+                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.04)';
+                }}
+              />
+            </div>
           </div>
 
-          {/* Google Button */}
+          <div>
+            <label
+              style={{
+                display: 'block',
+                fontSize: '0.8rem',
+                fontWeight: 600,
+                color: 'var(--admin-text-secondary, #A7B0C0)',
+                marginBottom: 8,
+              }}
+            >
+              Password
+            </label>
+            <div style={{ position: 'relative' }}>
+              <Lock
+                size={17}
+                color="var(--admin-text-muted, #697386)"
+                style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }}
+              />
+              <input
+                type={showPw ? 'text' : 'password'}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                placeholder="••••••••"
+                style={{
+                  width: '100%',
+                  height: 48,
+                  padding: '0 44px 0 42px',
+                  background: 'rgba(255, 255, 255, 0.04)',
+                  border: '1px solid var(--admin-border, rgba(255, 255, 255, 0.08))',
+                  borderRadius: 12,
+                  color: 'var(--admin-text, #F5F7FA)',
+                  fontSize: '0.9rem',
+                  outline: 'none',
+                  boxSizing: 'border-box',
+                  transition: 'border-color 0.2s, background 0.2s',
+                }}
+                onFocus={(e) => {
+                  e.currentTarget.style.borderColor = 'var(--admin-accent, #3B63FF)';
+                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.06)';
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.borderColor = 'var(--admin-border, rgba(255, 255, 255, 0.08))';
+                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.04)';
+                }}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPw((p) => !p)}
+                style={{
+                  position: 'absolute',
+                  right: 12,
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  padding: 6,
+                  color: 'var(--admin-text-muted, #697386)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+                aria-label={showPw ? 'Hide password' : 'Show password'}
+              >
+                {showPw ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
+          </div>
+
           <button
-            onClick={loginWithGoogle}
+            type="submit"
             disabled={isLoading}
             style={{
-              width: '100%', padding: '12px 16px',
-              background: 'rgba(255,255,255,0.06)',
-              border: '1px solid var(--dmos-border-strong)',
-              borderRadius: 'var(--dmos-radius)',
-              color: 'var(--dmos-text)',
-              fontSize: '0.9rem', fontWeight: 500,
-              cursor: 'pointer',
-              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
-              transition: 'background 0.2s',
-              fontFamily: 'var(--dmos-font-sans)',
+              width: '100%',
+              height: 48,
+              marginTop: 4,
+              background: isLoading ? 'rgba(59, 99, 255, 0.5)' : 'var(--admin-accent, #3B63FF)',
+              border: 'none',
+              borderRadius: 12,
+              color: '#FFFFFF',
+              fontSize: '0.92rem',
+              fontWeight: 600,
+              cursor: isLoading ? 'not-allowed' : 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 8,
+              boxShadow: '0 4px 16px rgba(59, 99, 255, 0.35)',
+              transition: 'background 0.2s, transform 0.15s, box-shadow 0.2s',
             }}
-            onMouseEnter={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.1)')}
-            onMouseLeave={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.06)')}
+            onMouseEnter={(e) => {
+              if (!isLoading) {
+                e.currentTarget.style.background = '#4F73FF';
+                e.currentTarget.style.transform = 'translateY(-1px)';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (!isLoading) {
+                e.currentTarget.style.background = 'var(--admin-accent, #3B63FF)';
+                e.currentTarget.style.transform = 'translateY(0)';
+              }
+            }}
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-              <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-              <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-              <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
-              <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-            </svg>
-            Continue with Google
+            {isLoading ? 'Signing In...' : 'Sign In'}
           </button>
+        </form>
 
-          <div style={{ marginTop: 24, textAlign: 'center', fontSize: '0.75rem', color: 'var(--dmos-text-subtle)' }}>
-            ← <a href="/" style={{ color: 'var(--dmos-text-muted)', textDecoration: 'none' }}>Back to Public Portfolio</a>
-          </div>
-        </motion.div>
-      </div>
+        {/* Divider */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, margin: '22px 0' }}>
+          <div style={{ flex: 1, height: 1, background: 'var(--admin-border, rgba(255,255,255,0.08))' }} />
+          <span style={{ fontSize: '0.75rem', color: 'var(--admin-text-muted, #697386)', fontWeight: 600, letterSpacing: '0.06em' }}>
+            OR
+          </span>
+          <div style={{ flex: 1, height: 1, background: 'var(--admin-border, rgba(255,255,255,0.08))' }} />
+        </div>
 
-      <style>{`
-        @media (min-width: 1024px) {
-          .dmos-login-left { display: flex !important; }
-        }
-      `}</style>
+        {/* Google OAuth Button */}
+        <button
+          onClick={loginWithGoogle}
+          disabled={isLoading}
+          style={{
+            width: '100%',
+            height: 48,
+            background: 'rgba(255, 255, 255, 0.04)',
+            border: '1px solid var(--admin-border, rgba(255, 255, 255, 0.08))',
+            borderRadius: 12,
+            color: 'var(--admin-text, #F5F7FA)',
+            fontSize: '0.9rem',
+            fontWeight: 500,
+            cursor: isLoading ? 'not-allowed' : 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 10,
+            transition: 'background 0.2s, border-color 0.2s',
+          }}
+          onMouseEnter={(e) => {
+            if (!isLoading) {
+              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.08)';
+              e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.15)';
+            }
+          }}
+          onMouseLeave={(e) => {
+            if (!isLoading) {
+              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.04)';
+              e.currentTarget.style.borderColor = 'var(--admin-border, rgba(255, 255, 255, 0.08))';
+            }
+          }}
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <path
+              d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+              fill="#4285F4"
+            />
+            <path
+              d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+              fill="#34A853"
+            />
+            <path
+              d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+              fill="#FBBC05"
+            />
+            <path
+              d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+              fill="#EA4335"
+            />
+          </svg>
+          Continue with Google
+        </button>
+
+        {/* Footer Return Link */}
+        <div style={{ marginTop: 24, textAlign: 'center' }}>
+          <a
+            href="/"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 6,
+              fontSize: '0.8rem',
+              color: 'var(--admin-text-muted, #697386)',
+              textDecoration: 'none',
+              transition: 'color 0.2s',
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--admin-text, #F5F7FA)')}
+            onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--admin-text-muted, #697386)')}
+          >
+            <ArrowLeft size={14} />
+            Return to portfolio
+          </a>
+        </div>
+      </motion.div>
     </div>
   );
 };

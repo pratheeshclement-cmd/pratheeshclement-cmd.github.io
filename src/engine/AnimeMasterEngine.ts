@@ -60,12 +60,12 @@ export class AnimeMasterEngine {
       }, 0);
     }
 
-    // 2. Profile Image Assembly (No filter blurs on mobile)
+    // 2. Profile Image Assembly (scale pop-in, no filter blur)
     if (profileImg.length > 0) {
       const imgProps = isMobile ? { opacity: [0, 1] } : {
         scale: [0.88, 1],
-        filter: ['blur(12px)', 'blur(0px)'],
         opacity: [0, 1],
+        // ✅ filter:blur removed from image assembly — scale provides same cinematic effect
       };
 
       tl.add({
@@ -110,8 +110,8 @@ export class AnimeMasterEngine {
         translateX: cardTranslateX,
         translateY: cardTranslateY,
         scale: style === 'scale-up' ? [0.92, 1] : [0.96, 1],
-        filter: ['blur(8px)', 'blur(0px)'],
         opacity: [0, 1],
+        // ✅ filter:blur removed — triggers full GPU repaint every frame
       };
 
       tl.add({
@@ -187,8 +187,8 @@ export class AnimeMasterEngine {
       tl.add({
         targets: cards,
         translateY: exitY,
-        scale: [1, 0.95],
-        filter: ['blur(0px)', 'blur(8px)'],
+        scale: [1, 0.96],
+        // ✅ filter:blur removed — triggers full GPU repaint every animation frame
         opacity: [1, 0],
         delay: anime.stagger(30),
         duration: duration * 0.5,
@@ -198,7 +198,8 @@ export class AnimeMasterEngine {
     if (images.length > 0) {
       tl.add({
         targets: images,
-        scale: [1, 1.05],
+        scale: [1, 1.03],
+        // ✅ filter:blur removed from image exit
         opacity: [1, 0],
         duration: duration * 0.4,
       }, 120);

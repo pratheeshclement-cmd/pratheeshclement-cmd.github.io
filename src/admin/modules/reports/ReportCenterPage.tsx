@@ -54,7 +54,7 @@ export const ReportCenterPage: React.FC = () => {
         const encodedUri = encodeURI("data:text/csv;charset=utf-8," + csvStr);
         const link = document.createElement('a');
         link.setAttribute('href', encodedUri);
-        link.setAttribute('download', `DMOS_${selectedReport}_${new Date().toISOString().substring(0, 10)}.csv`);
+        link.setAttribute('download', `Pratheesh_${selectedReport}_${new Date().toISOString().substring(0, 10)}.csv`);
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -66,12 +66,12 @@ export const ReportCenterPage: React.FC = () => {
             : reportRows.map(r => `<tr><td>${r.key}</td><td>${r.val}</td></tr>`).join('');
 
           pw.document.write(`
-            <html><head><title>DMOS Live Report — ${selectedReport}</title>
-            <style>body{font-family:system-ui,sans-serif;padding:40px;color:#0f172a}h1{color:#2E5AFF}
+            <html><head><title>Pratheesh Admin Live Report — ${selectedReport}</title>
+            <style>body{font-family:system-ui,sans-serif;padding:40px;color:#0f172a}h1{color:#3B63FF}
             .card{border:1px solid #cbd5e1;border-radius:8px;padding:20px;margin-bottom:16px;background:#f8fafc}
             table{width:100%;border-collapse:collapse}th,td{border:1px solid #cbd5e1;padding:10px 14px;font-size:13px}
             th{background:#e2e8f0;text-align:left}</style></head><body>
-            <h1>DMOS Live Enterprise Report</h1>
+            <h1>Pratheesh Admin Live Report</h1>
             <p style="color:#64748b">Report Type: ${selectedReport} · Firestore Collection: ${collectionName} · Generated: ${new Date().toLocaleString()}</p>
             <div class="card">
               <h2>Data Records (${reportRows.length})</h2>

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 
 interface ParticleCanvasEngineProps {
-  progress: number; // Master scroll progress 0.0 -> 1.0
+  progress: number; // Master scroll progress 0.0 -> 1.0 (kept for API compat)
 }
 
 interface Particle {
@@ -16,7 +16,7 @@ interface Particle {
   originY: number;
 }
 
-export const ParticleCanvasEngine: React.FC<ParticleCanvasEngineProps> = ({ progress }) => {
+export const ParticleCanvasEngine: React.FC<ParticleCanvasEngineProps> = ({ progress: _progress }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -68,12 +68,10 @@ export const ParticleCanvasEngine: React.FC<ParticleCanvasEngineProps> = ({ prog
         if (p1.y < 0) p1.y = height;
         if (p1.y > height) p1.y = 0;
 
-        // Draw particle dot
+        // Draw particle dot — no shadowBlur (expensive canvas op)
         ctx.save();
-        ctx.globalAlpha = p1.alpha * (1 - Math.abs(progress - 0.5) * 0.5);
+        ctx.globalAlpha = p1.alpha;
         ctx.fillStyle = p1.color;
-        ctx.shadowBlur = 10;
-        ctx.shadowColor = p1.color;
         ctx.beginPath();
         ctx.arc(p1.x, p1.y, p1.size, 0, Math.PI * 2);
         ctx.fill();
@@ -109,7 +107,7 @@ export const ParticleCanvasEngine: React.FC<ParticleCanvasEngineProps> = ({ prog
       window.removeEventListener('resize', handleResize);
       cancelAnimationFrame(animationFrameId);
     };
-  }, [progress]);
+  }, []); // ✅ FIXED: was [progress] — caused full canvas re-init on every scroll tick
 
   return (
     <canvas

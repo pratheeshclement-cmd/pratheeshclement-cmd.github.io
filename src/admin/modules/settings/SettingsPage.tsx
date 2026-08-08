@@ -28,7 +28,7 @@ export const SettingsPage: React.FC = () => {
   const [loadingAudit, setLoadingAudit] = useState(true);
 
   // Settings State
-  const [appName, setAppName] = useState('DMOS Enterprise OS');
+  const [appName, setAppName] = useState('Pratheesh Admin');
   const [siteUrl, setSiteUrl] = useState('https://pratheeshclement-cmd.github.io/');
   const [maintenanceMode, setMaintenanceMode] = useState(false);
 

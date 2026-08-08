@@ -34,7 +34,8 @@ const NAV: NavSection[] = [
   {
     section: 'Analytics & Health',
     items: [
-      { id: 'analytics',   label: 'Analytics',        icon: BarChart2 },
+      { id: 'analytics',   label: 'GA4 Analytics',    icon: BarChart2 },
+      { id: 'clarity',     label: 'Microsoft Clarity',icon: Activity },
       { id: 'performance', label: 'Performance',      icon: Zap },
       { id: 'monitor',     label: 'Website Monitor',  icon: Activity, badge: '99.9%', badgeColor: 'success' },
     ],
@@ -147,13 +148,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
         borderBottom: '1px solid var(--dmos-border)', flexShrink: 0,
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, overflow: 'hidden' }}>
-          <div style={{
-            width: 32, height: 32, borderRadius: 9, flexShrink: 0,
-            background: 'linear-gradient(135deg, var(--dmos-primary) 0%, var(--dmos-secondary) 100%)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontWeight: 900, fontSize: '0.88rem', color: '#fff',
-            boxShadow: '0 2px 8px rgba(46,90,255,0.4)',
-          }}>D</div>
+          <img
+            src="/assets/pratheesh4k1.jpeg"
+            alt="Pratheesh"
+            style={{
+              width: 32, height: 32, borderRadius: 10, flexShrink: 0,
+              objectFit: 'cover', border: '1.5px solid var(--admin-accent, #3B63FF)',
+              boxShadow: '0 2px 8px rgba(59,99,255,0.3)',
+            }}
+          />
           {(!collapsed || isMobile) && (
             <motion.div
               initial={false}
@@ -161,10 +164,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
               style={{ overflow: 'hidden' }}
             >
               <div style={{ fontWeight: 800, fontSize: '0.9rem', color: 'var(--dmos-text)', lineHeight: 1.1, whiteSpace: 'nowrap' }}>
-                DMOS
+                Pratheesh
               </div>
               <div style={{ fontSize: '0.58rem', color: 'var(--dmos-text-subtle)', letterSpacing: '0.10em', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>
-                Enterprise OS
+                Control Center
               </div>
             </motion.div>
           )}

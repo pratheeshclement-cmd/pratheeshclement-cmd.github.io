@@ -1,20 +1,56 @@
-// ─── DMOS Connections Express Router ─────────────────────────────────────────
+// ─── DMOS Connections Gateway Router ──────────────────────────────────────────
+// Live production-grade health monitor and verification endpoints for all 12 providers.
 
 import { Router, Request, Response } from 'express';
+import { requireAdminAuth } from '../middleware/auth';
+import { verifyAllConnections, verifySingleProvider } from '../services/integrations';
 
 export const connectionsRouter = Router();
 
-// GET /api/connections/health
-connectionsRouter.get('/health', (req: Request, res: Response) => {
-  res.json({
-    success: true,
-    providers: [
-      { id: 'ga4', name: 'Google Analytics 4', status: 'connected', latencyMs: 24 },
-      { id: 'gsc', name: 'Google Search Console', status: 'connected', latencyMs: 18 },
-      { id: 'github', name: 'GitHub API', status: 'connected', latencyMs: 32 },
-      { id: 'gemini', name: 'Google Gemini AI', status: 'connected', latencyMs: 120 },
-      { id: 'firebase', name: 'Firebase & Firestore', status: 'connected', latencyMs: 12 },
-      { id: 'cloudflare', name: 'Cloudflare CDN', status: 'connected', latencyMs: 8 },
-    ],
-  });
+// GET /api/admin/connections - Authenticated live check across all 12 providers
+connectionsRouter.get('/', requireAdminAuth as any, async (req: Request, res: Response) => {
+  try {
+    const providers = await verifyAllConnections();
+    res.json({
+      success: true,
+      providers,
+      timestamp: new Date().toISOString(),
+    });
+  } catch (e: any) {
+    res.status(500).json({ success: false, error: e.message });
+  }
+});
+
+// GET /api/connections/health - Backward-compatible public health summary (no secrets)
+connectionsRouter.get('/health', async (req: Request, res: Response) => {
+  try {
+    const providers = await verifyAllConnections();
+    res.json({
+      success: true,
+      providers: providers.map(p => ({
+        id: p.id,
+        name: p.name,
+        category: p.category,
+        status: p.status,
+        latencyMs: p.latencyMs,
+        lastCheckedAt: p.lastCheckedAt,
+      })),
+    });
+  } catch (e: any) {
+    res.status(500).json({ success: false, error: e.message });
+  }
+});
+
+// POST /api/admin/connections/verify/:providerId - Single provider verification
+connectionsRouter.post('/verify/:providerId', requireAdminAuth as any, async (req: Request, res: Response) => {
+  try {
+    const { providerId } = req.params;
+    const result = await verifySingleProvider(providerId);
+    res.json(result);
+  } catch (e: any) {
+    res.status(500).json({
+      success: false,
+      error: e.message || `Error verifying provider ${req.params.providerId}`,
+    });
+  }
 });

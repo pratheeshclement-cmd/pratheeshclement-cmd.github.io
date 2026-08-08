@@ -1,4 +1,4 @@
-// Analytics & Cookie-Consent gating engine for GA4 & Meta Pixel
+import { loadClarity } from './clarity';
 
 export const GA4_MEASUREMENT_ID = 'G-XXXXXXXXXX'; // Placeholder as requested
 export const META_PIXEL_ID = '983425767341384'; // Actual user provided Meta Pixel ID
@@ -7,8 +7,12 @@ let ga4Loaded = false;
 let metaPixelLoaded = false;
 
 export function initAnalytics(consent: { analytics: boolean; marketing: boolean }) {
-  if (consent.analytics && !ga4Loaded && GA4_MEASUREMENT_ID !== 'G-XXXXXXXXXX') {
-    loadGA4(GA4_MEASUREMENT_ID);
+  if (consent.analytics) {
+    if (!ga4Loaded && GA4_MEASUREMENT_ID !== 'G-XXXXXXXXXX') {
+      loadGA4(GA4_MEASUREMENT_ID);
+    }
+    // Initialize Microsoft Clarity tracking (Project ID: xz1njtkayn) upon analytics consent
+    loadClarity();
   }
   if (consent.marketing && !metaPixelLoaded) {
     loadMetaPixel(META_PIXEL_ID);
