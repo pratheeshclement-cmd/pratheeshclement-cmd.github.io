@@ -192,6 +192,31 @@ const ROUTES = [
   },
 ];
 
+const ADMIN_ROUTES = [
+  '/admin/',
+  '/admin/dashboard/',
+  '/admin/analytics/',
+  '/admin/performance/',
+  '/admin/monitor/',
+  '/admin/marketing/',
+  '/admin/seo/',
+  '/admin/crm/',
+  '/admin/content-studio/',
+  '/admin/cms/',
+  '/admin/projects/',
+  '/admin/blog/',
+  '/admin/media/',
+  '/admin/ai/',
+  '/admin/automation/',
+  '/admin/reports/',
+  '/admin/integrations/',
+  '/admin/connections/',
+  '/admin/notifications/',
+  '/admin/settings/',
+  '/admin/users/',
+  '/admin/profile/',
+];
+
 console.log('🚀 Running Static HTML Prerendering Engine for GitHub Pages...');
 
 const templatePath = path.join(DIST_DIR, 'index.html');
@@ -202,6 +227,7 @@ if (!fs.existsSync(templatePath)) {
 
 const templateHtml = fs.readFileSync(templatePath, 'utf8');
 
+// 1. Pre-render public portfolio routes
 ROUTES.forEach(route => {
   const routeDir = path.join(DIST_DIR, route.path);
   fs.mkdirSync(routeDir, { recursive: true });
@@ -240,7 +266,29 @@ ROUTES.forEach(route => {
   console.log(`  ✓ Pre-rendered: ${route.path} -> dist${route.path}index.html`);
 });
 
-console.log(`\n✅ Prerendered ${ROUTES.length} static HTML route entry points!`);
+console.log(`\n✅ Prerendered ${ROUTES.length} static HTML portfolio route entry points!`);
+
+// 2. Generate DMOS Admin entry points (dist/admin/index.html & sub-routes)
+console.log('\n🔒 Generating DMOS Admin GitHub Pages Entry Points...');
+ADMIN_ROUTES.forEach(adminRoute => {
+  const routeDir = path.join(DIST_DIR, adminRoute);
+  fs.mkdirSync(routeDir, { recursive: true });
+
+  const canonicalUrl = `${BASE_URL}${adminRoute}`;
+
+  let pageHtml = templateHtml
+    .replace(/<title>.*?<\/title>/, `<title>DMOS Enterprise Admin | Pratheesh OS</title>`)
+    .replace(/<meta name="robots" content=".*?" \/>/, `<meta name="robots" content="noindex, nofollow" />`)
+    .replace(/<link rel="canonical" href=".*?" \/>/, `<link rel="canonical" href="${canonicalUrl}" />`)
+    .replace(/<meta property="og:title" content=".*?" \/>/, `<meta property="og:title" content="DMOS Enterprise Admin" />`)
+    .replace(/<meta property="og:url" content=".*?" \/>/, `<meta property="og:url" content="${canonicalUrl}" />`);
+
+  const destPath = path.join(routeDir, 'index.html');
+  fs.writeFileSync(destPath, pageHtml, 'utf8');
+  console.log(`  ✓ Admin Entry: ${adminRoute} -> dist${adminRoute}index.html`);
+});
+
+console.log(`✅ Generated ${ADMIN_ROUTES.length} DMOS Admin HTML entry points!`);
 
 // ─────────────────────────────────────────────────────────────────────────────
 // AUTOMATED BUILD SAFETY VALIDATION GATE
@@ -262,6 +310,15 @@ function getAllHtmlFiles(dir, fileList = []) {
 
 const allHtmlFiles = getAllHtmlFiles(DIST_DIR);
 let validationFailed = false;
+
+// Assert dist/admin/index.html exists
+const adminIndexPath = path.join(DIST_DIR, 'admin', 'index.html');
+if (!fs.existsSync(adminIndexPath)) {
+  console.error(`❌ CRITICAL BUILD FAILURE: dist/admin/index.html does NOT exist!`);
+  validationFailed = true;
+} else {
+  console.log(`  ✓ Verified: dist/admin/index.html exists.`);
+}
 
 allHtmlFiles.forEach(file => {
   const content = fs.readFileSync(file, 'utf8');
@@ -298,4 +355,5 @@ if (validationFailed) {
 } else {
   console.log(`✅ Production build safety validation PASSED across ${allHtmlFiles.length} HTML files!`);
 }
+
 

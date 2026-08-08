@@ -7,6 +7,8 @@ import { db } from '../../../lib/firebase';
 import { Card, Button, Badge, PageHeader, Input } from '../../design-system/components';
 import { UserRole } from '../../auth/AuthProvider';
 
+const API_BASE = (import.meta.env.VITE_API_BASE_URL as string) || (import.meta.env.VITE_BACKEND_URL as string) || 'http://localhost:5000/api';
+
 interface AdminUser {
   id: string;
   uid?: string;
@@ -40,42 +42,47 @@ export const UsersPage: React.FC = () => {
 
   useEffect(() => {
     if (!db) {
-      setUsers([
-        { id: '1', name: 'Pratheesh Clement', email: 'pratheesh.clement@gmail.com', role: 'Owner', status: 'active', lastSeen: 'Just now' }
-      ]);
       setLoading(false);
       return;
     }
 
     const unsubscribe = onSnapshot(collection(db, 'users'), (snapshot) => {
-      const items: AdminUser[] = snapshot.docs.map(d => ({
-        id: d.id,
-        ...(d.data() as Omit<AdminUser, 'id'>)
-      }));
-      setUsers(items);
+      const docs: AdminUser[] = snapshot.docs.map(d => {
+        const data = d.data();
+        return {
+          id: d.id,
+          uid: d.id,
+          name: data.displayName || data.email?.split('@')[0] || 'User',
+          email: data.email || '',
+          role: (data.role as UserRole) || 'Editor',
+          status: data.status || 'active',
+          lastSeen: data.lastLogin ? new Date(data.lastLogin).toLocaleDateString() : 'Never',
+          createdAt: data.createdAt ? new Date(data.createdAt).toLocaleDateString() : '',
+          photoURL: data.photoURL || undefined,
+        };
+      });
+      setUsers(docs);
       setLoading(false);
     }, (err) => {
-      console.warn('[UsersPage] Firestore subscription:', err.message);
+      console.warn('[UsersPage] Firestore sync warning:', err.message);
       setLoading(false);
     });
 
     return () => unsubscribe();
   }, []);
 
-  const handleInviteUser = async () => {
-    if (!newEmail || !newName) {
-      alert('Name and Email are required.');
-      return;
-    }
+  const handleInviteUser = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (!newEmail) return;
 
     try {
-      const uid = `user_${Date.now()}`;
+      const uid = `invited_${Date.now()}`;
       const newUserDoc = {
         uid,
-        name: newName,
         email: newEmail,
+        displayName: newName || newEmail.split('@')[0],
         role: newRole,
-        status: 'active' as const,
+        status: 'active',
         createdAt: new Date().toISOString(),
         lastSeen: 'Invited',
       };
@@ -84,7 +91,7 @@ export const UsersPage: React.FC = () => {
         await setDoc(doc(db, 'users', uid), newUserDoc);
       }
 
-      await fetch('http://localhost:5000/api/users/invite', {
+      await fetch(`${API_BASE}/users/invite`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: newEmail, role: newRole }),
@@ -105,7 +112,7 @@ export const UsersPage: React.FC = () => {
         await updateDoc(doc(db, 'users', user.id), { status: nextStatus, updatedAt: new Date().toISOString() });
       }
 
-      await fetch('http://localhost:5000/api/users/suspend', {
+      await fetch(`${API_BASE}/users/suspend`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ uid: user.id, status: nextStatus }),
@@ -123,7 +130,7 @@ export const UsersPage: React.FC = () => {
         await updateDoc(doc(db, 'users', user.id), { role, updatedAt: new Date().toISOString() });
       }
 
-      await fetch('http://localhost:5000/api/users/update-role', {
+      await fetch(`${API_BASE}/users/update-role`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ uid: user.id, role }),
@@ -149,7 +156,7 @@ export const UsersPage: React.FC = () => {
 
   const handleResetPassword = async (user: AdminUser) => {
     try {
-      await fetch('http://localhost:5000/api/users/reset-password', {
+      await fetch(`${API_BASE}/users/reset-password`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: user.email }),

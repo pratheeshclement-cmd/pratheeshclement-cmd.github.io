@@ -190,7 +190,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     } catch (err: any) {
       console.warn('[AuthProvider] Popup sign-in warning, redirecting to Express Google OAuth endpoint...', err.message);
       // Redirect to Express Google OAuth backend route if popup is blocked
-      window.location.href = 'http://localhost:5000/auth/google';
+      const apiBase = (import.meta.env.VITE_API_BASE_URL as string) || (import.meta.env.VITE_BACKEND_URL as string) || 'http://localhost:5000/api';
+      const googleAuthUrl = apiBase.replace(/\/api\/?$/, '') + '/auth/google';
+      window.location.href = googleAuthUrl;
       return false;
     }
   };

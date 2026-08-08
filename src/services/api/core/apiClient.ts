@@ -3,7 +3,7 @@
 
 import { auth } from '../../../lib/firebase';
 
-const BASE_URL = 'http://localhost:5000/api';
+const BASE_URL = (import.meta.env.VITE_API_BASE_URL as string) || (import.meta.env.VITE_BACKEND_URL as string) || 'http://localhost:5000/api';
 const DEFAULT_TIMEOUT_MS = 15000;
 
 export interface ApiResponse<T> {

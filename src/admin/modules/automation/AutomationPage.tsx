@@ -47,7 +47,8 @@ export const AutomationPage: React.FC = () => {
     const start = Date.now();
     try {
       // Execute via backend Express API endpoint
-      const res = await fetch('http://localhost:5000/api/health');
+      const API_BASE = (import.meta.env.VITE_API_BASE_URL as string) || (import.meta.env.VITE_BACKEND_URL as string) || 'http://localhost:5000/api';
+      const res = await fetch(`${API_BASE}/health`);
       const durationMs = Date.now() - start;
 
       const logItem = {

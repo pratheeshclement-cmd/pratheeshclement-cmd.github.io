@@ -77,7 +77,8 @@ export const SettingsPage: React.FC = () => {
         });
       }
 
-      await fetch('http://localhost:5000/api/settings/system', {
+      const API_BASE = (import.meta.env.VITE_API_BASE_URL as string) || (import.meta.env.VITE_BACKEND_URL as string) || 'http://localhost:5000/api';
+      await fetch(`${API_BASE}/settings/system`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updatedSettings),

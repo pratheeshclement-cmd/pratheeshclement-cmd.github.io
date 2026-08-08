@@ -35,8 +35,9 @@ export const ContentStudioPage: React.FC = () => {
 
   // Subscribe to Firestore content_queue collection
   useEffect(() => {
+    const API_BASE = (import.meta.env.VITE_API_BASE_URL as string) || (import.meta.env.VITE_BACKEND_URL as string) || 'http://localhost:5000/api';
     if (!db) {
-      fetch('http://localhost:5000/api/content-studio/queue')
+      fetch(`${API_BASE}/content-studio/queue`)
         .then(r => r.json())
         .then(d => { if (d.items) setPosts(d.items); setLoading(false); })
         .catch(() => setLoading(false));
@@ -77,7 +78,8 @@ export const ContentStudioPage: React.FC = () => {
       if (db) {
         await addDoc(collection(db, 'content_queue'), newPost);
       }
-      await fetch('http://localhost:5000/api/content-studio/queue', {
+      const API_BASE = (import.meta.env.VITE_API_BASE_URL as string) || (import.meta.env.VITE_BACKEND_URL as string) || 'http://localhost:5000/api';
+      await fetch(`${API_BASE}/content-studio/queue`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newPost),

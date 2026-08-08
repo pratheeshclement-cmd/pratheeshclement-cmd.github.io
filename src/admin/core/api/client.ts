@@ -5,7 +5,7 @@ import { withRetry } from './retry';
 import { apiCache } from './cache';
 import { ApiError, parseApiError } from './errors';
 
-const BACKEND_BASE_URL = (import.meta.env.VITE_BACKEND_URL as string) || 'http://localhost:5000/api';
+const BACKEND_BASE_URL = (import.meta.env.VITE_API_BASE_URL as string) || (import.meta.env.VITE_BACKEND_URL as string) || 'http://localhost:5000/api';
 
 export interface ApiRequestOptions {
   method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';

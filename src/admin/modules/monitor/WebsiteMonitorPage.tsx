@@ -39,7 +39,8 @@ export const WebsiteMonitorPage: React.FC = () => {
 
   const fetchMetrics = () => {
     setRefreshing(true);
-    fetch('http://localhost:5000/api/system/metrics')
+    const API_BASE = (import.meta.env.VITE_API_BASE_URL as string) || (import.meta.env.VITE_BACKEND_URL as string) || 'http://localhost:5000/api';
+    fetch(`${API_BASE}/system/metrics`)
       .then(r => r.json())
       .then(d => { setMetrics(d); setLoading(false); setRefreshing(false); })
       .catch(() => { setLoading(false); setRefreshing(false); });

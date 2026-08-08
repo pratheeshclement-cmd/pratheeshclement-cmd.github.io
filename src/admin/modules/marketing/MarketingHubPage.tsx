@@ -41,8 +41,9 @@ export const MarketingHubPage: React.FC = () => {
 
   // Realtime Firestore Listener for campaigns
   useEffect(() => {
+    const API_BASE = (import.meta.env.VITE_API_BASE_URL as string) || (import.meta.env.VITE_BACKEND_URL as string) || 'http://localhost:5000/api';
     if (!db) {
-      fetch('http://localhost:5000/api/marketing/campaigns')
+      fetch(`${API_BASE}/marketing/campaigns`)
         .then(r => r.json())
         .then(d => { if (d.campaigns) setCampaigns(d.campaigns); setLoading(false); })
         .catch(() => setLoading(false));
@@ -86,7 +87,8 @@ export const MarketingHubPage: React.FC = () => {
       if (db) {
         await addDoc(collection(db, 'campaigns'), newCamp);
       }
-      await fetch('http://localhost:5000/api/marketing/campaigns', {
+      const API_BASE = (import.meta.env.VITE_API_BASE_URL as string) || (import.meta.env.VITE_BACKEND_URL as string) || 'http://localhost:5000/api';
+      await fetch(`${API_BASE}/marketing/campaigns`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newCamp),

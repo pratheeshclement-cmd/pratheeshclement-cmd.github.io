@@ -42,7 +42,8 @@ export const ConnectionsPage: React.FC = () => {
 
   const fetchGitHub = () => {
     setLoadingGitHub(true);
-    fetch('http://localhost:5000/api/github/repo-stats')
+    const API_BASE = (import.meta.env.VITE_API_BASE_URL as string) || (import.meta.env.VITE_BACKEND_URL as string) || 'http://localhost:5000/api';
+    fetch(`${API_BASE}/github/repo-stats`)
       .then(r => r.json())
       .then(d => { setGithubData(d); setLoadingGitHub(false); })
       .catch(() => setLoadingGitHub(false));

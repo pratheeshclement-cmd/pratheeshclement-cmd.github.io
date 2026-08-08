@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Pratheesh OS</title>
+  <script>
+    // Single Page Apps for GitHub Pages
+    // https://github.com/rafgraph/spa-github-pages
+    // This script takes the current URL and converts the path and query
+    // string into a key-value pair in the query string, which is then
+    // decoded by the SPA router in index.html.
+    var pathSegmentsToKeep = 0;
+    var l = window.location;
+    l.replace(
+      l.protocol + '//' + l.host + (l.pathname.split('/').slice(0, 1 + pathSegmentsToKeep).join('/')) + '/?p=' +
+      encodeURIComponent(l.pathname.slice(1).replace(/&/g, '~and~')) +
+      (l.search ? '&q=' + encodeURIComponent(l.search.slice(1).replace(/&/g, '~and~')) : '') +
+      l.hash
+    );
+  </script>
+</head>
+<body>
+</body>
+</html>
