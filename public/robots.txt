@@ -1,0 +1,8 @@
+# robots.txt for https://pratheeshclement-cmd.github.io/
+User-agent: *
+Allow: /
+Allow: /assets/
+Allow: /resume/
+
+# Sitemaps
+Sitemap: https://pratheeshclement-cmd.github.io/sitemap.xml
