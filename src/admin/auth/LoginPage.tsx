@@ -6,7 +6,7 @@ import '../design-system/tokens.css';
 
 export const LoginPage: React.FC = () => {
   const { login, loginWithGoogle, isLoading, error } = useAuth();
-  const [email, setEmail] = useState('pratheesh.clement@gmail.com');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPw, setShowPw] = useState(false);
 
@@ -178,7 +178,7 @@ export const LoginPage: React.FC = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                placeholder="pratheesh.clement@gmail.com"
+                
                 style={{
                   width: '100%',
                   height: 48,
@@ -227,7 +227,7 @@ export const LoginPage: React.FC = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                placeholder="••••••••"
+                
                 style={{
                   width: '100%',
                   height: 48,

@@ -11,7 +11,7 @@ import {
   User as FirebaseUser,
 } from 'firebase/auth';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
-import { auth, db } from '../../lib/firebase';
+import { auth, db, initError } from '../../lib/firebase';
 
 export type UserRole =
   | 'Owner'
@@ -158,7 +158,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const login = async (email: string, pass: string): Promise<boolean> => {
     setAuthError(null);
     if (!auth) {
-      setAuthError('Firebase Auth service unavailable');
+      setAuthError(initError ? `Firebase Auth service unavailable: ${initError}` : 'Firebase Auth service unavailable');
       return false;
     }
 
@@ -176,7 +176,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const loginWithGoogle = async (): Promise<boolean> => {
     setAuthError(null);
     if (!auth) {
-      setAuthError('Firebase Auth service unavailable');
+      setAuthError(initError ? `Firebase Auth service unavailable: ${initError}` : 'Firebase Auth service unavailable');
       return false;
     }
 

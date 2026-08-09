@@ -40,6 +40,15 @@ jobs:
         run: npm ci --prefix server
 
       - name: Build Application & Prerender Static HTML
+        env:
+          VITE_FIREBASE_API_KEY: ${{ secrets.VITE_FIREBASE_API_KEY || vars.VITE_FIREBASE_API_KEY || 'AIzaSyBMNWDEaMyAJ8lydV7LEbSiGRzMhGA6cLg' }}
+          VITE_FIREBASE_AUTH_DOMAIN: ${{ secrets.VITE_FIREBASE_AUTH_DOMAIN || vars.VITE_FIREBASE_AUTH_DOMAIN || 'pratheesh-os.firebaseapp.com' }}
+          VITE_FIREBASE_PROJECT_ID: ${{ secrets.VITE_FIREBASE_PROJECT_ID || vars.VITE_FIREBASE_PROJECT_ID || 'pratheesh-os' }}
+          VITE_FIREBASE_STORAGE_BUCKET: ${{ secrets.VITE_FIREBASE_STORAGE_BUCKET || vars.VITE_FIREBASE_STORAGE_BUCKET || 'pratheesh-os.firebasestorage.app' }}
+          VITE_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.VITE_FIREBASE_MESSAGING_SENDER_ID || vars.VITE_FIREBASE_MESSAGING_SENDER_ID || '880640506228' }}
+          VITE_FIREBASE_APP_ID: ${{ secrets.VITE_FIREBASE_APP_ID || vars.VITE_FIREBASE_APP_ID || '1:880640506228:web:66ffacc18deebf3c729421' }}
+          VITE_FIREBASE_MEASUREMENT_ID: ${{ secrets.VITE_FIREBASE_MEASUREMENT_ID || vars.VITE_FIREBASE_MEASUREMENT_ID || 'G-NF0P9LECTF' }}
+          VITE_GOOGLE_CLIENT_ID: ${{ secrets.VITE_GOOGLE_CLIENT_ID || vars.VITE_GOOGLE_CLIENT_ID || '1023264006959-7nhf77b0djtn79g8htu322pu9e2qecc7.apps.googleusercontent.com' }}
         run: npm run build
 
       - name: Verify Admin Build Entry Point Safety Gate

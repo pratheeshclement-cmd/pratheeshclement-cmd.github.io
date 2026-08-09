@@ -8,7 +8,7 @@ import { getStorage, FirebaseStorage } from 'firebase/storage';
 import { getAnalytics, isSupported, Analytics } from 'firebase/analytics';
 
 const firebaseConfig = {
-  apiKey:            import.meta.env.VITE_FIREBASE_API_KEY            || "",
+  apiKey:            import.meta.env.VITE_FIREBASE_API_KEY            || "AIzaSyBMNWDEaMyAJ8lydV7LEbSiGRzMhGA6cLg",
   authDomain:        import.meta.env.VITE_FIREBASE_AUTH_DOMAIN        || "pratheesh-os.firebaseapp.com",
   projectId:         import.meta.env.VITE_FIREBASE_PROJECT_ID         || "pratheesh-os",
   storageBucket:     import.meta.env.VITE_FIREBASE_STORAGE_BUCKET     || "pratheesh-os.firebasestorage.app",
