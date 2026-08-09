@@ -90,6 +90,7 @@ app.use('/api/reports', reportsRouter);
 app.use('/api/system', systemRouter);
 app.use('/api/marketing', marketingRouter);
 app.use('/api/content-studio', contentStudioRouter);
+app.use('/api/admin/users', usersRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/settings', settingsRouter);
 app.use('/api/dashboard', dashboardRouter);

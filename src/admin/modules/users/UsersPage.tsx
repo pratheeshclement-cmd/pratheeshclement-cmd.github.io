@@ -1,13 +1,13 @@
-// ─── DMOS User Management: Firestore Realtime Sync ──────────────────────────
+// ─── DMOS User Management: Realtime Firestore Sync & Protected Backend ───────
+// Real Firebase Auth identities, server-side RBAC authorization, and zero artificial UIDs.
 
 import React, { useState, useEffect } from 'react';
-import { Users, Shield, Plus, Edit2, Trash2, UserX, UserCheck, Key } from 'lucide-react';
-import { collection, onSnapshot, doc, setDoc, updateDoc, deleteDoc } from 'firebase/firestore';
+import { Users, Shield, Plus, Edit2, Trash2, UserX, UserCheck, Key, Loader2, AlertCircle } from 'lucide-react';
+import { collection, onSnapshot } from 'firebase/firestore';
 import { db } from '../../../lib/firebase';
 import { Card, Button, Badge, PageHeader, Input } from '../../design-system/components';
 import { UserRole } from '../../auth/AuthProvider';
-
-const API_BASE = (import.meta.env.VITE_API_BASE_URL as string) || (import.meta.env.VITE_BACKEND_URL as string) || 'http://localhost:5000/api';
+import { apiClient } from '../../../services/api/core/apiClient';
 
 interface AdminUser {
   id: string;
@@ -35,6 +35,10 @@ const ROLES: { id: UserRole; name: string; perms: string[]; color: string }[] = 
 export const UsersPage: React.FC = () => {
   const [users, setUsers] = useState<AdminUser[]>([]);
   const [loading, setLoading] = useState(true);
+  const [processing, setProcessing] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
   const [showInviteModal, setShowInviteModal] = useState(false);
   const [newEmail, setNewEmail] = useState('');
   const [newName, setNewName] = useState('');
@@ -46,124 +50,151 @@ export const UsersPage: React.FC = () => {
       return;
     }
 
-    const unsubscribe = onSnapshot(collection(db, 'users'), (snapshot) => {
-      const docs: AdminUser[] = snapshot.docs.map(d => {
-        const data = d.data();
-        return {
-          id: d.id,
-          uid: d.id,
-          name: data.displayName || data.email?.split('@')[0] || 'User',
-          email: data.email || '',
-          role: (data.role as UserRole) || 'Editor',
-          status: data.status || 'active',
-          lastSeen: data.lastLogin ? new Date(data.lastLogin).toLocaleDateString() : 'Never',
-          createdAt: data.createdAt ? new Date(data.createdAt).toLocaleDateString() : '',
-          photoURL: data.photoURL || undefined,
-        };
-      });
-      setUsers(docs);
-      setLoading(false);
-    }, (err) => {
-      console.warn('[UsersPage] Firestore sync warning:', err.message);
-      setLoading(false);
-    });
+    // Subscribe to Firestore 'users' collection changes for real-time synchronization
+    const unsubscribe = onSnapshot(
+      collection(db, 'users'),
+      (snapshot) => {
+        const docs: AdminUser[] = snapshot.docs.map((d) => {
+          const data = d.data();
+          return {
+            id: d.id,
+            uid: d.id,
+            name: data.displayName || data.email?.split('@')[0] || 'User',
+            email: data.email || '',
+            role: (data.role as UserRole) || 'Editor',
+            status: data.status || 'active',
+            lastSeen: data.lastLogin ? new Date(data.lastLogin).toLocaleDateString() : 'Never',
+            createdAt: data.createdAt ? new Date(data.createdAt).toLocaleDateString() : '',
+            photoURL: data.photoURL || undefined,
+          };
+        });
+        setUsers(docs);
+        setLoading(false);
+      },
+      (err) => {
+        console.warn('[UsersPage] Firestore sync warning:', err.message);
+        setLoading(false);
+      }
+    );
 
     return () => unsubscribe();
   }, []);
 
+  const clearAlerts = () => {
+    setErrorMessage(null);
+    setSuccessMessage(null);
+  };
+
   const handleInviteUser = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
-    if (!newEmail) return;
+    clearAlerts();
 
+    if (!newEmail || !newEmail.includes('@')) {
+      setErrorMessage('Please enter a valid email address.');
+      return;
+    }
+
+    setProcessing(true);
     try {
-      const uid = `invited_${Date.now()}`;
-      const newUserDoc = {
-        uid,
-        email: newEmail,
-        displayName: newName || newEmail.split('@')[0],
-        role: newRole,
-        status: 'active',
-        createdAt: new Date().toISOString(),
-        lastSeen: 'Invited',
-      };
-
-      if (db) {
-        await setDoc(doc(db, 'users', uid), newUserDoc);
-      }
-
-      await fetch(`${API_BASE}/users/invite`, {
+      const response = await apiClient<{ success: boolean; message: string; inviteLink?: string }>('/users/invite', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: newEmail, role: newRole }),
-      }).catch(() => {});
+        body: JSON.stringify({
+          email: newEmail,
+          displayName: newName,
+          role: newRole,
+        }),
+      });
 
-      setShowInviteModal(false);
-      setNewEmail('');
-      setNewName('');
-    } catch (e: any) {
-      alert(`Invite error: ${e.message}`);
+      if (response.success) {
+        setSuccessMessage(response.message || `Invitation created cleanly for ${newEmail}.`);
+        setShowInviteModal(false);
+        setNewEmail('');
+        setNewName('');
+      } else {
+        setErrorMessage('Failed to process user invitation.');
+      }
+    } catch (err: any) {
+      setErrorMessage(err.message || 'Error executing invitation request.');
+    } finally {
+      setProcessing(false);
     }
   };
 
   const toggleUserStatus = async (user: AdminUser) => {
+    clearAlerts();
     const nextStatus = user.status === 'active' ? 'suspended' : 'active';
+    setProcessing(true);
     try {
-      if (db && user.id) {
-        await updateDoc(doc(db, 'users', user.id), { status: nextStatus, updatedAt: new Date().toISOString() });
-      }
-
-      await fetch(`${API_BASE}/users/suspend`, {
+      const response = await apiClient<{ success: boolean; message: string }>('/users/suspend', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ uid: user.id, status: nextStatus }),
-      }).catch(() => {});
+      });
 
-      setUsers(prev => prev.map(u => u.id === user.id ? { ...u, status: nextStatus } : u));
-    } catch (e: any) {
-      alert(`Update error: ${e.message}`);
+      if (response.success) {
+        setSuccessMessage(response.message || `User status updated to ${nextStatus}.`);
+      }
+    } catch (err: any) {
+      setErrorMessage(err.message || 'Error updating user status.');
+    } finally {
+      setProcessing(false);
     }
   };
 
   const handleRoleChange = async (user: AdminUser, role: UserRole) => {
+    clearAlerts();
+    setProcessing(true);
     try {
-      if (db && user.id) {
-        await updateDoc(doc(db, 'users', user.id), { role, updatedAt: new Date().toISOString() });
-      }
-
-      await fetch(`${API_BASE}/users/update-role`, {
+      const response = await apiClient<{ success: boolean; message: string }>('/users/update-role', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ uid: user.id, role }),
-      }).catch(() => {});
+      });
 
-      setUsers(prev => prev.map(u => u.id === user.id ? { ...u, role } : u));
-    } catch (e: any) {
-      alert(`Role error: ${e.message}`);
+      if (response.success) {
+        setSuccessMessage(response.message || `Role updated to ${role}.`);
+      }
+    } catch (err: any) {
+      setErrorMessage(err.message || 'Error updating user role.');
+    } finally {
+      setProcessing(false);
     }
   };
 
   const handleDeleteUser = async (user: AdminUser) => {
-    if (!confirm(`Are you sure you want to delete ${user.name}?`)) return;
+    clearAlerts();
+    if (!confirm(`Are you sure you want to delete user ${user.name} (${user.email})?`)) return;
+
+    setProcessing(true);
     try {
-      if (db && user.id) {
-        await deleteDoc(doc(db, 'users', user.id));
+      const response = await apiClient<{ success: boolean; message: string }>(`/users/${user.id}`, {
+        method: 'DELETE',
+      });
+
+      if (response.success) {
+        setSuccessMessage(response.message || `User deleted successfully.`);
       }
-      setUsers(prev => prev.filter(u => u.id !== user.id));
-    } catch (e: any) {
-      alert(`Delete error: ${e.message}`);
+    } catch (err: any) {
+      setErrorMessage(err.message || 'Error deleting user.');
+    } finally {
+      setProcessing(false);
     }
   };
 
   const handleResetPassword = async (user: AdminUser) => {
+    clearAlerts();
+    setProcessing(true);
     try {
-      await fetch(`${API_BASE}/users/reset-password`, {
+      const response = await apiClient<{ success: boolean; message: string; resetLink?: string }>('/users/reset-password', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: user.email }),
       });
-      alert(`Password reset instructions sent to ${user.email}`);
-    } catch (e: any) {
-      alert(`Reset password error: ${e.message}`);
+
+      if (response.success) {
+        setSuccessMessage(response.message || `Password reset instructions initiated for ${user.email}.`);
+      }
+    } catch (err: any) {
+      setErrorMessage(err.message || 'Error initiating password reset.');
+    } finally {
+      setProcessing(false);
     }
   };
 
@@ -171,24 +202,72 @@ export const UsersPage: React.FC = () => {
     <div className="dmos-page-shell">
       <PageHeader
         title="User & Access Management"
-        subtitle="Firestore Team Management & Role Delegations"
+        subtitle="Real-time Team Management, RBAC & Firebase Auth Synchronization"
         badge={<Badge variant="primary">{users.length} Users</Badge>}
-        actions={<Button variant="primary" onClick={() => setShowInviteModal(true)} leftIcon={<Plus size={14} />}>Invite Admin</Button>}
+        actions={
+          <Button
+            variant="primary"
+            onClick={() => {
+              clearAlerts();
+              setShowInviteModal(true);
+            }}
+            disabled={processing}
+            leftIcon={<Plus size={14} />}
+          >
+            Invite Admin
+          </Button>
+        }
       />
 
+      {errorMessage && (
+        <div
+          style={{
+            padding: '12px 16px',
+            marginBottom: 20,
+            background: 'rgba(239, 68, 68, 0.1)',
+            border: '1px solid rgba(239, 68, 68, 0.25)',
+            borderRadius: 10,
+            fontSize: '0.84rem',
+            color: '#F87171',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 10,
+          }}
+        >
+          <AlertCircle size={16} />
+          <span>{errorMessage}</span>
+        </div>
+      )}
+
+      {successMessage && (
+        <div
+          style={{
+            padding: '12px 16px',
+            marginBottom: 20,
+            background: 'rgba(34, 197, 94, 0.1)',
+            border: '1px solid rgba(34, 197, 94, 0.25)',
+            borderRadius: 10,
+            fontSize: '0.84rem',
+            color: '#4ADE80',
+          }}
+        >
+          {successMessage}
+        </div>
+      )}
+
       <div className="admin-responsive-grid-2" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 20 }}>
-        {/* Roles */}
+        {/* Roles Permission Matrix */}
         <div>
           <h2 style={{ fontSize: '0.8rem', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--dmos-text-subtle)', marginBottom: 14 }}>Role Permission Matrix</h2>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-            {ROLES.map(role => (
+            {ROLES.map((role) => (
               <div key={role.id} style={{ padding: '14px', borderRadius: 10, background: 'var(--dmos-card)', border: '1px solid var(--dmos-border)' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
                   <div style={{ width: 8, height: 8, borderRadius: '50%', background: role.color }} />
                   <span style={{ fontSize: '0.88rem', fontWeight: 700, color: 'var(--dmos-text)' }}>{role.name}</span>
                 </div>
                 <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-                  {role.perms.map(p => (
+                  {role.perms.map((p) => (
                     <span key={p} style={{ fontSize: '0.66rem', padding: '2px 8px', borderRadius: 4, background: `${role.color}15`, color: role.color, border: `1px solid ${role.color}30` }}>{p}</span>
                   ))}
                 </div>
@@ -201,12 +280,17 @@ export const UsersPage: React.FC = () => {
         <div>
           <h2 style={{ fontSize: '0.8rem', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--dmos-text-subtle)', marginBottom: 14 }}>Active Team Members</h2>
           <Card style={{ padding: 0 }}>
-            {users.length === 0 ? (
+            {loading ? (
+              <div style={{ padding: 40, textAlign: 'center', color: 'var(--dmos-text-subtle)', fontSize: '0.84rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10 }}>
+                <Loader2 size={18} className="animate-spin" />
+                <span>Loading team profiles...</span>
+              </div>
+            ) : users.length === 0 ? (
               <div style={{ padding: 40, textAlign: 'center', color: 'var(--dmos-text-subtle)', fontSize: '0.84rem' }}>
-                No data available
+                No registered team members found.
               </div>
             ) : (
-              users.map(u => (
+              users.map((u) => (
                 <div key={u.id} style={{ padding: '16px', display: 'flex', flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: 14, borderBottom: '1px solid var(--dmos-border)' }}>
                   <div style={{
                     width: 38, height: 38, borderRadius: '50%',
@@ -223,13 +307,14 @@ export const UsersPage: React.FC = () => {
 
                   <select
                     value={u.role}
-                    onChange={e => handleRoleChange(u, e.target.value as UserRole)}
+                    disabled={processing}
+                    onChange={(e) => handleRoleChange(u, e.target.value as UserRole)}
                     style={{
                       padding: '4px 8px', background: 'var(--dmos-surface)', border: '1px solid var(--dmos-border)',
                       borderRadius: 6, color: 'var(--dmos-text)', fontSize: '0.74rem', outline: 'none',
                     }}
                   >
-                    {ROLES.map(r => (
+                    {ROLES.map((r) => (
                       <option key={r.id} value={r.id}>{r.name}</option>
                     ))}
                   </select>
@@ -241,6 +326,7 @@ export const UsersPage: React.FC = () => {
                   <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
                     <button
                       onClick={() => handleResetPassword(u)}
+                      disabled={processing}
                       style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--dmos-text-subtle)', padding: 4 }}
                       title="Reset Password"
                     >
@@ -249,6 +335,7 @@ export const UsersPage: React.FC = () => {
 
                     <button
                       onClick={() => toggleUserStatus(u)}
+                      disabled={processing}
                       style={{ background: 'none', border: 'none', cursor: 'pointer', color: u.status === 'active' ? 'var(--dmos-warning)' : 'var(--dmos-success)', padding: 4 }}
                       title={u.status === 'active' ? 'Suspend User' : 'Activate User'}
                     >
@@ -257,6 +344,7 @@ export const UsersPage: React.FC = () => {
 
                     <button
                       onClick={() => handleDeleteUser(u)}
+                      disabled={processing}
                       style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--dmos-danger)', padding: 4 }}
                       title="Delete User"
                     >
@@ -275,22 +363,24 @@ export const UsersPage: React.FC = () => {
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.7)', zIndex: 999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}>
           <Card style={{ width: 420, maxWidth: '100%', padding: 24 }}>
             <h3 style={{ margin: '0 0 16px 0', fontSize: '1.05rem', color: 'var(--dmos-text)', fontWeight: 700 }}>Invite Admin Team Member</h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-              <Input label="Full Name" value={newName} onChange={e => setNewName(e.target.value)} placeholder="e.g. Mariya Pratheesh" />
-              <Input label="Email Address" type="email" value={newEmail} onChange={e => setNewEmail(e.target.value)} placeholder="e.g. mariya@dmos.app" />
+            <form onSubmit={handleInviteUser} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              <Input label="Full Name" value={newName} onChange={(e) => setNewName(e.target.value)} placeholder="e.g. Mariya Pratheesh" />
+              <Input label="Email Address" type="email" value={newEmail} onChange={(e) => setNewEmail(e.target.value)} required placeholder="e.g. mariya@dmos.app" />
               <div>
                 <label style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--dmos-text-muted)', display: 'block', marginBottom: 6 }}>Assign Role</label>
-                <select className="dmos-input" value={newRole} onChange={e => setNewRole(e.target.value as UserRole)}>
-                  {ROLES.map(r => (
+                <select className="dmos-input" value={newRole} onChange={(e) => setNewRole(e.target.value as UserRole)}>
+                  {ROLES.map((r) => (
                     <option key={r.id} value={r.id}>{r.name}</option>
                   ))}
                 </select>
               </div>
-            </div>
-            <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end', marginTop: 20 }}>
-              <Button variant="ghost" onClick={() => setShowInviteModal(false)}>Cancel</Button>
-              <Button variant="primary" onClick={handleInviteUser}>Send Invitation</Button>
-            </div>
+              <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end', marginTop: 20 }}>
+                <Button type="button" variant="ghost" onClick={() => setShowInviteModal(false)} disabled={processing}>Cancel</Button>
+                <Button type="submit" variant="primary" disabled={processing} leftIcon={processing ? <Loader2 size={14} className="animate-spin" /> : undefined}>
+                  {processing ? 'Sending...' : 'Send Invitation'}
+                </Button>
+              </div>
+            </form>
           </Card>
         </div>
       )}

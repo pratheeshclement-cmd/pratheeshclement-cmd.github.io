@@ -7,6 +7,7 @@ export const systemRouter = Router();
 
 // GET /api/system/metrics — Realtime Server CPU, RAM & Gateway Metrics
 systemRouter.get('/metrics', (req: Request, res: Response) => {
+  const start = process.hrtime();
   const totalMem = os.totalmem();
   const freeMem = os.freemem();
   const usedMem = totalMem - freeMem;
@@ -15,12 +16,14 @@ systemRouter.get('/metrics', (req: Request, res: Response) => {
   const cpus = os.cpus();
   const loadAvg = os.loadavg();
   const uptimeSeconds = Math.floor(os.uptime());
+  const diff = process.hrtime(start);
+  const gatewayLatencyMs = Math.max(1, Math.round((diff[0] * 1e9 + diff[1]) / 1e6));
 
   res.json({
     status: 'healthy',
     cpuCount: cpus.length,
     cpuModel: cpus[0]?.model || 'Virtual System CPU',
-    cpuUsagePercent: Math.round((loadAvg[0] || 0.15) * 20),
+    cpuUsagePercent: Math.min(100, Math.round((loadAvg[0] || 0.15) * 20)),
     memoryTotalMB: Math.round(totalMem / (1024 * 1024)),
     memoryUsedMB: Math.round(usedMem / (1024 * 1024)),
     memoryUsagePercent: memUsagePercent,
@@ -28,7 +31,7 @@ systemRouter.get('/metrics', (req: Request, res: Response) => {
     platform: os.platform(),
     arch: os.arch(),
     nodeVersion: process.version,
-    gatewayLatencyMs: Math.floor(Math.random() * 15) + 12,
+    gatewayLatencyMs,
     firebaseStatus: 'connected',
     githubApiStatus: 'connected',
   });
@@ -44,25 +47,7 @@ systemRouter.get('/audit-logs', (req: Request, res: Response) => {
       category: 'AUTHENTICATION',
       ip: '127.0.0.1',
       device: 'Windows Desktop (Chrome 127)',
-      timestamp: new Date(Date.now() - 1000 * 60 * 5).toISOString(),
-    },
-    {
-      id: 'log_102',
-      user: 'System Webhook',
-      action: 'Automated Blog Publish Pipeline Executed',
-      category: 'CMS',
-      ip: '127.0.0.1',
-      device: 'Node.js Backend Engine',
-      timestamp: new Date(Date.now() - 1000 * 60 * 35).toISOString(),
-    },
-    {
-      id: 'log_103',
-      user: 'Pratheesh Clement',
-      action: 'CRM Lead Status Advanced to Proposal',
-      category: 'CRM',
-      ip: '127.0.0.1',
-      device: 'Windows Desktop (Chrome 127)',
-      timestamp: new Date(Date.now() - 1000 * 60 * 120).toISOString(),
+      timestamp: new Date().toISOString(),
     },
   ]);
 });
