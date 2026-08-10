@@ -40,27 +40,29 @@ export class GoogleOAuthStrategy {
 
   public static async syncFirebaseAdminUser(profile: GoogleProfile) {
     console.log('[GoogleOAuthStrategy] Syncing user profile in Firebase Auth & Firestore:', profile.email);
-    let uid = `google_${profile.sub.substring(0, 10)}`;
-    let customToken = `mock_custom_token_${uid}`;
-
-    if (adminAuth) {
-      try {
-        const firebaseUser = await adminAuth.getUserByEmail(profile.email);
-        uid = firebaseUser.uid;
-        console.log('[GoogleOAuthStrategy] Existing Firebase Auth user found UID:', uid);
-      } catch (e: any) {
-        console.log('[GoogleOAuthStrategy] Creating new Firebase Auth user for:', profile.email);
-        const firebaseUser = await adminAuth.createUser({
-          email: profile.email,
-          emailVerified: true,
-          displayName: profile.name,
-          photoURL: profile.picture,
-        });
-        uid = firebaseUser.uid;
-      }
-
-      customToken = await adminAuth.createCustomToken(uid);
+    if (!adminAuth) {
+      throw new Error('Firebase Admin credentials unavailable. Configure FIREBASE_SERVICE_ACCOUNT_JSON on the server to issue custom tokens.');
     }
+
+    let uid = `google_${profile.sub.substring(0, 10)}`;
+    let customToken: string;
+
+    try {
+      const firebaseUser = await adminAuth.getUserByEmail(profile.email);
+      uid = firebaseUser.uid;
+      console.log('[GoogleOAuthStrategy] Existing Firebase Auth user found UID:', uid);
+    } catch (e: any) {
+      console.log('[GoogleOAuthStrategy] Creating new Firebase Auth user for:', profile.email);
+      const firebaseUser = await adminAuth.createUser({
+        email: profile.email,
+        emailVerified: true,
+        displayName: profile.name,
+        photoURL: profile.picture,
+      });
+      uid = firebaseUser.uid;
+    }
+
+    customToken = await adminAuth.createCustomToken(uid);
 
     const now = new Date().toISOString();
     let role = 'Owner';

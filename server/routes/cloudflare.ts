@@ -63,7 +63,7 @@ cloudflareRouter.get('/analytics', requireAdminAuth as any, async (req: Request,
 });
 
 // Legacy Endpoint for System/Monitor Backward Compatibility
-cloudflareRouter.get('/stats', async (req: Request, res: Response) => {
+cloudflareRouter.get('/stats', requireAdminAuth as any, async (req: Request, res: Response) => {
   try {
     const analytics = await CloudflareIntegrationService.getAnalytics();
     res.json(analytics.data);
@@ -71,3 +71,4 @@ cloudflareRouter.get('/stats', async (req: Request, res: Response) => {
     res.status(500).json({ error: e.message });
   }
 });
+

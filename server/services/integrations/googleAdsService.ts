@@ -86,7 +86,7 @@ export class GoogleAdsIntegrationService {
     return { developerToken: developerToken?.trim(), clientId: clientId?.trim(), clientSecret: clientSecret?.trim(), refreshToken: refreshToken?.trim(), customerId, loginCustomerId, hasCreds };
   }
 
-  private static async getAccessToken(): Promise<string> {
+  public static async getAccessToken(): Promise<string> {
     const { clientId, clientSecret, refreshToken } = this.getCredentials();
     if (!clientId || !refreshToken) throw new Error('Missing Google Ads OAuth Credentials');
 
@@ -123,8 +123,26 @@ export class GoogleAdsIntegrationService {
       };
     }
 
+    let accessToken: string;
     try {
-      const accessToken = await this.getAccessToken();
+      accessToken = await this.getAccessToken();
+    } catch (tokenErr: any) {
+      const latencyMs = Math.max(1, Date.now() - start);
+      return {
+        id: 'googleads',
+        name: 'Google Ads API',
+        category: 'Marketing',
+        status: 'auth_required',
+        latencyMs,
+        lastCheckedAt: new Date().toISOString(),
+        apiVersion: GOOGLE_ADS_API_VERSION,
+        docsUrl: 'https://developers.google.com/google-ads/api/docs/first-call/overview',
+        message: `OAuth Token Refresh Notice: ${tokenErr.response?.data?.error_description || tokenErr.message}`,
+        configured: true,
+      };
+    }
+
+    try {
       const headers: Record<string, string> = {
         Authorization: `Bearer ${accessToken}`,
         'developer-token': developerToken!,
@@ -155,16 +173,17 @@ export class GoogleAdsIntegrationService {
       };
     } catch (err: any) {
       const latencyMs = Math.max(1, Date.now() - start);
+      const apiMsg = err.response?.data?.error?.message || err.message;
       return {
         id: 'googleads',
         name: 'Google Ads API',
         category: 'Marketing',
-        status: 'auth_required',
+        status: 'error',
         latencyMs,
         lastCheckedAt: new Date().toISOString(),
         apiVersion: GOOGLE_ADS_API_VERSION,
         docsUrl: 'https://developers.google.com/google-ads/api/docs/first-call/overview',
-        message: `Google Ads Verification Notice: ${err.response?.data?.error?.message || err.message}`,
+        message: `OAuth Authorized — ${apiMsg}`,
         configured: true,
       };
     }

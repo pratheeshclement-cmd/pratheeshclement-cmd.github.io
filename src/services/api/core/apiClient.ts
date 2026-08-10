@@ -69,8 +69,23 @@ export async function apiClient<T>(
           const errData = await response.json();
           if (errData.error || errData.message) errMessage = errData.error || errData.message;
         } catch (_) {}
+
+        // Controlled single retry on 403 Forbidden to refresh stale client ID token
+        if (response.status === 403 && auth?.currentUser && attempt === 0) {
+          try {
+            console.log('[ApiClient] 403 received. Refreshing Firebase ID token once...');
+            const refreshedToken = await auth.currentUser.getIdToken(true);
+            headers['Authorization'] = `Bearer ${refreshedToken}`;
+            attempt++;
+            continue;
+          } catch (refreshErr) {
+            console.warn('[ApiClient] Forced token refresh failed:', refreshErr);
+          }
+        }
+
         throw new ApiError(errMessage, response.status);
       }
+
 
       const data = await response.json();
       return data as T;

@@ -23,6 +23,16 @@ export class GeminiIntegrationService {
     return { apiKey, model, hasCreds };
   }
 
+  private static sanitizeErrorMessage(err: any): string {
+    const rawMsg = err.response?.data?.error?.message || err.message || 'Gemini API execution error';
+    const { apiKey } = this.getCredentials();
+    let sanitized = rawMsg;
+    if (apiKey && apiKey.length > 5) {
+      sanitized = sanitized.replace(new RegExp(apiKey.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), '[REDACTED]');
+    }
+    return sanitized.replace(/key=[A-Za-z0-9_-]+/g, 'key=[REDACTED]');
+  }
+
   public static async verify(): Promise<ProviderHealthResult> {
     const { apiKey, model, hasCreds } = this.getCredentials();
     const start = Date.now();
@@ -60,25 +70,43 @@ export class GeminiIntegrationService {
       };
     } catch (err: any) {
       const latencyMs = Math.max(1, Date.now() - start);
+      const httpStatus = err.response?.status;
+      let status: ProviderHealthResult['status'] = 'auth_required';
+
+      if (httpStatus === 401 || httpStatus === 403) {
+        status = 'authentication_failed' as any;
+      } else if (httpStatus === 429) {
+        status = 'quota_exceeded' as any;
+      } else if (err.code === 'ECONNABORTED' || err.message?.includes('timeout')) {
+        status = 'timeout';
+      } else if (httpStatus >= 500 || err.code === 'ENOTFOUND') {
+        status = 'unavailable';
+      }
+
       return {
         id: 'gemini',
         name: 'Google Gemini AI API',
         category: 'AI',
-        status: 'auth_required',
+        status,
         latencyMs,
         lastCheckedAt: new Date().toISOString(),
         apiVersion: 'v1beta',
         docsUrl: 'https://ai.google.dev/docs',
-        message: `Gemini API Verification: ${err.response?.data?.error?.message || err.message}`,
+        message: `Gemini API Verification: ${this.sanitizeErrorMessage(err)}`,
         configured: true,
       };
     }
+
   }
 
   public static async generateContent(prompt: string, systemInstruction?: string): Promise<GeminiGenerationResult> {
     const { apiKey, model, hasCreds } = this.getCredentials();
     if (!hasCreds) {
       return { success: false, error: 'GEMINI_API_KEY is missing in server/.env file.' };
+    }
+
+    if (prompt && prompt.length > 4000) {
+      return { success: false, error: 'Prompt length exceeds maximum allowed limit of 4000 characters.' };
     }
 
     try {
@@ -118,11 +146,12 @@ export class GeminiIntegrationService {
     } catch (err: any) {
       return {
         success: false,
-        error: err.response?.data?.error?.message || err.message,
+        error: this.sanitizeErrorMessage(err),
         model,
       };
     }
   }
+
 
   public static async getHealthDetails(): Promise<{ configured: boolean; model: string; status: string; message: string }> {
     const { model, hasCreds } = this.getCredentials();

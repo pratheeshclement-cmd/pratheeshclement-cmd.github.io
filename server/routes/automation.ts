@@ -4,10 +4,11 @@ import { Router } from 'express';
 import { db } from '../config/firebaseAdmin';
 import { FIRESTORE_COLLECTIONS } from '../db/schema';
 
+import { requireAdminAuth } from '../middleware/auth';
+
 export const automationRouter = Router();
 
-// POST /api/automation/trigger — Execute Workflow Trigger Node
-automationRouter.post('/trigger', async (req, res) => {
+automationRouter.post('/trigger', requireAdminAuth as any, async (req, res) => {
   try {
     const { recipeId, payload } = req.body;
     const now = new Date().toISOString();

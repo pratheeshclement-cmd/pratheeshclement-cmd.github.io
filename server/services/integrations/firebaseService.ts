@@ -65,13 +65,13 @@ export class FirebaseIntegrationService {
         id: 'firebase',
         name: 'Firebase Firestore & Auth',
         category: 'Database',
-        status: 'connected', // Active local fallback
+        status: 'error',
         latencyMs,
         lastCheckedAt: new Date().toISOString(),
         apiVersion: 'v10.12',
         docsUrl: 'https://firebase.google.com/docs',
-        message: `Firebase Admin SDK Notice: ${err.message}`,
-        configured: true,
+        message: `Firebase Admin SDK Error: ${err.message}`,
+        configured: false,
       };
     }
   }

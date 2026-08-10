@@ -2,11 +2,12 @@
 
 import { Router, Request, Response } from 'express';
 import os from 'os';
+import { requireAdminAuth } from '../middleware/auth';
 
 export const systemRouter = Router();
 
 // GET /api/system/metrics — Realtime Server CPU, RAM & Gateway Metrics
-systemRouter.get('/metrics', (req: Request, res: Response) => {
+systemRouter.get('/metrics', requireAdminAuth as any, (req: Request, res: Response) => {
   const start = process.hrtime();
   const totalMem = os.totalmem();
   const freeMem = os.freemem();
@@ -38,7 +39,7 @@ systemRouter.get('/metrics', (req: Request, res: Response) => {
 });
 
 // GET /api/system/audit-logs — System Audit Log History
-systemRouter.get('/audit-logs', (req: Request, res: Response) => {
+systemRouter.get('/audit-logs', requireAdminAuth as any, (req: Request, res: Response) => {
   res.json([
     {
       id: 'log_101',

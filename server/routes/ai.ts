@@ -3,6 +3,7 @@
 
 import { Router, Request, Response } from 'express';
 import { requireAdminAuth } from '../middleware/auth';
+import { createRateLimiter } from '../middleware/rateLimiter';
 import { GeminiIntegrationService } from '../services/integrations/geminiService';
 
 export const aiRouter = Router();
@@ -47,6 +48,31 @@ aiRouter.post('/generate', requireAdminAuth as any, async (req: Request, res: Re
     res.status(500).json({ success: false, error: e.message });
   }
 });
+
+// Protected AI Marketing Analyst Foundation Endpoint
+aiRouter.post('/analyze-marketing', requireAdminAuth as any, async (req: Request, res: Response) => {
+  try {
+    const { analyticsData, gscData } = req.body;
+    const systemInstruction = `You are the Pratheesh OS AI Marketing & SEO Analyst. Your job is to analyze real marketing telemetry (GA4, GSC, CRM) and provide structured analysis.
+Strict Output Formatting Guidelines:
+For every insight categorized under [TRAFFIC], [SEO], [CONTENT], [PERFORMANCE], or [OPPORTUNITIES], output EXACTLY three lines:
+FACT: <empirical metric statement directly from provided data>
+OBSERVATION: <analytical observation explaining pattern>
+RECOMMENDATION: <non-causative action item using neutral terminology like "Potential improvement" or "Requires review">
+Never invent numbers. Only evaluate provided telemetry.`;
+
+    const prompt = `Analyze this real marketing telemetry:
+GA4 Telemetry: ${JSON.stringify(analyticsData || {})}
+Search Console Telemetry: ${JSON.stringify(gscData || {})}
+Generate structured analysis across TRAFFIC, SEO, and OPPORTUNITIES using the required FACT, OBSERVATION, RECOMMENDATION format.`;
+
+    const result = await GeminiIntegrationService.generateContent(prompt, systemInstruction);
+    res.json(result);
+  } catch (e: any) {
+    res.status(500).json({ success: false, error: e.message });
+  }
+});
+
 
 // Public AI Concierge Proxy Endpoint (Zero client-side secrets)
 aiRouter.post('/concierge', async (req: Request, res: Response) => {

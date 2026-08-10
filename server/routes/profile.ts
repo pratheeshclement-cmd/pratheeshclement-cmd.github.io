@@ -1,6 +1,7 @@
 // ─── DMOS Profile Express Router ────────────────────────────────────────────
 
 import { Router, Request, Response } from 'express';
+import { requireAdminAuth } from '../middleware/auth';
 
 export const profileRouter = Router();
 
@@ -20,7 +21,7 @@ profileRouter.get('/', (req: Request, res: Response) => {
 });
 
 // POST /api/profile
-profileRouter.post('/', (req: Request, res: Response) => {
+profileRouter.post('/', requireAdminAuth as any, (req: Request, res: Response) => {
   res.json({
     success: true,
     message: 'Profile metadata updated cleanly',

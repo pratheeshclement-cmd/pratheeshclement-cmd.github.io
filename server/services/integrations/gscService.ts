@@ -65,6 +65,10 @@ export class GSCIntegrationService {
     return { siteUrl, clientId, clientSecret, refreshToken, hasCreds };
   }
 
+  public static clearCache(): void {
+    memoryCache.clear();
+  }
+
   private static async getAccessToken(): Promise<string> {
     const { clientId, clientSecret, refreshToken, hasCreds } = this.getCredentials();
     if (!hasCreds) {
@@ -95,33 +99,15 @@ export class GSCIntegrationService {
         lastCheckedAt: new Date().toISOString(),
         apiVersion: 'v3',
         docsUrl: 'https://developers.google.com/webmaster-tools/v1/searchanalytics/query',
-        message: 'Authentication Required. Configure GSC_SITE_URL & OAuth credentials in server/.env.',
+        message: 'Authentication Required. Connect your Google account to authorize Search Console API.',
         configured: false,
       };
     }
 
+    let accessToken: string;
     try {
-      const accessToken = await this.getAccessToken();
-      await axios.get(`https://www.googleapis.com/webmasters/v3/sites/${encodeURIComponent(siteUrl)}`, {
-        headers: { Authorization: `Bearer ${accessToken}` },
-        timeout: 8000,
-      });
-
-      const latencyMs = Math.max(1, Date.now() - start);
-
-      return {
-        id: 'gsc',
-        name: 'Google Search Console API',
-        category: 'SEO',
-        status: 'connected',
-        latencyMs,
-        lastCheckedAt: new Date().toISOString(),
-        apiVersion: 'v3',
-        docsUrl: 'https://developers.google.com/webmaster-tools/v1/searchanalytics/query',
-        message: `Search Console API verified for property: ${siteUrl}`,
-        configured: true,
-      };
-    } catch (err: any) {
+      accessToken = await this.getAccessToken();
+    } catch (tokenErr: any) {
       const latencyMs = Math.max(1, Date.now() - start);
       return {
         id: 'gsc',
@@ -132,7 +118,59 @@ export class GSCIntegrationService {
         lastCheckedAt: new Date().toISOString(),
         apiVersion: 'v3',
         docsUrl: 'https://developers.google.com/webmaster-tools/v1/searchanalytics/query',
-        message: `Search Console Verification Notice: ${err.response?.data?.error?.message || err.message}`,
+        message: `OAuth Token Refresh Failed: ${tokenErr.response?.data?.error_description || tokenErr.message}`,
+        configured: true,
+      };
+    }
+
+    try {
+      const sitesRes = await axios.get('https://www.googleapis.com/webmasters/v3/sites', {
+        headers: { Authorization: `Bearer ${accessToken}` },
+        timeout: 8000,
+      });
+
+      const sites = sitesRes.data?.siteEntry || [];
+      const latencyMs = Math.max(1, Date.now() - start);
+
+      if (sites.length === 0) {
+        return {
+          id: 'gsc',
+          name: 'Google Search Console API',
+          category: 'SEO',
+          status: 'error',
+          latencyMs,
+          lastCheckedAt: new Date().toISOString(),
+          apiVersion: 'v3',
+          docsUrl: 'https://developers.google.com/webmaster-tools/v1/searchanalytics/query',
+          message: 'Authenticated Google account has 0 verified Search Console properties.',
+          configured: true,
+        };
+      }
+
+      return {
+        id: 'gsc',
+        name: 'Google Search Console API',
+        category: 'SEO',
+        status: 'connected',
+        latencyMs,
+        lastCheckedAt: new Date().toISOString(),
+        apiVersion: 'v3',
+        docsUrl: 'https://developers.google.com/webmaster-tools/v1/searchanalytics/query',
+        message: `Search Console API verified with ${sites.length} accessible property(ies).`,
+        configured: true,
+      };
+    } catch (err: any) {
+      const latencyMs = Math.max(1, Date.now() - start);
+      return {
+        id: 'gsc',
+        name: 'Google Search Console API',
+        category: 'SEO',
+        status: 'error',
+        latencyMs,
+        lastCheckedAt: new Date().toISOString(),
+        apiVersion: 'v3',
+        docsUrl: 'https://developers.google.com/webmaster-tools/v1/searchanalytics/query',
+        message: `Search Console API Error (${err.response?.status || 'Network'}): ${err.response?.data?.error?.message || err.message}`,
         configured: true,
       };
     }
@@ -150,12 +188,125 @@ export class GSCIntegrationService {
       });
       return { configured: true, sites: res.data.siteEntry || [] };
     } catch (err: any) {
-      return { configured: true, message: err.message };
+      return { configured: true, message: err.response?.data?.error?.message || err.message };
     }
   }
 
-  private static async querySearchAnalytics(dimensions: string[] = [], days: number = 28, rowLimit: number = 100): Promise<any[]> {
-    const { siteUrl } = this.getCredentials();
+  public static async getDiagnostics(): Promise<any> {
+    const { siteUrl, clientId, clientSecret, refreshToken } = this.getCredentials();
+    const oauthConfigured = Boolean(clientId && clientSecret);
+    const refreshTokenConfigured = Boolean(refreshToken);
+
+    if (!oauthConfigured || !refreshTokenConfigured) {
+      return {
+        oauthConfigured,
+        refreshTokenConfigured,
+        tokenRefresh: 'unconfigured',
+        sitesList: 'unconfigured',
+        propertyCount: 0,
+        selectedProperty: siteUrl,
+        propertyAccess: 'unconfigured',
+        searchAnalytics: 'unconfigured',
+        sitemaps: 'unconfigured',
+        urlInspection: 'unconfigured',
+        lastCheckedAt: new Date().toISOString(),
+        error: 'GSC credentials (CLIENT_ID, CLIENT_SECRET, REFRESH_TOKEN) not fully configured in server/.env',
+      };
+    }
+
+    let tokenRefresh = 'failure';
+    let accessToken = '';
+    let tokenError = '';
+    try {
+      accessToken = await this.getAccessToken();
+      tokenRefresh = 'success';
+    } catch (err: any) {
+      tokenError = err.response?.data?.error_description || err.message;
+    }
+
+    if (tokenRefresh !== 'success') {
+      return {
+        oauthConfigured,
+        refreshTokenConfigured,
+        tokenRefresh: 'failure',
+        sitesList: 'unconfigured',
+        propertyCount: 0,
+        selectedProperty: siteUrl,
+        propertyAccess: 'unconfigured',
+        searchAnalytics: 'unconfigured',
+        sitemaps: 'unconfigured',
+        urlInspection: 'unconfigured',
+        lastCheckedAt: new Date().toISOString(),
+        error: `Token refresh failed: ${tokenError}`,
+      };
+    }
+
+    let sitesList = 'failure';
+    let propertyCount = 0;
+    let properties: any[] = [];
+    try {
+      const res = await axios.get('https://www.googleapis.com/webmasters/v3/sites', {
+        headers: { Authorization: `Bearer ${accessToken}` },
+        timeout: 8000,
+      });
+      sitesList = 'success';
+      properties = res.data.siteEntry || [];
+      propertyCount = properties.length;
+    } catch (err: any) {
+      tokenError = err.response?.data?.error?.message || err.message;
+    }
+
+    const activeProperty = propertyCount > 0 ? (properties.find(p => p.siteUrl === siteUrl)?.siteUrl || properties[0].siteUrl) : siteUrl;
+
+    let propertyAccess = 'failure';
+    try {
+      await axios.get(`https://www.googleapis.com/webmasters/v3/sites/${encodeURIComponent(activeProperty)}`, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+        timeout: 8000,
+      });
+      propertyAccess = 'success';
+    } catch (err: any) {}
+
+    let searchAnalytics = 'failure';
+    try {
+      const endDate = new Date().toISOString().split('T')[0];
+      const startDateDate = new Date();
+      startDateDate.setDate(startDateDate.getDate() - 28);
+      const startDate = startDateDate.toISOString().split('T')[0];
+      await axios.post(
+        `https://www.googleapis.com/webmasters/v3/sites/${encodeURIComponent(activeProperty)}/searchAnalytics/query`,
+        { startDate, endDate, rowLimit: 1 },
+        { headers: { Authorization: `Bearer ${accessToken}` }, timeout: 8000 }
+      );
+      searchAnalytics = 'success';
+    } catch (err: any) {}
+
+    let sitemaps = 'failure';
+    try {
+      await axios.get(`https://www.googleapis.com/webmasters/v3/sites/${encodeURIComponent(activeProperty)}/sitemaps`, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+        timeout: 8000,
+      });
+      sitemaps = 'success';
+    } catch (err: any) {}
+
+    return {
+      oauthConfigured,
+      refreshTokenConfigured,
+      tokenRefresh,
+      sitesList,
+      propertyCount,
+      selectedProperty: activeProperty,
+      propertyAccess,
+      searchAnalytics,
+      sitemaps,
+      urlInspection: 'ready',
+      lastCheckedAt: new Date().toISOString(),
+    };
+  }
+
+  private static async querySearchAnalytics(dimensions: string[] = [], days: number = 28, rowLimit: number = 100, customSiteUrl?: string): Promise<any[]> {
+    const siteUrl = customSiteUrl || this.getCredentials().siteUrl;
     const accessToken = await this.getAccessToken();
 
     const endDate = new Date().toISOString().split('T')[0];
@@ -181,18 +332,19 @@ export class GSCIntegrationService {
     return res.data.rows || [];
   }
 
-  public static async getOverview(days: number = 28): Promise<{ configured: boolean; data?: GSCOverviewData; message?: string }> {
-    const { siteUrl, hasCreds } = this.getCredentials();
+  public static async getOverview(days: number = 28, customSiteUrl?: string): Promise<{ configured: boolean; data?: GSCOverviewData; message?: string }> {
+    const siteUrl = customSiteUrl || this.getCredentials().siteUrl;
+    const { hasCreds } = this.getCredentials();
     if (!hasCreds) return { configured: false, message: 'Configure Search Console credentials in server/.env' };
 
-    const cacheKey = `overview_${days}`;
+    const cacheKey = `overview_${siteUrl}_${days}`;
     const cached = memoryCache.get(cacheKey);
     if (cached && Date.now() - cached.timestamp < CACHE_TTL_MS) {
       return { configured: true, data: cached.data };
     }
 
     try {
-      const rows = await this.querySearchAnalytics([], days, 1);
+      const rows = await this.querySearchAnalytics([], days, 1, siteUrl);
       const row = rows[0] || {};
       const clicks = row.clicks || 0;
       const impressions = row.impressions || 0;
@@ -216,18 +368,19 @@ export class GSCIntegrationService {
     }
   }
 
-  public static async getPerformanceByDate(days: number = 28): Promise<{ configured: boolean; data?: GSCPerformancePoint[]; message?: string }> {
+  public static async getPerformanceByDate(days: number = 28, customSiteUrl?: string): Promise<{ configured: boolean; data?: GSCPerformancePoint[]; message?: string }> {
+    const siteUrl = customSiteUrl || this.getCredentials().siteUrl;
     const { hasCreds } = this.getCredentials();
     if (!hasCreds) return { configured: false, message: 'GSC not configured' };
 
-    const cacheKey = `performance_${days}`;
+    const cacheKey = `performance_${siteUrl}_${days}`;
     const cached = memoryCache.get(cacheKey);
     if (cached && Date.now() - cached.timestamp < CACHE_TTL_MS) {
       return { configured: true, data: cached.data };
     }
 
     try {
-      const rows = await this.querySearchAnalytics(['date'], days, 100);
+      const rows = await this.querySearchAnalytics(['date'], days, 100, siteUrl);
       const data: GSCPerformancePoint[] = rows.map((r: any) => ({
         date: r.keys?.[0] || '',
         clicks: r.clicks || 0,
@@ -243,18 +396,19 @@ export class GSCIntegrationService {
     }
   }
 
-  public static async getQueries(days: number = 28, limit: number = 50): Promise<{ configured: boolean; data?: GSCRowMetric[]; message?: string }> {
+  public static async getQueries(days: number = 28, limit: number = 50, customSiteUrl?: string): Promise<{ configured: boolean; data?: GSCRowMetric[]; message?: string }> {
+    const siteUrl = customSiteUrl || this.getCredentials().siteUrl;
     const { hasCreds } = this.getCredentials();
     if (!hasCreds) return { configured: false, message: 'GSC not configured' };
 
-    const cacheKey = `queries_${days}_${limit}`;
+    const cacheKey = `queries_${siteUrl}_${days}_${limit}`;
     const cached = memoryCache.get(cacheKey);
     if (cached && Date.now() - cached.timestamp < CACHE_TTL_MS) {
       return { configured: true, data: cached.data };
     }
 
     try {
-      const rows = await this.querySearchAnalytics(['query'], days, limit);
+      const rows = await this.querySearchAnalytics(['query'], days, limit, siteUrl);
       const data: GSCRowMetric[] = rows.map((r: any) => ({
         key: r.keys?.[0] || '(not set)',
         clicks: r.clicks || 0,
@@ -270,18 +424,56 @@ export class GSCIntegrationService {
     }
   }
 
-  public static async getPages(days: number = 28, limit: number = 50): Promise<{ configured: boolean; data?: GSCRowMetric[]; message?: string }> {
+  public static async getOpportunities(days: number = 28, customSiteUrl?: string): Promise<{ configured: boolean; opportunities?: Array<{ type: string; query: string; impressions: number; clicks: number; ctr: number; position: number; recommendation: string }>; message?: string }> {
+    const siteUrl = customSiteUrl || this.getCredentials().siteUrl;
+    const queriesRes = await this.getQueries(days, 50, siteUrl);
+    if (!queriesRes.configured || !queriesRes.data) {
+      return { configured: queriesRes.configured, message: queriesRes.message };
+    }
+
+    const opportunities: Array<{ type: string; query: string; impressions: number; clicks: number; ctr: number; position: number; recommendation: string }> = [];
+
+    queriesRes.data.forEach(q => {
+      if (q.position >= 4.0 && q.position <= 10.0 && q.impressions >= 3) {
+        opportunities.push({
+          type: 'Striking Distance (Page 1 Potential)',
+          query: q.key,
+          impressions: q.impressions,
+          clicks: q.clicks,
+          ctr: q.ctr,
+          position: q.position,
+          recommendation: `Query ranks on Page 1 (Position ${q.position}). Potential improvement by refining title tags and user intent alignment.`
+        });
+      } else if (q.impressions >= 10 && q.ctr < 15.0) {
+        opportunities.push({
+          type: 'CTR Optimization Opportunity',
+          query: q.key,
+          impressions: q.impressions,
+          clicks: q.clicks,
+          ctr: q.ctr,
+          position: q.position,
+          recommendation: `High visibility (${q.impressions} impressions) with ${q.ctr}% CTR. Requires review of meta descriptions and snippet appeal.`
+        });
+      }
+    });
+
+    return { configured: true, opportunities };
+  }
+
+  public static async getPages(days: number = 28, limit: number = 50, customSiteUrl?: string): Promise<{ configured: boolean; data?: GSCRowMetric[]; message?: string }> {
+
+    const siteUrl = customSiteUrl || this.getCredentials().siteUrl;
     const { hasCreds } = this.getCredentials();
     if (!hasCreds) return { configured: false, message: 'GSC not configured' };
 
-    const cacheKey = `pages_${days}_${limit}`;
+    const cacheKey = `pages_${siteUrl}_${days}_${limit}`;
     const cached = memoryCache.get(cacheKey);
     if (cached && Date.now() - cached.timestamp < CACHE_TTL_MS) {
       return { configured: true, data: cached.data };
     }
 
     try {
-      const rows = await this.querySearchAnalytics(['page'], days, limit);
+      const rows = await this.querySearchAnalytics(['page'], days, limit, siteUrl);
       const data: GSCRowMetric[] = rows.map((r: any) => ({
         key: r.keys?.[0] || '/',
         clicks: r.clicks || 0,
@@ -297,18 +489,19 @@ export class GSCIntegrationService {
     }
   }
 
-  public static async getCountries(days: number = 28, limit: number = 50): Promise<{ configured: boolean; data?: GSCRowMetric[]; message?: string }> {
+  public static async getCountries(days: number = 28, limit: number = 50, customSiteUrl?: string): Promise<{ configured: boolean; data?: GSCRowMetric[]; message?: string }> {
+    const siteUrl = customSiteUrl || this.getCredentials().siteUrl;
     const { hasCreds } = this.getCredentials();
     if (!hasCreds) return { configured: false, message: 'GSC not configured' };
 
-    const cacheKey = `countries_${days}_${limit}`;
+    const cacheKey = `countries_${siteUrl}_${days}_${limit}`;
     const cached = memoryCache.get(cacheKey);
     if (cached && Date.now() - cached.timestamp < CACHE_TTL_MS) {
       return { configured: true, data: cached.data };
     }
 
     try {
-      const rows = await this.querySearchAnalytics(['country'], days, limit);
+      const rows = await this.querySearchAnalytics(['country'], days, limit, siteUrl);
       const data: GSCRowMetric[] = rows.map((r: any) => ({
         key: r.keys?.[0] || 'Unknown',
         clicks: r.clicks || 0,
@@ -324,18 +517,19 @@ export class GSCIntegrationService {
     }
   }
 
-  public static async getDevices(days: number = 28): Promise<{ configured: boolean; data?: GSCRowMetric[]; message?: string }> {
+  public static async getDevices(days: number = 28, customSiteUrl?: string): Promise<{ configured: boolean; data?: GSCRowMetric[]; message?: string }> {
+    const siteUrl = customSiteUrl || this.getCredentials().siteUrl;
     const { hasCreds } = this.getCredentials();
     if (!hasCreds) return { configured: false, message: 'GSC not configured' };
 
-    const cacheKey = `devices_${days}`;
+    const cacheKey = `devices_${siteUrl}_${days}`;
     const cached = memoryCache.get(cacheKey);
     if (cached && Date.now() - cached.timestamp < CACHE_TTL_MS) {
       return { configured: true, data: cached.data };
     }
 
     try {
-      const rows = await this.querySearchAnalytics(['device'], days, 10);
+      const rows = await this.querySearchAnalytics(['device'], days, 10, siteUrl);
       const data: GSCRowMetric[] = rows.map((r: any) => ({
         key: r.keys?.[0] || 'DESKTOP',
         clicks: r.clicks || 0,
@@ -351,18 +545,19 @@ export class GSCIntegrationService {
     }
   }
 
-  public static async getSearchAppearance(days: number = 28): Promise<{ configured: boolean; data?: GSCRowMetric[]; message?: string }> {
+  public static async getSearchAppearance(days: number = 28, customSiteUrl?: string): Promise<{ configured: boolean; data?: GSCRowMetric[]; message?: string }> {
+    const siteUrl = customSiteUrl || this.getCredentials().siteUrl;
     const { hasCreds } = this.getCredentials();
     if (!hasCreds) return { configured: false, message: 'GSC not configured' };
 
-    const cacheKey = `appearance_${days}`;
+    const cacheKey = `appearance_${siteUrl}_${days}`;
     const cached = memoryCache.get(cacheKey);
     if (cached && Date.now() - cached.timestamp < CACHE_TTL_MS) {
       return { configured: true, data: cached.data };
     }
 
     try {
-      const rows = await this.querySearchAnalytics(['searchAppearance'], days, 20);
+      const rows = await this.querySearchAnalytics(['searchAppearance'], days, 20, siteUrl);
       const data: GSCRowMetric[] = rows.map((r: any) => ({
         key: r.keys?.[0] || 'Standard',
         clicks: r.clicks || 0,
@@ -378,8 +573,9 @@ export class GSCIntegrationService {
     }
   }
 
-  public static async getSitemaps(): Promise<{ configured: boolean; data?: GSCSitemapInfo[]; message?: string }> {
-    const { siteUrl, hasCreds } = this.getCredentials();
+  public static async getSitemaps(customSiteUrl?: string): Promise<{ configured: boolean; data?: GSCSitemapInfo[]; message?: string }> {
+    const siteUrl = customSiteUrl || this.getCredentials().siteUrl;
+    const { hasCreds } = this.getCredentials();
     if (!hasCreds) return { configured: false, message: 'GSC not configured' };
 
     try {
@@ -405,8 +601,9 @@ export class GSCIntegrationService {
     }
   }
 
-  public static async inspectUrl(inspectionUrl: string): Promise<{ configured: boolean; data?: GSCInspectionResult; message?: string }> {
-    const { siteUrl, hasCreds } = this.getCredentials();
+  public static async inspectUrl(inspectionUrl: string, customSiteUrl?: string): Promise<{ configured: boolean; data?: GSCInspectionResult; message?: string }> {
+    const siteUrl = customSiteUrl || this.getCredentials().siteUrl;
+    const { hasCreds } = this.getCredentials();
     if (!hasCreds) return { configured: false, message: 'GSC not configured' };
 
     try {
@@ -416,6 +613,7 @@ export class GSCIntegrationService {
         {
           inspectionUrl,
           siteUrl,
+          languageCode: 'en-US',
         },
         { headers: { Authorization: `Bearer ${accessToken}` }, timeout: 10000 }
       );

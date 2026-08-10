@@ -3,31 +3,23 @@
 import { Router } from 'express';
 import { db } from '../config/firebaseAdmin';
 import { FIRESTORE_COLLECTIONS, CRMLeadDocument } from '../db/schema';
+import { requireAdminAuth } from '../middleware/auth';
 
 export const crmRouter = Router();
 
 // GET /api/crm/leads
-crmRouter.get('/leads', async (req, res) => {
+crmRouter.get('/leads', requireAdminAuth as any, async (req, res) => {
   try {
-    if (db) {
-      try {
-        const snapshot = await db.collection(FIRESTORE_COLLECTIONS.CRM).orderBy('createdAt', 'desc').get();
-        if (!snapshot.empty) {
-          const leads = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-          return res.json(leads);
-        }
-      } catch (dbErr) {
-        console.warn('[CRM Route] Firestore read offline, serving cached leads');
-      }
+    if (!db) {
+      return res.status(503).json({ success: false, error: 'Firestore unavailable. CRM data is not configured.' });
     }
 
-    res.json([
-      { id: '1', name: 'Rahul Sharma', email: 'rahul@example.com', company: 'Techno Pvt Ltd', service: 'Technical SEO', stage: 'new', value: 15000, date: '2026-08-06', message: 'Need SEO audit for e-commerce site' },
-      { id: '2', name: 'Priya Nair', email: 'priya@example.com', company: 'Fashion Boutique', service: 'Meta Ads', stage: 'contacted', value: 8000, date: '2026-08-05', message: 'Want to run Instagram ads for products' },
-      { id: '3', name: 'Karthik Raj', email: 'karthik@example.com', company: 'StartupX', service: 'AI Automation', stage: 'new', value: 18000, date: '2026-08-07', message: 'Chatbot + auto-reporting setup' },
-    ]);
+    const snapshot = await db.collection(FIRESTORE_COLLECTIONS.CRM).orderBy('createdAt', 'desc').get();
+    const leads = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    return res.json({ success: true, leads });
   } catch (e: any) {
-    res.status(500).json({ error: e.message });
+    console.error('[CRM Route] GET /leads error:', e.message);
+    res.status(500).json({ success: false, error: 'Unable to load CRM leads.' });
   }
 });
 
@@ -35,20 +27,42 @@ crmRouter.get('/leads', async (req, res) => {
 crmRouter.post('/contact-submit', async (req, res) => {
   try {
     const { name, email, phone = '', company = 'Self', service = 'General Inquiry', message = '', estimatedValue = 10000 } = req.body;
+    const trimmedName = typeof name === 'string' ? name.trim() : '';
+    const trimmedEmail = typeof email === 'string' ? email.trim().toLowerCase() : '';
+    const trimmedPhone = typeof phone === 'string' ? phone.trim() : '';
+    const trimmedCompany = typeof company === 'string' ? company.trim() : 'Self';
+    const trimmedService = typeof service === 'string' ? service.trim() : 'General Inquiry';
+    const trimmedMessage = typeof message === 'string' ? message.trim() : '';
+    const value = Number(estimatedValue);
+
+    if (!trimmedName) {
+      return res.status(400).json({ success: false, error: 'Name is required.' });
+    }
+    if (!trimmedEmail || !trimmedEmail.includes('@')) {
+      return res.status(400).json({ success: false, error: 'Valid email address is required.' });
+    }
+    if (!trimmedMessage) {
+      return res.status(400).json({ success: false, error: 'Message is required.' });
+    }
+    if (trimmedMessage.length > 2000) {
+      return res.status(400).json({ success: false, error: 'Message cannot exceed 2000 characters.' });
+    }
+    if (!db) {
+      return res.status(503).json({ success: false, error: 'Firestore unavailable. Contact form cannot be processed.' });
+    }
 
     const now = new Date().toISOString();
-
-    const priority = message && message.length > 50 ? 'High' : 'Medium';
-    const aiSummary = `Inquiry for ${service} from ${name} (${company}). Message: "${message || 'No message provided'}"`;
+    const priority = trimmedMessage.length > 50 ? 'High' : 'Medium';
+    const aiSummary = `Inquiry for ${trimmedService} from ${trimmedName} (${trimmedCompany}). Message: "${trimmedMessage}"`;
 
     const leadDoc: Partial<CRMLeadDocument> = {
-      name: name || 'Anonymous',
-      email: email || 'contact@example.com',
-      phone: phone || '',
-      company,
-      service,
-      message,
-      value: Number(estimatedValue),
+      name: trimmedName,
+      email: trimmedEmail,
+      phone: trimmedPhone,
+      company: trimmedCompany,
+      service: trimmedService,
+      message: trimmedMessage,
+      value: Number.isNaN(value) ? 0 : value,
       stage: 'new',
       priority,
       aiSummary,
@@ -59,42 +73,78 @@ crmRouter.post('/contact-submit', async (req, res) => {
       version: 1,
     };
 
-    let docId = 'lead_' + Date.now();
-    let firestoreSaved = false;
+    const contactRef = await db.collection(FIRESTORE_COLLECTIONS.CONTACTS).add({
+      name: trimmedName,
+      email: trimmedEmail,
+      phone: trimmedPhone,
+      company: trimmedCompany,
+      createdAt: now,
+    });
 
-    if (db) {
-      try {
-        await db.collection(FIRESTORE_COLLECTIONS.CONTACTS).add({ name, email, phone, company, createdAt: now });
-        const ref = await db.collection(FIRESTORE_COLLECTIONS.CRM).add(leadDoc);
-        docId = ref.id;
-        firestoreSaved = true;
+    const crmRef = await db.collection(FIRESTORE_COLLECTIONS.CRM).add(leadDoc);
 
-        await db.collection(FIRESTORE_COLLECTIONS.NOTIFICATIONS).add({
-          title: `New Lead: ${name} (${company})`,
-          desc: `${service} inquiry — ₹${Number(estimatedValue).toLocaleString()}`,
-          type: 'lead',
-          read: false,
-          priority: 'critical',
-          createdAt: now,
-        });
-      } catch (dbErr) {
-        console.warn('[CRM Route] Firestore write skipped due to GCP credentials:', dbErr.message);
-      }
-    }
+    await db.collection(FIRESTORE_COLLECTIONS.NOTIFICATIONS).add({
+      title: `New Lead: ${trimmedName} (${trimmedCompany})`,
+      desc: `${trimmedService} inquiry — ₹${Number(value).toLocaleString()}`,
+      type: 'lead',
+      read: false,
+      priority: 'critical',
+      createdAt: now,
+    });
 
     res.json({
       success: true,
       message: 'Contact form processed and pipeline updated.',
-      lead: { id: docId, ...leadDoc },
-      firestoreSaved,
-      pipeline: [
-        'Website Form Submission Captured',
-        'Saved to Firestore Contacts & CRM',
-        'Gemini AI Summary & Priority Assigned',
-        'Admin Notification Triggered',
-      ],
+      lead: { id: crmRef.id, ...leadDoc },
+      firestoreSaved: true,
     });
   } catch (e: any) {
-    res.status(500).json({ error: e.message });
+    console.error('[CRM Route] contact-submit error:', e.message);
+    res.status(500).json({ success: false, error: 'Unable to process contact submission at this time.' });
   }
 });
+
+// PATCH /api/crm/leads/:id — Update lead stage or fields
+crmRouter.patch('/leads/:id', requireAdminAuth as any, async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!id || typeof id !== 'string') {
+      return res.status(400).json({ success: false, error: 'Valid Lead ID is required.' });
+    }
+    if (!db) {
+      return res.status(503).json({ success: false, error: 'Firestore unavailable.' });
+    }
+
+    const { stage, priority, notes, value } = req.body;
+    const updates: Record<string, any> = { updatedAt: new Date().toISOString() };
+
+    if (stage && typeof stage === 'string') updates.stage = stage.trim();
+    if (priority && typeof priority === 'string') updates.priority = priority.trim();
+    if (notes && typeof notes === 'string') updates.notes = notes.trim().slice(0, 1000);
+    if (typeof value === 'number' && !isNaN(value)) updates.value = Math.max(0, value);
+
+    await db.collection(FIRESTORE_COLLECTIONS.CRM).doc(id).update(updates);
+    res.json({ success: true, message: `Lead ${id} updated successfully.`, updates });
+  } catch (e: any) {
+    res.status(500).json({ success: false, error: 'Failed to update lead.' });
+  }
+});
+
+// DELETE /api/crm/leads/:id — Remove lead from pipeline
+crmRouter.delete('/leads/:id', requireAdminAuth as any, async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!id || typeof id !== 'string') {
+      return res.status(400).json({ success: false, error: 'Valid Lead ID is required.' });
+    }
+    if (!db) {
+      return res.status(503).json({ success: false, error: 'Firestore unavailable.' });
+    }
+
+    await db.collection(FIRESTORE_COLLECTIONS.CRM).doc(id).delete();
+    res.json({ success: true, message: `Lead ${id} deleted successfully.` });
+  } catch (e: any) {
+    res.status(500).json({ success: false, error: 'Failed to delete lead.' });
+  }
+});
+

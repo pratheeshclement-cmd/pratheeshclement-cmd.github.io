@@ -1,11 +1,11 @@
-// ─── DMOS Backend: White-Label Reports Router ─────────────────────────────
-
 import { Router } from 'express';
+import { requireAdminAuth } from '../middleware/auth';
 
 export const reportsRouter = Router();
 
+
 // POST /api/reports/export
-reportsRouter.post('/export', async (req, res) => {
+reportsRouter.post('/export', requireAdminAuth as any, async (req, res) => {
   try {
     const { reportType, format = 'csv' } = req.body;
 
@@ -24,3 +24,4 @@ reportsRouter.post('/export', async (req, res) => {
     res.status(500).json({ error: e.message });
   }
 });
+

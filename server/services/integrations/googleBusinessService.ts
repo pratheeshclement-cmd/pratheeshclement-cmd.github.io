@@ -94,10 +94,27 @@ export class GoogleBusinessIntegrationService {
       };
     }
 
+    let accessToken: string;
     try {
-      const accessToken = await this.getAccessToken();
-      const headers = { Authorization: `Bearer ${accessToken}` };
+      accessToken = await this.getAccessToken();
+    } catch (tokenErr: any) {
+      const latencyMs = Math.max(1, Date.now() - start);
+      return {
+        id: 'googlebusiness',
+        name: 'Google Business Profile API',
+        category: 'SEO',
+        status: 'auth_required',
+        latencyMs,
+        lastCheckedAt: new Date().toISOString(),
+        apiVersion: 'v1',
+        docsUrl: 'https://developers.google.com/my-business/content/basic-setup',
+        message: `OAuth Token Refresh Notice: ${tokenErr.response?.data?.error_description || tokenErr.message}`,
+        configured: true,
+      };
+    }
 
+    try {
+      const headers = { Authorization: `Bearer ${accessToken}` };
       await axios.get(`${ACCOUNT_MGMT_BASE}/accounts`, { headers, timeout: 10000 });
       const latencyMs = Math.max(1, Date.now() - start);
 
@@ -115,16 +132,17 @@ export class GoogleBusinessIntegrationService {
       };
     } catch (err: any) {
       const latencyMs = Math.max(1, Date.now() - start);
+      const apiMsg = err.response?.data?.error?.message || err.message;
       return {
         id: 'googlebusiness',
         name: 'Google Business Profile API',
         category: 'SEO',
-        status: 'auth_required',
+        status: 'error',
         latencyMs,
         lastCheckedAt: new Date().toISOString(),
         apiVersion: 'v1',
         docsUrl: 'https://developers.google.com/my-business/content/basic-setup',
-        message: `Google Business Profile Notice: ${err.response?.data?.error?.message || err.message}`,
+        message: `OAuth Authorized — ${apiMsg}`,
         configured: true,
       };
     }
@@ -144,7 +162,6 @@ export class GoogleBusinessIntegrationService {
       const accessToken = await this.getAccessToken();
       const headers = { Authorization: `Bearer ${accessToken}` };
 
-      // Fetch accounts if accountId is not provided
       let targetAccount = accountId;
       if (!targetAccount) {
         const accRes = await axios.get(`${ACCOUNT_MGMT_BASE}/accounts`, { headers, timeout: 10000 });
@@ -191,7 +208,6 @@ export class GoogleBusinessIntegrationService {
       const accessToken = await this.getAccessToken();
       const headers = { Authorization: `Bearer ${accessToken}` };
 
-      // Use Performance API endpoint
       const targetLocation = locationId || 'locations/default';
       const endpoint = `${PERFORMANCE_BASE}/${targetLocation}:fetchMultiDailyMetricsTimeSeries`;
 

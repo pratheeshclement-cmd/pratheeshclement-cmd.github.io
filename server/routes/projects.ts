@@ -1,18 +1,19 @@
 // ─── DMOS Projects Express Router ────────────────────────────────────────────
 
 import { Router, Request, Response } from 'express';
+import { requireAdminAuth } from '../middleware/auth';
 
 export const projectsRouter = Router();
 
 let PROJECTS_STORE: any[] = [];
 
 // GET /api/projects
-projectsRouter.get('/', (req: Request, res: Response) => {
+projectsRouter.get('/', requireAdminAuth as any, (req: Request, res: Response) => {
   res.json({ success: true, projects: PROJECTS_STORE });
 });
 
 // POST /api/projects
-projectsRouter.post('/', (req: Request, res: Response) => {
+projectsRouter.post('/', requireAdminAuth as any, (req: Request, res: Response) => {
   try {
     const { title, description, client, category, technologies, featured } = req.body;
     if (!title) {
@@ -38,7 +39,7 @@ projectsRouter.post('/', (req: Request, res: Response) => {
 });
 
 // DELETE /api/projects/:id
-projectsRouter.delete('/:id', (req: Request, res: Response) => {
+projectsRouter.delete('/:id', requireAdminAuth as any, (req: Request, res: Response) => {
   const { id } = req.params;
   PROJECTS_STORE = PROJECTS_STORE.filter(p => p.id !== id);
   res.json({ success: true, message: 'Project deleted successfully' });

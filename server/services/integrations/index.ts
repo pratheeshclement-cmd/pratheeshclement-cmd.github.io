@@ -15,6 +15,7 @@ import { VercelIntegrationService } from './vercelService';
 import { PageSpeedIntegrationService } from './pagespeedService';
 import { GoogleAdsIntegrationService } from './googleAdsService';
 import { GoogleBusinessIntegrationService } from './googleBusinessService';
+import { MicrosoftAdsIntegrationService } from './microsoftAdsService';
 
 export * from './integrationTypes';
 
@@ -63,6 +64,8 @@ export async function verifySingleProvider(providerId: string): Promise<Provider
       return GoogleAdsIntegrationService.verify();
     case 'googlebusiness':
       return GoogleBusinessIntegrationService.verify();
+    case 'microsoftads':
+      return MicrosoftAdsIntegrationService.verify();
     default:
       throw new Error(`Unknown provider ID: ${providerId}`);
   }
@@ -72,10 +75,10 @@ export async function verifyAllConnections(): Promise<ProviderHealthResult[]> {
   const providerIds = [
     'ga4', 'gsc', 'firebase', 'meta', 'clarity',
     'github', 'cloudflare', 'gemini', 'smtp', 'gmaps',
-    'vercel', 'pagespeed', 'googleads', 'googlebusiness',
+    'vercel', 'pagespeed', 'googleads', 'googlebusiness', 'microsoftads',
   ];
 
-  // Parallel verification across all 12 providers
+  // Parallel verification across all providers
   const results = await Promise.allSettled(
     providerIds.map(id => verifySingleProvider(id))
   );

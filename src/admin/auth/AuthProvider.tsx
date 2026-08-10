@@ -143,6 +143,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       console.log('[AuthProvider] onAuthStateChanged fired. User:', fbUser ? fbUser.email : 'NULL');
 
       if (fbUser) {
+        try {
+          await fbUser.getIdToken(true);
+        } catch (_) {}
         const providerId = fbUser.providerData?.[0]?.providerId === 'google.com' ? 'google' : 'password';
         const dmosUser = await syncUserProfile(fbUser, providerId);
         setUser(dmosUser);
@@ -151,6 +154,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       }
       setIsLoading(false);
     });
+
 
     return () => unsubscribe();
   }, []);

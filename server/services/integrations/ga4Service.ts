@@ -166,16 +166,21 @@ export class GA4IntegrationService {
       );
 
       const row = res.data.rows?.[0]?.metricValues || [];
+      const usersCount = parseInt(row[0]?.value || '0', 10);
+      const totalEngagementSecs = parseFloat(row[4]?.value || '0');
+      const avgEngagementSecs = usersCount > 0 ? Math.round(totalEngagementSecs / usersCount) : 0;
+
       const data: GA4OverviewData = {
-        users: parseInt(row[0]?.value || '0', 10),
+        users: usersCount,
         sessions: parseInt(row[1]?.value || '0', 10),
         pageViews: parseInt(row[2]?.value || '0', 10),
         engagementRate: parseFloat((parseFloat(row[3]?.value || '0') * 100).toFixed(1)),
-        averageEngagementTime: Math.round(parseFloat(row[4]?.value || '0')),
+        averageEngagementTime: avgEngagementSecs,
         conversions: parseInt(row[5]?.value || '0', 10),
         dateRange: `Last ${days} Days`,
         fetchedAt: new Date().toISOString(),
       };
+
 
       memoryCache.set(cacheKey, { data, timestamp: Date.now() });
       return { configured: true, data };

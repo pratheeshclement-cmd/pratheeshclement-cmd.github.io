@@ -1,6 +1,7 @@
 // ─── DMOS Marketing Hub Express API Router ────────────────────────────────────
 
 import { Router, Request, Response } from 'express';
+import { requireAdminAuth } from '../middleware/auth';
 
 export const marketingRouter = Router();
 
@@ -8,7 +9,7 @@ export const marketingRouter = Router();
 let CAMPAIGN_STORE: any[] = [];
 
 // GET /api/marketing/campaigns
-marketingRouter.get('/campaigns', (req: Request, res: Response) => {
+marketingRouter.get('/campaigns', requireAdminAuth as any, (req: Request, res: Response) => {
   try {
     res.json({
       success: true,
@@ -22,7 +23,7 @@ marketingRouter.get('/campaigns', (req: Request, res: Response) => {
 });
 
 // POST /api/marketing/campaigns
-marketingRouter.post('/campaigns', (req: Request, res: Response) => {
+marketingRouter.post('/campaigns', requireAdminAuth as any, (req: Request, res: Response) => {
   try {
     const { name, platform, spend, budget, status, notes } = req.body;
     if (!name || !platform) {
@@ -53,7 +54,7 @@ marketingRouter.post('/campaigns', (req: Request, res: Response) => {
 });
 
 // PUT /api/marketing/campaigns/:id
-marketingRouter.put('/campaigns/:id', (req: Request, res: Response) => {
+marketingRouter.put('/campaigns/:id', requireAdminAuth as any, (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const index = CAMPAIGN_STORE.findIndex(c => c.id === id);
@@ -74,7 +75,7 @@ marketingRouter.put('/campaigns/:id', (req: Request, res: Response) => {
 });
 
 // DELETE /api/marketing/campaigns/:id
-marketingRouter.delete('/campaigns/:id', (req: Request, res: Response) => {
+marketingRouter.delete('/campaigns/:id', requireAdminAuth as any, (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     CAMPAIGN_STORE = CAMPAIGN_STORE.filter(c => c.id !== id);

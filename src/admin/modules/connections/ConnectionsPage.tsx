@@ -1,5 +1,5 @@
 // ─── Pratheesh Admin — API Gateway & Integration Control Center ─────────────
-// Real production-grade health monitor & verification engine for all 12 providers.
+// Real production-grade health monitor & verification engine for all providers.
 
 import React, { useState, useEffect } from 'react';
 import {
@@ -20,7 +20,7 @@ const PROVIDER_ICONS: Record<string, React.FC<any>> = {
   ga4: BarChart2, gsc: Zap, firebase: Database, meta: Globe,
   clarity: Activity, github: Code2, cloudflare: Shield,
   gemini: Cpu, smtp: Mail, gmaps: Map, vercel: Cloud, pagespeed: Zap,
-  googleads: BarChart2, googlebusiness: Globe,
+  googleads: BarChart2, googlebusiness: Globe, microsoftads: BarChart2,
 };
 
 const CATEGORY_COLORS: Record<string, string> = {
@@ -49,6 +49,7 @@ const INITIAL_PROVIDERS: ProviderHealthResult[] = [
   { id: 'pagespeed', name: 'Google PageSpeed Insights', category: 'Performance', status: 'connected', latencyMs: 290, lastCheckedAt: 'Just now', apiVersion: 'v5', docsUrl: 'https://developers.google.com/speed/docs/insights/v5/get-started', message: 'PageSpeed Insights active', configured: true },
   { id: 'googleads', name: 'Google Ads REST API', category: 'Marketing', status: 'auth_required', latencyMs: 0, lastCheckedAt: '—', apiVersion: 'v17', docsUrl: 'https://developers.google.com/google-ads/api/docs/first-call/overview', message: 'Configure GOOGLE_ADS_DEVELOPER_TOKEN', configured: false },
   { id: 'googlebusiness', name: 'Google Business Profile API', category: 'SEO', status: 'auth_required', latencyMs: 0, lastCheckedAt: '—', apiVersion: 'v1', docsUrl: 'https://developers.google.com/my-business/content/basic-setup', message: 'Configure GOOGLE_BUSINESS_CLIENT_ID', configured: false },
+  { id: 'microsoftads', name: 'Microsoft Advertising API', category: 'Marketing', status: 'auth_required', latencyMs: 0, lastCheckedAt: '—', apiVersion: 'v13', docsUrl: 'https://learn.microsoft.com/en-us/advertising/guides/', message: 'Configure MICROSOFT_ADS_CLIENT_ID', configured: false },
 ];
 
 async function safeFetchJson(url: string, options: RequestInit = {}): Promise<any> {
@@ -68,6 +69,8 @@ export const ConnectionsPage: React.FC = () => {
   const [loadingGitHub, setLoadingGitHub] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [verifyingMap, setVerifyingMap] = useState<Record<string, boolean>>({});
+  const [disconnectTarget, setDisconnectTarget] = useState<ProviderHealthResult | null>(null);
+  const [disconnecting, setDisconnecting] = useState(false);
 
   const fetchLiveHealth = async () => {
     try {
@@ -94,10 +97,13 @@ export const ConnectionsPage: React.FC = () => {
     fetchLiveHealth();
     fetchGitHub();
 
-    // Auto-verify googlebusiness if returning from OAuth callback
+    // Auto-verify integrations returning from OAuth callbacks
     const params = new URLSearchParams(window.location.search);
-    if (params.get('status') === 'google_business_connected') {
-      handleVerifySingle('googlebusiness');
+    const status = params.get('status');
+    if (status === 'google_business_connected' || status === 'googleads_connected' || status === 'microsoftads_connected' || status === 'gsc_connected') {
+      const providerId = status === 'google_business_connected' ? 'googlebusiness' : status === 'googleads_connected' ? 'googleads' : status === 'microsoftads_connected' ? 'microsoftads' : 'gsc';
+      handleVerifySingle(providerId);
+      window.history.replaceState({}, document.title, window.location.pathname);
     }
   }, []);
 
@@ -138,7 +144,18 @@ export const ConnectionsPage: React.FC = () => {
     try {
       const idToken = (await auth.currentUser?.getIdToken()) || 'admin_session_token';
 
-      if (providerId === 'googlebusiness') {
+      if (providerId === 'gsc') {
+        const oauthJson = await safeFetchJson(`${API_BASE}/admin/search-console/oauth/start`, {
+          headers: { Authorization: `Bearer ${idToken}` },
+        });
+        if (oauthJson.success && oauthJson.authUrl) {
+          window.location.href = oauthJson.authUrl;
+          return;
+        } else if (oauthJson.error) {
+          alert(`Search Console OAuth Notice: ${oauthJson.error}`);
+          return;
+        }
+      } else if (providerId === 'googlebusiness') {
         const oauthJson = await safeFetchJson(`${API_BASE}/admin/google-business/oauth/start`, {
           headers: { Authorization: `Bearer ${idToken}` },
         });
@@ -146,7 +163,29 @@ export const ConnectionsPage: React.FC = () => {
           window.location.href = oauthJson.authUrl;
           return;
         } else if (oauthJson.error) {
-          alert(`Google Business OAuth Configuration Error: ${oauthJson.error}`);
+          alert(`Google Business OAuth Notice: ${oauthJson.error}`);
+          return;
+        }
+      } else if (providerId === 'googleads') {
+        const oauthJson = await safeFetchJson(`${API_BASE}/admin/google-ads/oauth/start`, {
+          headers: { Authorization: `Bearer ${idToken}` },
+        });
+        if (oauthJson.success && oauthJson.authUrl) {
+          window.location.href = oauthJson.authUrl;
+          return;
+        } else if (oauthJson.error) {
+          alert(`Google Ads OAuth Notice: ${oauthJson.error}`);
+          return;
+        }
+      } else if (providerId === 'microsoftads') {
+        const oauthJson = await safeFetchJson(`${API_BASE}/admin/microsoft-ads/oauth/start`, {
+          headers: { Authorization: `Bearer ${idToken}` },
+        });
+        if (oauthJson.success && oauthJson.authUrl) {
+          window.location.href = oauthJson.authUrl;
+          return;
+        } else if (oauthJson.error) {
+          alert(`Microsoft Ads OAuth Notice: ${oauthJson.error}`);
           return;
         }
       }
@@ -182,6 +221,37 @@ export const ConnectionsPage: React.FC = () => {
     }
   };
 
+  const handleConfirmDisconnect = async () => {
+    if (!disconnectTarget) return;
+    setDisconnecting(true);
+    try {
+      const idToken = (await auth.currentUser?.getIdToken()) || 'admin_session_token';
+      const endpoint = disconnectTarget.id === 'googleads'
+        ? `${API_BASE}/admin/google-ads/disconnect`
+        : disconnectTarget.id === 'microsoftads'
+        ? `${API_BASE}/admin/microsoft-ads/disconnect`
+        : `${API_BASE}/admin/connections/disconnect/${disconnectTarget.id}`;
+
+      await safeFetchJson(endpoint, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${idToken}` },
+      });
+
+      setProviders(prev => prev.map(p => p.id === disconnectTarget.id ? {
+        ...p,
+        status: 'disconnected',
+        message: `${disconnectTarget.name} disconnected successfully.`,
+      } : p));
+
+      alert(`${disconnectTarget.name} disconnected successfully.`);
+    } catch (e: any) {
+      alert(`Unable to disconnect ${disconnectTarget.name}. ${e.message}`);
+    } finally {
+      setDisconnecting(false);
+      setDisconnectTarget(null);
+    }
+  };
+
   const handleRefreshAll = async () => {
     setRefreshing(true);
     fetchGitHub();
@@ -195,16 +265,16 @@ export const ConnectionsPage: React.FC = () => {
 
   const connectedCount  = providers.filter(p => p.status === 'connected').length;
   const authReqCount    = providers.filter(p => p.status === 'auth_required').length;
-  const disconnectedCount = providers.filter(p => p.status === 'not_connected' || p.status === 'error').length;
+  const disconnectedCount = providers.filter(p => p.status === 'not_connected' || p.status === 'disconnected' || p.status === 'error').length;
 
   return (
     <div className="dmos-page-shell">
       <PageHeader
         title="Connections & Integrations"
-        subtitle="API Gateway Gateway · Real API Verification · Live Latency Monitoring"
+        subtitle="API Gateway Control Center · Real API Verification · Live Latency Monitoring"
         badge={
           connectedCount === providers.length
-            ? <Badge variant="success" dot pulse>All 12 Connected</Badge>
+            ? <Badge variant="success" dot pulse>All Connected</Badge>
             : <Badge variant="neutral">{connectedCount}/{providers.length} Active</Badge>
         }
         actions={
@@ -323,19 +393,71 @@ export const ConnectionsPage: React.FC = () => {
               id={p.id}
               name={p.name}
               category={p.category}
-              status={p.status}
+              status={p.status as any}
               latencyMs={p.latencyMs}
               lastSync={p.lastCheckedAt || '—'}
               quotaUsedPercent={0}
               apiVersion={p.apiVersion}
               docsUrl={p.docsUrl}
+              message={p.message}
               icon={<IconComp size={18} color={CATEGORY_COLORS[p.category] || 'var(--dmos-text-muted)'} />}
+              onConnect={() => handleVerifyProvider(p.id)}
               onReconnect={() => handleVerifyProvider(p.id)}
+              onDisconnect={() => setDisconnectTarget(p)}
               onConfigure={() => handleVerifyProvider(p.id)}
             />
           );
         })}
       </div>
+
+      {/* ── Disconnect Confirmation Modal ── */}
+      {disconnectTarget && (
+        <div style={{
+          position: 'fixed', inset: 0, zIndex: 1000,
+          background: 'rgba(0, 0, 0, 0.75)', backdropFilter: 'blur(6px)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20,
+        }} onClick={() => !disconnecting && setDisconnectTarget(null)}>
+          <div style={{
+            background: 'var(--dmos-card-bg, #111827)', border: '1px solid var(--dmos-border, rgba(255,255,255,0.1))',
+            borderRadius: 16, maxWidth: 440, width: '100%', padding: 24,
+            boxShadow: '0 20px 40px rgba(0,0,0,0.6)',
+          }} onClick={e => e.stopPropagation()}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
+              <div style={{
+                width: 40, height: 40, borderRadius: 10, background: 'var(--dmos-danger-bg)',
+                border: '1px solid var(--dmos-danger-border)', display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}>
+                <AlertTriangle size={20} color="var(--dmos-danger)" />
+              </div>
+              <div>
+                <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: 700, color: 'var(--dmos-text)' }}>
+                  Disconnect {disconnectTarget.name}?
+                </h3>
+                <p style={{ margin: '4px 0 0', fontSize: '0.78rem', color: 'var(--dmos-text-muted)' }}>
+                  This will remove the saved connection for {disconnectTarget.name} from DMOS Admin. You can reconnect it later.
+                </p>
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', gap: 12, justifyContent: 'flex-end', marginTop: 24 }}>
+              <Button
+                variant="ghost"
+                onClick={() => setDisconnectTarget(null)}
+                disabled={disconnecting}
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="danger"
+                onClick={handleConfirmDisconnect}
+                loading={disconnecting}
+              >
+                Disconnect
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

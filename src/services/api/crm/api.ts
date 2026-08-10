@@ -11,7 +11,7 @@ export interface LeadPayload {
 
 export const crmApi = {
   getLeads: () => apiClient<{ leads: any[] }>('/crm/leads'),
-  submitContact: (data: LeadPayload) => apiClient<{ message: string }>('/crm/contact', {
+  submitContact: (data: LeadPayload) => apiClient<{ message: string }>('/crm/contact-submit', {
     method: 'POST',
     body: JSON.stringify(data),
   }),

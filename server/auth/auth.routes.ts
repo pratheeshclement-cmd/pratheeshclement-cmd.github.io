@@ -4,10 +4,17 @@ import { Router, Request, Response } from 'express';
 import { getGoogleAuthUrl, googleConfig } from '../config/google';
 import { GoogleOAuthStrategy } from './google.strategy';
 import { requireAdminAuth, AuthenticatedRequest } from '../middleware/auth';
+import { createRateLimiter } from '../middleware/rateLimiter';
 
 export const authRouter = Router();
+const authRateLimiter = createRateLimiter({
+  windowMs: 60 * 1000,
+  max: 12,
+  message: 'Too many authentication requests. Please wait a minute and try again.',
+});
 
-// 1. GET /auth/google — Initiate OAuth Flow
+authRouter.use('/google', authRateLimiter);
+
 authRouter.get('/google', (req: Request, res: Response) => {
   console.log('[AuthRouter] Redirecting to Google OAuth Authorization URL...');
   const authUrl = getGoogleAuthUrl();
@@ -40,7 +47,7 @@ authRouter.get('/google/callback', async (req: Request, res: Response) => {
 });
 
 // 3. POST /auth/google/verify-token — Direct Google Token Verification API
-authRouter.post('/google/verify-token', async (req: Request, res: Response) => {
+authRouter.post('/google/verify-token', authRateLimiter, async (req: Request, res: Response) => {
   const { code, idToken } = req.body;
   try {
     let profile;

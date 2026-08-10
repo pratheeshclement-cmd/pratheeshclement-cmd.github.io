@@ -73,7 +73,8 @@ export class MetaIntegrationService {
     }
 
     try {
-      await axios.get(`https://graph.facebook.com/${GRAPH_API_VERSION}/me?access_token=${accessToken}`, {
+      await axios.get(`https://graph.facebook.com/${GRAPH_API_VERSION}/me`, {
+        headers: { Authorization: `Bearer ${accessToken}` },
         timeout: 8000,
       });
 

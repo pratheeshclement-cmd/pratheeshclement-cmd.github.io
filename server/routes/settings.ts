@@ -2,6 +2,8 @@
 
 import { Router, Request, Response } from 'express';
 
+import { requireAdminAuth } from '../middleware/auth';
+
 export const settingsRouter = Router();
 
 let SYSTEM_SETTINGS = {
@@ -20,7 +22,7 @@ settingsRouter.get('/system', (req: Request, res: Response) => {
 });
 
 // POST /api/settings/system
-settingsRouter.post('/system', (req: Request, res: Response) => {
+settingsRouter.post('/system', requireAdminAuth as any, (req: Request, res: Response) => {
   try {
     SYSTEM_SETTINGS = { ...SYSTEM_SETTINGS, ...req.body };
     res.json({ success: true, settings: SYSTEM_SETTINGS, message: 'Settings saved cleanly' });

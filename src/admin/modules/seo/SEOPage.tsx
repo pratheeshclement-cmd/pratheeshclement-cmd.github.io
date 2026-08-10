@@ -31,6 +31,9 @@ export const SEOPage: React.FC = () => {
   const [inspectLoading, setInspectLoading] = useState<boolean>(false);
   const [inspectionResult, setInspectionResult] = useState<GSCInspectionResult | null>(null);
 
+  const [sites, setSites] = useState<any[]>([]);
+  const [selectedSiteUrl, setSelectedSiteUrl] = useState<string>('https://pratheeshclement-cmd.github.io/');
+
   const loadGSCData = async () => {
     setLoading(true);
     try {
@@ -47,15 +50,27 @@ export const SEOPage: React.FC = () => {
       }
       setConfigured(true);
 
+      // Fetch accessible sites
+      fetch(`${API_BASE}/admin/search-console/sites`, { headers })
+        .then(r => r.json())
+        .then(res => {
+          if (Array.isArray(res.sites) && res.sites.length > 0) {
+            setSites(res.sites);
+          }
+        })
+        .catch(() => {});
+
+      const siteParam = encodeURIComponent(selectedSiteUrl);
+
       // 2. Fetch Datasets
       const [ovRes, perfRes, qRes, pgRes, cRes, devRes, smRes] = await Promise.all([
-        fetch(`${API_BASE}/admin/search-console/overview?days=${days}`, { headers }).then(r => r.json()),
-        fetch(`${API_BASE}/admin/search-console/performance?days=${days}`, { headers }).then(r => r.json()),
-        fetch(`${API_BASE}/admin/search-console/queries?days=${days}`, { headers }).then(r => r.json()),
-        fetch(`${API_BASE}/admin/search-console/pages?days=${days}`, { headers }).then(r => r.json()),
-        fetch(`${API_BASE}/admin/search-console/countries?days=${days}`, { headers }).then(r => r.json()),
-        fetch(`${API_BASE}/admin/search-console/devices?days=${days}`, { headers }).then(r => r.json()),
-        fetch(`${API_BASE}/admin/search-console/sitemaps`, { headers }).then(r => r.json()),
+        fetch(`${API_BASE}/admin/search-console/overview?days=${days}&siteUrl=${siteParam}`, { headers }).then(r => r.json()),
+        fetch(`${API_BASE}/admin/search-console/performance?days=${days}&siteUrl=${siteParam}`, { headers }).then(r => r.json()),
+        fetch(`${API_BASE}/admin/search-console/queries?days=${days}&siteUrl=${siteParam}`, { headers }).then(r => r.json()),
+        fetch(`${API_BASE}/admin/search-console/pages?days=${days}&siteUrl=${siteParam}`, { headers }).then(r => r.json()),
+        fetch(`${API_BASE}/admin/search-console/countries?days=${days}&siteUrl=${siteParam}`, { headers }).then(r => r.json()),
+        fetch(`${API_BASE}/admin/search-console/devices?days=${days}&siteUrl=${siteParam}`, { headers }).then(r => r.json()),
+        fetch(`${API_BASE}/admin/search-console/sitemaps?siteUrl=${siteParam}`, { headers }).then(r => r.json()),
       ]);
 
       if (ovRes.data) setOverview(ovRes.data);
@@ -102,8 +117,12 @@ export const SEOPage: React.FC = () => {
   };
 
   useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('status') === 'gsc_connected') {
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
     loadGSCData();
-  }, [days]);
+  }, [days, selectedSiteUrl]);
 
   const queryColumns: Column<GSCRowMetric>[] = [
     { key: 'key', label: 'Search Keyword', render: r => <span style={{ fontWeight: 600, color: 'var(--dmos-text)' }}>{r.key}</span> },
@@ -152,17 +171,110 @@ export const SEOPage: React.FC = () => {
         }
       />
 
+      {/* Property Selector Toolbar */}
+      {configured && (
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20, flexWrap: 'wrap', gap: 12, background: 'var(--dmos-surface-subtle)', padding: '12px 16px', borderRadius: 12, border: '1px solid var(--dmos-border)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
+            <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--dmos-text-muted)', display: 'flex', alignItems: 'center', gap: 6 }}>
+              <Globe size={16} color="var(--dmos-primary)" /> Search Console Property:
+            </span>
+            <select
+              value={selectedSiteUrl}
+              onChange={(e) => setSelectedSiteUrl(e.target.value)}
+              style={{
+                background: 'var(--dmos-bg)',
+                color: 'var(--dmos-text)',
+                border: '1px solid var(--dmos-border)',
+                borderRadius: 8,
+                padding: '6px 12px',
+                fontSize: '0.85rem',
+                outline: 'none',
+                fontWeight: 600,
+                cursor: 'pointer',
+              }}
+            >
+              {sites.length > 0 ? (
+                sites.map(s => (
+                  <option key={s.siteUrl} value={s.siteUrl}>
+                    {s.siteUrl} ({s.permissionLevel || 'Property'})
+                  </option>
+                ))
+              ) : (
+                <option value={selectedSiteUrl}>{selectedSiteUrl} (Target Property)</option>
+              )}
+            </select>
+          </div>
+          {overview?.fetchedAt && (
+            <div style={{ fontSize: '0.78rem', color: 'var(--dmos-text-muted)' }}>
+              Last synced: {new Date(overview.fetchedAt).toLocaleTimeString()}
+            </div>
+          )}
+        </div>
+      )}
+
       {/* Unconfigured / Auth Required State Card */}
       {!configured && (
-        <Card variant="primary" style={{ padding: 24, marginBottom: 24, display: 'flex', alignItems: 'center', gap: 16, border: '1px solid var(--dmos-warning-border)' }}>
-          <div style={{ width: 44, height: 44, borderRadius: 12, background: 'var(--dmos-warning-bg)', border: '1px solid var(--dmos-warning-border)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <AlertTriangle size={22} color="var(--dmos-warning)" />
-          </div>
-          <div>
-            <div style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--dmos-text)' }}>Search Console API Not Configured</div>
-            <div style={{ fontSize: '0.84rem', color: 'var(--dmos-text-muted)', marginTop: 4 }}>
-              {statusMessage || 'To enable server-side Search Console analytics, configure GSC_SITE_URL, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, & GOOGLE_REFRESH_TOKEN in server/.env.'}
+        <Card variant="primary" style={{ padding: 24, marginBottom: 24, display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: 16, border: '1px solid var(--dmos-warning-border)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+            <div style={{ width: 44, height: 44, borderRadius: 12, background: 'var(--dmos-warning-bg)', border: '1px solid var(--dmos-warning-border)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <AlertTriangle size={22} color="var(--dmos-warning)" />
             </div>
+            <div>
+              <div style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--dmos-text)' }}>Search Console API Authentication Required</div>
+              <div style={{ fontSize: '0.84rem', color: 'var(--dmos-text-muted)', marginTop: 4 }}>
+                {statusMessage || 'Connect your Google account to authorize Search Console API access for live analytics.'}
+              </div>
+            </div>
+          </div>
+          <Button
+            variant="primary"
+            size="sm"
+            onClick={async () => {
+              try {
+                const idToken = (await auth.currentUser?.getIdToken()) || 'admin_session_token';
+                const res = await fetch(`${API_BASE}/admin/search-console/oauth/start`, {
+                  headers: { Authorization: `Bearer ${idToken}` },
+                }).then(r => r.json());
+                if (res.success && res.authUrl) {
+                  window.location.href = res.authUrl;
+                } else {
+                  alert(`OAuth Notice: ${res.error || 'Failed to start OAuth'}`);
+                }
+              } catch (e: any) {
+                alert(`OAuth Error: ${e.message}`);
+              }
+            }}
+          >
+            Connect Google Search Console
+          </Button>
+        </Card>
+      )}
+
+      {/* Configured but 0 Sites Card */}
+      {configured && sites.length === 0 && !loading && (
+        <Card variant="primary" style={{ padding: 20, marginBottom: 24, display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: 16, border: '1px solid var(--dmos-border)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <AlertTriangle size={20} color="var(--dmos-warning)" />
+            <div>
+              <div style={{ fontSize: '0.92rem', fontWeight: 700, color: 'var(--dmos-text)' }}>No verified properties returned for authenticated Google account</div>
+              <div style={{ fontSize: '0.8rem', color: 'var(--dmos-text-muted)', marginTop: 2 }}>
+                Ensure your domain or URL-prefix property is added and verified in Search Console for mariyapratheesh007@gmail.com.
+              </div>
+            </div>
+          </div>
+          <div style={{ display: 'flex', gap: 8 }}>
+            <Button variant="secondary" size="sm" onClick={loadGSCData}>Refresh Properties</Button>
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={async () => {
+                const idToken = (await auth.currentUser?.getIdToken()) || 'admin_session_token';
+                const res = await fetch(`${API_BASE}/admin/search-console/oauth/start`, { headers: { Authorization: `Bearer ${idToken}` } }).then(r => r.json());
+                if (res.authUrl) window.location.href = res.authUrl;
+              }}
+            >
+              Connect Different Account
+            </Button>
           </div>
         </Card>
       )}

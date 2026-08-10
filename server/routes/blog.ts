@@ -3,6 +3,7 @@
 import { Router } from 'express';
 import { db } from '../config/firebaseAdmin';
 import { FIRESTORE_COLLECTIONS, BlogDocument } from '../db/schema';
+import { requireAdminAuth } from '../middleware/auth';
 
 export const blogRouter = Router();
 
@@ -32,7 +33,7 @@ blogRouter.get('/', async (req, res) => {
 });
 
 // POST /api/blog/publish-pipeline — Automated Publishing Workflow
-blogRouter.post('/publish-pipeline', async (req, res) => {
+blogRouter.post('/publish-pipeline', requireAdminAuth as any, async (req, res) => {
   try {
     const { title, content, category, tags, author = 'Pratheesh Clement' } = req.body;
 
@@ -122,7 +123,7 @@ blogRouter.post('/publish-pipeline', async (req, res) => {
 });
 
 // DELETE /api/blog/:id
-blogRouter.delete('/:id', async (req, res) => {
+blogRouter.delete('/:id', requireAdminAuth as any, async (req, res) => {
   try {
     const { id } = req.params;
     if (db) {

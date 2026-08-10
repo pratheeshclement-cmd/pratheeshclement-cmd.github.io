@@ -1,6 +1,22 @@
 // ─── DMOS Integration Gateway: Standard Types ────────────────────────────────
 
-export type ProviderStatus = 'connected' | 'auth_required' | 'not_connected' | 'error';
+export type ProviderStatus =
+  | 'connected'
+  | 'healthy'
+  | 'degraded'
+  | 'offline'
+  | 'not_configured'
+  | 'auth_required'
+  | 'authentication_failed'
+  | 'permission_denied'
+  | 'no_data'
+  | 'stale'
+  | 'timeout'
+  | 'unavailable'
+  | 'unknown'
+  | 'not_connected'
+  | 'disconnected'
+  | 'error';
 
 export interface ProviderHealthResult {
   id: string;
@@ -15,3 +31,4 @@ export interface ProviderHealthResult {
   configured: boolean;
   metadata?: Record<string, any>;
 }
+

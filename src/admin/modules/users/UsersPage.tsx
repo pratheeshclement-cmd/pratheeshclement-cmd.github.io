@@ -1,8 +1,8 @@
 // ─── DMOS User Management: Realtime Firestore Sync & Protected Backend ───────
-// Real Firebase Auth identities, server-side RBAC authorization, and zero artificial UIDs.
+// Real Firebase Auth identities, server-side RBAC authorization, and SMTP invitation email delivery.
 
 import React, { useState, useEffect } from 'react';
-import { Users, Shield, Plus, Edit2, Trash2, UserX, UserCheck, Key, Loader2, AlertCircle } from 'lucide-react';
+import { Users, Shield, Plus, Edit2, Trash2, UserX, UserCheck, Key, Mail, Loader2, AlertCircle, Send } from 'lucide-react';
 import { collection, onSnapshot } from 'firebase/firestore';
 import { db } from '../../../lib/firebase';
 import { Card, Button, Badge, PageHeader, Input } from '../../design-system/components';
@@ -16,6 +16,7 @@ interface AdminUser {
   email: string;
   role: UserRole;
   status: 'active' | 'suspended';
+  invitationStatus?: 'pending' | 'sent' | 'accepted' | 'failed';
   lastSeen?: string;
   createdAt?: string;
   photoURL?: string;
@@ -63,6 +64,7 @@ export const UsersPage: React.FC = () => {
             email: data.email || '',
             role: (data.role as UserRole) || 'Editor',
             status: data.status || 'active',
+            invitationStatus: data.invitationStatus || (data.status === 'suspended' ? 'accepted' : 'sent'),
             lastSeen: data.lastLogin ? new Date(data.lastLogin).toLocaleDateString() : 'Never',
             createdAt: data.createdAt ? new Date(data.createdAt).toLocaleDateString() : '',
             photoURL: data.photoURL || undefined,
@@ -106,7 +108,7 @@ export const UsersPage: React.FC = () => {
       });
 
       if (response.success) {
-        setSuccessMessage(response.message || `Invitation created cleanly for ${newEmail}.`);
+        setSuccessMessage(response.message || `Invitation sent successfully to ${newEmail}.`);
         setShowInviteModal(false);
         setNewEmail('');
         setNewName('');
@@ -115,6 +117,27 @@ export const UsersPage: React.FC = () => {
       }
     } catch (err: any) {
       setErrorMessage(err.message || 'Error executing invitation request.');
+    } finally {
+      setProcessing(false);
+    }
+  };
+
+  const handleResendInvite = async (user: AdminUser) => {
+    clearAlerts();
+    setProcessing(true);
+    try {
+      const response = await apiClient<{ success: boolean; message: string }>('/users/resend-invite', {
+        method: 'POST',
+        body: JSON.stringify({ uid: user.id, email: user.email }),
+      });
+
+      if (response.success) {
+        setSuccessMessage(response.message || `Invitation resent successfully to ${user.email}.`);
+      } else {
+        setErrorMessage('Failed to resend invitation email.');
+      }
+    } catch (err: any) {
+      setErrorMessage(err.message || 'Error resending invitation email.');
     } finally {
       setProcessing(false);
     }
@@ -202,7 +225,7 @@ export const UsersPage: React.FC = () => {
     <div className="dmos-page-shell">
       <PageHeader
         title="User & Access Management"
-        subtitle="Real-time Team Management, RBAC & Firebase Auth Synchronization"
+        subtitle="Real-time Team Management, RBAC & SMTP Email Invitation Delivery"
         badge={<Badge variant="primary">{users.length} Users</Badge>}
         actions={
           <Button
@@ -319,11 +342,26 @@ export const UsersPage: React.FC = () => {
                     ))}
                   </select>
 
-                  <Badge variant={u.status === 'active' ? 'success' : 'danger'}>
-                    {u.status?.toUpperCase() || 'ACTIVE'}
-                  </Badge>
+                  {u.invitationStatus === 'failed' ? (
+                    <Badge variant="danger">INVITATION FAILED</Badge>
+                  ) : u.invitationStatus === 'pending' || u.invitationStatus === 'sent' ? (
+                    <Badge variant="warning">{u.invitationStatus === 'sent' ? 'INVITED' : 'PENDING'}</Badge>
+                  ) : (
+                    <Badge variant={u.status === 'active' ? 'success' : 'danger'}>
+                      {u.status?.toUpperCase() || 'ACTIVE'}
+                    </Badge>
+                  )}
 
                   <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+                    <button
+                      onClick={() => handleResendInvite(u)}
+                      disabled={processing}
+                      style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--dmos-accent, #3B63FF)', padding: 4 }}
+                      title="Resend Invitation Email"
+                    >
+                      <Mail size={14} />
+                    </button>
+
                     <button
                       onClick={() => handleResetPassword(u)}
                       disabled={processing}

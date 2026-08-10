@@ -571,33 +571,38 @@ interface ConnectionCardProps {
   id: string;
   name: string;
   category: string;
-  status: 'connected' | 'auth_required' | 'not_connected' | 'error';
+  status: 'connected' | 'auth_required' | 'not_connected' | 'disconnected' | 'error';
   latencyMs: number;
   lastSync: string;
   quotaUsedPercent: number;
   apiVersion: string;
   docsUrl: string;
+  message?: string;
   icon?: ReactNode;
+  onConnect?: () => void;
   onReconnect?: () => void;
+  onDisconnect?: () => void;
   onConfigure?: () => void;
 }
 
 export const ConnectionCard: React.FC<ConnectionCardProps> = ({
-  name, category, status, latencyMs, lastSync, quotaUsedPercent, apiVersion, docsUrl, icon, onReconnect, onConfigure,
+  name, category, status, latencyMs, lastSync, quotaUsedPercent, apiVersion, docsUrl, message, icon, onConnect, onReconnect, onDisconnect, onConfigure,
 }) => {
   const statusLabel = status === 'connected' ? 'Connected'
     : status === 'auth_required' ? 'Auth Required'
-    : status === 'not_connected' ? 'Not Connected'
+    : status === 'disconnected' || status === 'not_connected' ? 'Disconnected'
     : 'Error';
 
   const statusVariant = status === 'connected' ? 'success'
     : status === 'auth_required' ? 'warning'
-    : status === 'not_connected' ? 'neutral'
+    : status === 'disconnected' || status === 'not_connected' ? 'neutral'
     : 'danger';
 
   const latencyColor = latencyMs < 100 ? 'var(--dmos-success)'
     : latencyMs < 300 ? 'var(--dmos-warning)'
     : 'var(--dmos-danger)';
+
+  const handleConnectAction = onConnect || onReconnect;
 
   return (
     <Card style={{ padding: 20, display: 'flex', flexDirection: 'column', gap: 14 }}>
@@ -622,6 +627,17 @@ export const ConnectionCard: React.FC<ConnectionCardProps> = ({
         <Badge variant={statusVariant} pulse={status === 'connected'}>{statusLabel}</Badge>
       </div>
 
+      {/* Notice Message if available (especially for Error state) */}
+      {message && status === 'error' && (
+        <div style={{
+          fontSize: '0.72rem', color: 'var(--dmos-danger)', background: 'var(--dmos-danger-bg)',
+          border: '1px solid var(--dmos-danger-border)', padding: '6px 10px', borderRadius: 6,
+          lineHeight: 1.3, wordBreak: 'break-word',
+        }}>
+          {message}
+        </div>
+      )}
+
       {/* Quota Bar */}
       {status === 'connected' && (
         <div>
@@ -645,14 +661,25 @@ export const ConnectionCard: React.FC<ConnectionCardProps> = ({
           <div style={{ fontSize: '0.64rem', color: 'var(--dmos-text-subtle)', marginBottom: 2, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Last Sync</div>
           <div style={{ fontSize: '0.82rem', fontWeight: 600, color: 'var(--dmos-text-muted)' }}>{lastSync}</div>
         </div>
-        <div style={{ marginLeft: 'auto', display: 'flex', gap: 6, alignItems: 'flex-end' }}>
-          {(status === 'auth_required' || status === 'not_connected' || status === 'error') && onReconnect && (
-            <Button size="xs" variant="secondary" onClick={onReconnect}>Connect</Button>
+        <div style={{ marginLeft: 'auto', display: 'flex', gap: 6, alignItems: 'center' }}>
+          {status === 'connected' && onDisconnect && (
+            <Button size="xs" variant="danger" onClick={onDisconnect}>Disconnect</Button>
           )}
+
+          {(status === 'auth_required' || status === 'disconnected' || status === 'not_connected') && handleConnectAction && (
+            <Button size="xs" variant="secondary" onClick={handleConnectAction}>Connect</Button>
+          )}
+
+          {status === 'error' && handleConnectAction && (
+            <Button size="xs" variant="secondary" onClick={handleConnectAction}>Reconnect</Button>
+          )}
+
           {onConfigure && <Button size="xs" variant="ghost" onClick={onConfigure}>Configure</Button>}
-          <a href={docsUrl} target="_blank" rel="noreferrer" style={{ fontSize: '0.72rem', color: 'var(--dmos-primary-light)', textDecoration: 'none', padding: '4px 0' }}>
-            Docs →
-          </a>
+          {docsUrl && docsUrl !== '#' && (
+            <a href={docsUrl} target="_blank" rel="noreferrer" style={{ fontSize: '0.72rem', color: 'var(--dmos-primary-light)', textDecoration: 'none', padding: '4px 0' }}>
+              Docs →
+            </a>
+          )}
         </div>
       </div>
     </Card>
