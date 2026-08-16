@@ -25,6 +25,8 @@ const ContactPage = lazy(() => import('../pages/ContactPage'));
 const PrivacyPolicyPage = lazy(() => import('../pages/PrivacyPolicyPage'));
 const TermsPage = lazy(() => import('../pages/TermsPage'));
 const CookiePolicyPage = lazy(() => import('../pages/CookiePolicyPage'));
+const DisclaimerPage = lazy(() => import('../pages/DisclaimerPage'));
+const ResourcesPage = lazy(() => import('../pages/ResourcesPage'));
 const NotFoundPage = lazy(() => import('../pages/NotFoundPage'));
 
 interface AppRouterProps {
@@ -192,6 +194,18 @@ export const AppRouter: React.FC<AppRouterProps> = ({ homeComponent }) => {
       return (
         <Suspense fallback={<RouteLoading />}>
           <CookiePolicyPage />
+        </Suspense>
+      );
+    case '/disclaimer/':
+      return (
+        <Suspense fallback={<RouteLoading />}>
+          <DisclaimerPage />
+        </Suspense>
+      );
+    case '/resources/':
+      return (
+        <Suspense fallback={<RouteLoading />}>
+          <ResourcesPage />
         </Suspense>
       );
     default:

@@ -1,10 +1,11 @@
 import React from 'react';
 import { useSEOMeta, PAGE_SEO } from '../seo/useSEOMeta';
 import { StructuredData, webPageSchema } from '../seo/StructuredData';
-import { PageLayout, ProseContainer, ContentH2, ContentP, InfoCard, PageCTA } from './components/PageLayout';
+import { PageLayout, ProseContainer, ContentH2, ContentH3, ContentP, InfoCard, PageCTA } from './components/PageLayout';
 import { Breadcrumb } from './components/Breadcrumb';
-import { Mail, Phone, MapPin, Github, Linkedin, Instagram, Facebook, ArrowRight } from 'lucide-react';
+import { Mail, Phone, MapPin, Github, Linkedin, Instagram, Facebook, ArrowRight, CheckCircle2, MessageSquare, Clock, Layers } from 'lucide-react';
 import { IDENTITY } from '../data/identity';
+import { navigateTo } from '../router/useRouter';
 
 export const ContactPage: React.FC = () => {
   useSEOMeta(PAGE_SEO.contact);
@@ -121,6 +122,97 @@ export const ContactPage: React.FC = () => {
               <Icon size={16} />
               {label}
             </a>
+          ))}
+        </div>
+
+        <ContentH2>Services Available for Engagement</ContentH2>
+        <ContentP>
+          I work with businesses, startups, and individuals across the following service areas. Click any service to read a detailed guide on my approach and methodology.
+        </ContentP>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 16, marginBottom: 40 }}>
+          {[
+            { label: 'Technical SEO & Search Architecture', href: '/seo/', desc: 'Schema markup, crawlability audits, Core Web Vitals, structured data, and on-page optimization.' },
+            { label: 'Digital Marketing Strategy', href: '/digital-marketing/', desc: 'Full-funnel growth planning, GA4 analytics, conversion tracking, and lead generation campaigns.' },
+            { label: 'Meta Ads (Facebook & Instagram)', href: '/meta-ads/', desc: 'Campaign structure, audience building, creative testing, and CPL optimization for paid social.' },
+            { label: 'Google Ads (Search & Display)', href: '/google-ads/', desc: 'Keyword strategy, Quality Score optimization, bidding, and conversion-focused ad copy.' },
+            { label: 'React & Web Development', href: '/web-development/', desc: 'Modern web applications, portfolio sites, SPAs, and performance-optimized frontends.' },
+            { label: 'AI Workflow & Automation', href: '/ai-automation/', desc: 'Prompt engineering, OpenAI API integrations, Zapier workflows, and automated reporting.' },
+          ].map(({ label, href, desc }) => (
+            <a
+              key={href}
+              href={href}
+              onClick={e => { e.preventDefault(); navigateTo(href); }}
+              style={{ display: 'block', padding: '18px 20px', borderRadius: 'var(--radius-md)', background: 'var(--glass-bg)', border: '1px solid var(--glass-border)', textDecoration: 'none', backdropFilter: 'blur(8px)', transition: 'border-color 0.2s' }}
+            >
+              <div style={{ fontSize: '0.95rem', fontFamily: 'var(--font-display)', color: 'var(--text-primary)', fontWeight: 600, marginBottom: 6 }}>{label}</div>
+              <div style={{ fontSize: '0.84rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>{desc}</div>
+              <div style={{ fontSize: '0.8rem', color: 'var(--accent-primary)', marginTop: 8, display: 'flex', alignItems: 'center', gap: 4 }}>View Guide <ArrowRight size={12} /></div>
+            </a>
+          ))}
+        </div>
+
+        <ContentH2>How We Work Together</ContentH2>
+        <ContentP>
+          Every engagement follows a straightforward process — from initial inquiry to ongoing collaboration. Here is what to expect:
+        </ContentP>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 16, marginBottom: 40 }}>
+          {[
+            { step: '01', title: 'Initial Inquiry', desc: 'Send an email or WhatsApp message with a brief overview of your project, business, and what you are trying to achieve. No lengthy brief required at this stage.' },
+            { step: '02', title: 'Discovery Call', desc: 'For most engagements, a short discovery call (15–30 minutes) is the most efficient way to align on scope, expectations, timeline, and budget.' },
+            { step: '03', title: 'Proposal & Agreement', desc: 'Based on the discovery conversation, I provide a clear written scope of work with deliverables, timeline, and pricing. No ambiguity.' },
+            { step: '04', title: 'Execution & Reporting', desc: 'Work begins immediately after agreement. You receive regular progress updates, access to reports, and direct communication throughout the engagement.' },
+          ].map(({ step, title, desc }) => (
+            <InfoCard key={step} accentColor="var(--accent-primary)">
+              <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
+                <div style={{ fontSize: '1.5rem', fontFamily: 'var(--font-display)', color: 'var(--accent-primary)', fontWeight: 700, opacity: 0.6, flexShrink: 0, lineHeight: 1 }}>{step}</div>
+                <div>
+                  <div style={{ fontSize: '1rem', fontFamily: 'var(--font-display)', color: 'var(--text-primary)', fontWeight: 700, marginBottom: 6 }}>{title}</div>
+                  <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: 1.7 }}>{desc}</div>
+                </div>
+              </div>
+            </InfoCard>
+          ))}
+        </div>
+
+        <ContentH2>What to Include in Your Message</ContentH2>
+        <ContentP>
+          A clear first message makes the discovery process faster for both of us. Helpful details to include:
+        </ContentP>
+        <ul style={{ paddingLeft: 24, marginBottom: 40, listStyle: 'none' }}>
+          {[
+            'The nature of your project or business (industry, product, or service)',
+            'What specific outcome you are looking for (more leads, higher search ranking, better ad ROI, a new website)',
+            'Whether you have existing campaigns, analytics, or ad accounts set up, or starting from scratch',
+            'Your approximate timeline and any budget range you have in mind',
+            'Your preferred communication method — email, WhatsApp, or video call',
+          ].map((item, i) => (
+            <li key={i} style={{ display: 'flex', gap: 10, alignItems: 'flex-start', marginBottom: 12 }}>
+              <CheckCircle2 size={16} color="var(--accent-mint)" style={{ flexShrink: 0, marginTop: 3 }} />
+              <span style={{ fontSize: '0.95rem', color: 'var(--text-secondary)', lineHeight: 1.7 }}>{item}</span>
+            </li>
+          ))}
+        </ul>
+
+        <ContentH2>Frequently Asked Questions</ContentH2>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 16, marginBottom: 48 }}>
+          {[
+            {
+              q: 'Do you work with clients outside India?',
+              a: 'Yes. All services are delivered remotely. I have worked on digital marketing and web development projects for businesses across multiple countries. Communication is via email, video call, or WhatsApp depending on your preference.'
+            },
+            {
+              q: 'What is the typical turnaround for a technical SEO audit?',
+              a: 'A comprehensive technical SEO audit covering crawlability, structured data, Core Web Vitals, canonical setup, and on-page factors typically takes 5–7 working days. You receive a written report with prioritized action items.'
+            },
+            {
+              q: 'Can you manage ongoing Google Ads or Meta Ads campaigns after setup?',
+              a: 'Yes. I offer ongoing campaign management as a monthly retainer service. This includes weekly performance reviews, creative rotation, audience optimization, bid adjustments, and monthly reporting.'
+            },
+          ].map(({ q, a }) => (
+            <InfoCard key={q} accentColor="var(--accent-secondary)">
+              <div style={{ fontSize: '1rem', fontFamily: 'var(--font-display)', color: 'var(--text-primary)', fontWeight: 700, marginBottom: 8 }}>{q}</div>
+              <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: 1.75 }}>{a}</div>
+            </InfoCard>
           ))}
         </div>
 

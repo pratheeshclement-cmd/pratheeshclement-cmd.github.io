@@ -4,7 +4,9 @@ import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const DIST_DIR = path.resolve(__dirname, '../dist');
+const ROOT_DIR = path.resolve(__dirname, '..');
+const PUBLIC_DIR = path.resolve(ROOT_DIR, 'public');
+const DIST_DIR = path.resolve(ROOT_DIR, 'dist');
 const BASE_URL = 'https://pratheeshclement-cmd.github.io';
 
 const ROUTES = [
@@ -163,11 +165,39 @@ const ROUTES = [
     content: 'Conversion tracking is the backbone of profitable paid advertising campaigns on platforms like Meta and Google Ads.',
   },
   {
+    path: '/blog/core-web-vitals-explained/',
+    title: 'Core Web Vitals Explained: LCP, INP & CLS | Pratheesh Clement',
+    description: 'A practical explanation of Core Web Vitals metrics — Largest Contentful Paint, Interaction to Next Paint, and Cumulative Layout Shift — with real optimisation techniques.',
+    h1: 'Core Web Vitals Explained: LCP, INP & CLS',
+    content: 'Core Web Vitals are the user experience signals that Google uses as ranking factors. Understanding and improving LCP, INP, and CLS is essential for both search performance and user satisfaction.',
+  },
+  {
+    path: '/blog/meta-ads-campaign-structure/',
+    title: 'Meta Ads Campaign Structure: Campaigns, Ad Sets & Ads Explained | Pratheesh Clement',
+    description: 'A complete guide to the three-tier Meta Ads structure — campaign objectives, ad set targeting and budget, and creative-level ad formats — with practical examples.',
+    h1: 'Meta Ads Campaign Structure: Campaigns, Ad Sets & Ads Explained',
+    content: 'The Meta Ads three-tier structure separates objectives, audience targeting, and creative decisions into distinct levels. Understanding this hierarchy is fundamental to building profitable Facebook and Instagram campaigns.',
+  },
+  {
+    path: '/blog/website-performance-optimization/',
+    title: 'Website Performance Optimisation: A Practical Guide | Pratheesh Clement',
+    description: 'A systematic approach to website performance optimisation covering Lighthouse audits, JavaScript bundle splitting, image compression, server response times, and CDN configuration.',
+    h1: 'Website Performance Optimisation: A Practical Guide',
+    content: 'Website performance directly affects search rankings, ad quality scores, and conversion rates. A systematic approach to performance optimisation covers JavaScript bundles, image delivery, server response, and CDN configuration.',
+  },
+  {
     path: '/contact/',
     title: 'Contact Pratheesh Clement | Digital Marketing & Web Development',
     description: 'Get in touch with Pratheesh Clement for digital marketing, SEO, web development, or AI automation projects. Available for remote collaboration worldwide.',
     h1: 'Contact Pratheesh Clement',
     content: 'Open to digital marketing strategy consulting, technical SEO audits, Meta & Google Ads campaigns, React web app development, and AI automation.',
+  },
+  {
+    path: '/resources/',
+    title: 'Digital Marketing & Web Development Resources | Pratheesh Clement',
+    description: 'A curated collection of professional tools for technical SEO, analytics, paid advertising, web development, design, and AI automation — organized by category.',
+    h1: 'Digital Marketing & Web Development Resources',
+    content: 'A curated collection of professional tools used across SEO, analytics, paid advertising, web development, design, and AI automation. No affiliate links, no fluff.',
   },
   {
     path: '/privacy-policy/',
@@ -189,6 +219,13 @@ const ROUTES = [
     description: 'Detailed cookie policy covering necessary, analytics (GA4), and marketing (Meta Pixel) cookies used on this website.',
     h1: 'Cookie Policy',
     content: 'Detailed cookie usage classifications and user consent preference controls.',
+  },
+  {
+    path: '/disclaimer/',
+    title: 'Disclaimer | Pratheesh Clement',
+    description: 'Professional disclaimer for pratheeshclement-cmd.github.io. All content is for educational and informational purposes only.',
+    h1: 'Disclaimer',
+    content: 'The information on this website is for general educational and informational purposes only and does not constitute professional legal, financial, or business advice.',
   },
 ];
 
@@ -349,11 +386,234 @@ allHtmlFiles.forEach(file => {
   }
 });
 
+// ─────────────────────────────────────────────────────────────────────────────
+// SITEMAP GENERATION & STRICT AUTOMATED VALIDATION GATE
+// ─────────────────────────────────────────────────────────────────────────────
+console.log('\n🗺️ Running Standard-Compliant XML Sitemap Generator...');
+
+const SITEMAP_METADATA = [
+  // Homepage
+  { path: '/', lastmod: '2026-08-16', changefreq: 'weekly', priority: '1.0', image: { loc: `${BASE_URL}/assets/pratheesh4k2.jpeg`, title: 'Pratheesh Clement — Digital Marketing Specialist & AI Enthusiast', caption: 'Pratheesh Clement official portrait, Digital Marketing Specialist, SEO Expert, and Frontend Developer in Vadalur, Tamil Nadu, India.' } },
+  // Core Pages
+  { path: '/about/', lastmod: '2026-08-16', changefreq: 'monthly', priority: '0.9' },
+  { path: '/services/', lastmod: '2026-08-16', changefreq: 'monthly', priority: '0.9' },
+  { path: '/projects/', lastmod: '2026-08-16', changefreq: 'weekly', priority: '0.9' },
+  { path: '/certifications/', lastmod: '2026-07-31', changefreq: 'monthly', priority: '0.8' },
+  { path: '/contact/', lastmod: '2026-08-16', changefreq: 'monthly', priority: '0.9' },
+  { path: '/resources/', lastmod: '2026-08-16', changefreq: 'monthly', priority: '0.8' },
+  // Pillar Guides
+  { path: '/seo/', lastmod: '2026-07-31', changefreq: 'monthly', priority: '0.95' },
+  { path: '/digital-marketing/', lastmod: '2026-07-31', changefreq: 'monthly', priority: '0.9' },
+  { path: '/ui-ux-design/', lastmod: '2026-07-31', changefreq: 'monthly', priority: '0.9' },
+  { path: '/web-development/', lastmod: '2026-07-31', changefreq: 'monthly', priority: '0.9' },
+  { path: '/google-search-console/', lastmod: '2026-07-31', changefreq: 'monthly', priority: '0.9' },
+  { path: '/meta-ads/', lastmod: '2026-07-31', changefreq: 'monthly', priority: '0.9' },
+  { path: '/google-ads/', lastmod: '2026-07-31', changefreq: 'monthly', priority: '0.9' },
+  { path: '/ai-automation/', lastmod: '2026-07-31', changefreq: 'monthly', priority: '0.85' },
+  { path: '/freelancing/', lastmod: '2026-07-31', changefreq: 'monthly', priority: '0.9' },
+  // Project Case Studies
+  { path: '/projects/pratheesh-os/', lastmod: '2026-07-31', changefreq: 'monthly', priority: '0.9' },
+  { path: '/projects/seo-growth-campaign/', lastmod: '2026-07-31', changefreq: 'monthly', priority: '0.85' },
+  { path: '/projects/restaurant-branding-web/', lastmod: '2026-07-31', changefreq: 'monthly', priority: '0.85' },
+  { path: '/projects/b2b-conversion-funnel/', lastmod: '2026-07-31', changefreq: 'monthly', priority: '0.85' },
+  { path: '/projects/portfolio-redesign/', lastmod: '2026-07-31', changefreq: 'monthly', priority: '0.85' },
+  // Blog Index & Articles
+  { path: '/blog/', lastmod: '2026-08-16', changefreq: 'weekly', priority: '0.9' },
+  { path: '/blog/how-i-approach-technical-seo/', lastmod: '2026-08-16', changefreq: 'monthly', priority: '0.85' },
+  { path: '/blog/building-search-friendly-react-portfolios/', lastmod: '2026-07-31', changefreq: 'monthly', priority: '0.85' },
+  { path: '/blog/how-meta-pixel-and-conversion-tracking-work/', lastmod: '2026-07-31', changefreq: 'monthly', priority: '0.85' },
+  { path: '/blog/core-web-vitals-explained/', lastmod: '2026-08-16', changefreq: 'monthly', priority: '0.85' },
+  { path: '/blog/meta-ads-campaign-structure/', lastmod: '2026-08-16', changefreq: 'monthly', priority: '0.85' },
+  { path: '/blog/website-performance-optimization/', lastmod: '2026-08-16', changefreq: 'monthly', priority: '0.85' },
+  // Trust & Policy Pages
+  { path: '/privacy-policy/', lastmod: '2026-07-31', changefreq: 'yearly', priority: '0.5' },
+  { path: '/terms/', lastmod: '2026-08-16', changefreq: 'yearly', priority: '0.5' },
+  { path: '/cookie-policy/', lastmod: '2026-07-31', changefreq: 'yearly', priority: '0.5' },
+  { path: '/disclaimer/', lastmod: '2026-08-16', changefreq: 'yearly', priority: '0.5' },
+];
+
+function escapeXml(unsafe) {
+  return unsafe
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
+}
+
+function generateSitemapXmlString(entries) {
+  const hasImages = entries.some(e => e.image && e.image.loc && e.image.loc.trim().length > 0);
+  const lines = [
+    '<?xml version="1.0" encoding="UTF-8"?>',
+    hasImages
+      ? '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"\n        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">'
+      : '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+  ];
+
+  entries.forEach((entry) => {
+    const locUrl = `${BASE_URL}${entry.path === '/' ? '/' : entry.path}`;
+    lines.push('  <url>');
+    lines.push(`    <loc>${escapeXml(locUrl)}</loc>`);
+
+    if (entry.lastmod) {
+      lines.push(`    <lastmod>${entry.lastmod}</lastmod>`);
+    }
+
+    if (entry.changefreq) {
+      lines.push(`    <changefreq>${entry.changefreq}</changefreq>`);
+    }
+
+    if (entry.priority) {
+      lines.push(`    <priority>${entry.priority}</priority>`);
+    }
+
+    if (entry.image && entry.image.loc && entry.image.loc.trim().length > 0) {
+      lines.push('    <image:image>');
+      lines.push(`      <image:loc>${escapeXml(entry.image.loc)}</image:loc>`);
+      if (entry.image.title) {
+        lines.push(`      <image:title>${escapeXml(entry.image.title)}</image:title>`);
+      }
+      if (entry.image.caption) {
+        lines.push(`      <image:caption>${escapeXml(entry.image.caption)}</image:caption>`);
+      }
+      lines.push('    </image:image>');
+    }
+
+    lines.push('  </url>');
+  });
+
+  lines.push('</urlset>\n');
+  return lines.join('\n');
+}
+
+function validateSitemap(xmlContent) {
+  const errors = [];
+
+  // Check E: XML Declaration & urlset
+  if (!xmlContent.startsWith('<?xml version="1.0" encoding="UTF-8"?>')) {
+    errors.push('Missing or invalid XML declaration.');
+  }
+
+  const urlsetOpen = xmlContent.match(/<urlset[^>]*>/g);
+  const urlsetClose = xmlContent.match(/<\/urlset>/g);
+  if (!urlsetOpen || urlsetOpen.length !== 1) {
+    errors.push(`Expected exactly 1 <urlset> tag, found ${urlsetOpen ? urlsetOpen.length : 0}.`);
+  }
+  if (!urlsetClose || urlsetClose.length !== 1) {
+    errors.push(`Expected exactly 1 </urlset> tag, found ${urlsetClose ? urlsetClose.length : 0}.`);
+  }
+
+  // Parse <url> blocks
+  const urlBlockRegex = /<url>([\s\S]*?)<\/url>/g;
+  const urlBlocks = [];
+  let m;
+  while ((m = urlBlockRegex.exec(xmlContent)) !== null) {
+    urlBlocks.push(m[1]);
+  }
+
+  if (urlBlocks.length === 0) {
+    errors.push('No <url> entries found.');
+  }
+
+  const locSet = new Set();
+  const allowedHost = 'https://pratheeshclement-cmd.github.io';
+
+  urlBlocks.forEach((block, idx) => {
+    // Check A: No URL contains more than one <lastmod>
+    const lastmods = block.match(/<lastmod>([\s\S]*?)<\/lastmod>/g);
+    if (lastmods && lastmods.length > 1) {
+      errors.push(`URL entry #${idx + 1} contains ${lastmods.length} <lastmod> elements (strictly max 1 permitted).`);
+    } else if (lastmods && lastmods.length === 1) {
+      const dateStr = lastmods[0].replace(/<\/?lastmod>/g, '').trim();
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
+        errors.push(`URL entry #${idx + 1} has invalid lastmod format: "${dateStr}" (must be YYYY-MM-DD).`);
+      }
+    }
+
+    // Check Loc
+    const locs = block.match(/<loc>([\s\S]*?)<\/loc>/g);
+    if (!locs || locs.length !== 1) {
+      errors.push(`URL entry #${idx + 1} must contain exactly 1 <loc>, found ${locs ? locs.length : 0}.`);
+      return;
+    }
+
+    const locVal = locs[0].replace(/<\/?loc>/g, '').trim();
+
+    // Check B: No duplicate <loc>
+    if (locSet.has(locVal)) {
+      errors.push(`Duplicate <loc> detected: "${locVal}".`);
+    }
+    locSet.add(locVal);
+
+    // Check C: Absolute HTTPS URL
+    if (!locVal.startsWith('https://')) {
+      errors.push(`Non-HTTPS URL detected: "${locVal}".`);
+    }
+
+    // Check D: Belongs to canonical host
+    if (!locVal.startsWith(`${allowedHost}/`) && locVal !== `${allowedHost}/`) {
+      errors.push(`URL "${locVal}" does not belong to canonical domain ${allowedHost}.`);
+    }
+
+    // Check F: No empty image elements
+    const imgBlocks = block.match(/<image:image>([\s\S]*?)<\/image:image>/g);
+    if (imgBlocks) {
+      imgBlocks.forEach(img => {
+        const cleaned = img.replace(/<\/?image:image>/g, '').trim();
+        if (!cleaned) {
+          errors.push(`Empty <image:image> element detected in ${locVal}.`);
+        } else {
+          const imgLoc = img.match(/<image:loc>([\s\S]*?)<\/image:loc>/);
+          if (!imgLoc || !imgLoc[1].trim()) {
+            errors.push(`<image:image> missing <image:loc> in ${locVal}.`);
+          }
+        }
+      });
+    }
+
+    // Check G: Forbidden URL patterns
+    const forbidden = ['/admin', 'localhost', '127.0.0.1', 'http://', '/api/', '/test/', '.js', '.css', '.tsx'];
+    forbidden.forEach(pat => {
+      if (locVal.includes(pat)) {
+        errors.push(`Forbidden pattern "${pat}" in sitemap URL: "${locVal}".`);
+      }
+    });
+  });
+
+  return {
+    valid: errors.length === 0,
+    errors,
+    urlCount: urlBlocks.length,
+  };
+}
+
+// Generate & write sitemap to public/ and dist/
+const generatedXml = generateSitemapXmlString(SITEMAP_METADATA);
+
+const publicSitemapFile = path.join(PUBLIC_DIR, 'sitemap.xml');
+fs.writeFileSync(publicSitemapFile, generatedXml, 'utf8');
+console.log(`  ✓ Generated & verified: public/sitemap.xml`);
+
+const distSitemapFile = path.join(DIST_DIR, 'sitemap.xml');
+fs.writeFileSync(distSitemapFile, generatedXml, 'utf8');
+console.log(`  ✓ Generated & verified: dist/sitemap.xml`);
+
+// Run automated validation
+const validationResult = validateSitemap(generatedXml);
+if (!validationResult.valid) {
+  console.error('\n❌ CRITICAL: SITEMAP VALIDATION FAILED!');
+  validationResult.errors.forEach(e => console.error(`  - ${e}`));
+  validationFailed = true;
+} else {
+  console.log(`  ✓ Automated Sitemap Validation: PASSED across ${validationResult.urlCount} URLs (0 duplicate lastmods, 0 duplicate URLs, 0 empty images).`);
+}
+
 if (validationFailed) {
   console.error('\n❌ BUILD SAFETY VALIDATION FAILED! Aborting build.');
   process.exit(1);
 } else {
-  console.log(`✅ Production build safety validation PASSED across ${allHtmlFiles.length} HTML files!`);
+  console.log(`\n✅ Production build safety validation PASSED across ${allHtmlFiles.length} HTML files and sitemap.xml!`);
 }
+
 
 
