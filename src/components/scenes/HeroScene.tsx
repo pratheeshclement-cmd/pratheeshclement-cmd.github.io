@@ -241,27 +241,28 @@ const HeroScene: React.FC<{ id: string }> = ({ id }) => {
                 }}
               >
                 <picture style={{ display: 'block', width: '100%', height: '100%' }}>
-                  <source media="(max-width: 480px)" srcSet="/assets/new4k3-mobile.jpg 640w, /assets/new4k3.jpeg 1103w" sizes="100vw" />
-                  <source media="(max-width: 800px)" srcSet="/assets/new4k3-tablet.jpg 900w, /assets/new4k3.jpeg 1103w" sizes="(max-width: 800px) 100vw, 900px" />
-                  <source srcSet="/assets/new4k3.jpeg 1103w" sizes="600px" />
+                  <source media="(max-width: 480px)" srcSet="/assets/faviconnew-mobile.png 640w, /assets/faviconnew.png 1086w" sizes="100vw" />
+                  <source media="(max-width: 800px)" srcSet="/assets/faviconnew-tablet.png 900w, /assets/faviconnew.png 1086w" sizes="(max-width: 800px) 100vw, 900px" />
+                  <source srcSet="/assets/faviconnew.png 1086w" sizes="600px" />
                   <img
-                    src="/assets/new4k3.jpeg"
+                    src="/assets/faviconnew.png"
                     alt="Pratheesh Clement — Digital Marketing Specialist, Technical SEO Expert & AI Enthusiast based in Vadalur, Tamil Nadu"
                     title="Pratheesh Clement — Architect of Digital Ecosystems"
-                    width={600}
-                    height={776}
+                    width={1086}
+                    height={1448}
                     loading="eager"
                     decoding="async"
                     fetchPriority="high"
                     style={{
                       width: '100%',
                       height: '100%',
-                      objectFit: 'cover',
-                      objectPosition: 'center 10%',
+                      objectFit: 'contain',
+                      objectPosition: 'center bottom',
                       display: 'block',
+                      filter: 'drop-shadow(0 15px 35px rgba(0,0,0,0.5))',
                     }}
                     onError={(e) => {
-                      (e.currentTarget as HTMLImageElement).src = '/assets/new4k3.jpeg';
+                      (e.currentTarget as HTMLImageElement).src = '/assets/faviconnew.png';
                     }}
                   />
                 </picture>

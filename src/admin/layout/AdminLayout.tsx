@@ -178,13 +178,15 @@ export const AdminLayout: React.FC = () => {
         <main style={{
           marginLeft: sidebarWidth,
           marginTop: 60,
-          marginBottom: isMobile ? 64 : 28,
+          marginBottom: isMobile ? 'calc(64px + env(safe-area-inset-bottom, 0px))' : 28,
           flex: 1,
           minHeight: 'calc(100vh - 88px)',
           background: 'var(--dmos-bg)',
           transition: 'margin-left 0.3s cubic-bezier(0.4,0,0.2,1)',
           overflowX: 'hidden',
-          width: isMobile ? '100vw' : `calc(100vw - ${sidebarWidth}px)`,
+          width: isMobile ? '100%' : `calc(100% - ${sidebarWidth}px)`,
+          maxWidth: '100%',
+          boxSizing: 'border-box',
         }}>
           <AnimatePresence mode="wait">
             <motion.div

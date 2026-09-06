@@ -20,6 +20,7 @@
   --admin-text-secondary:  #A7B0C0;
   --admin-text-muted:      #697386;
   --admin-accent:          #3B63FF;
+  --dmos-page-padding-mobile: 16px 14px;
 
   /* ── Background Hierarchy ──────────────────────────────────────── */
   --dmos-bg:               var(--admin-bg);
@@ -584,7 +585,12 @@ input, select, textarea {
   }
   .dmos-page-shell {
     padding: var(--dmos-page-padding-mobile) !important;
-    padding-bottom: 80px !important;
+    padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px)) !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    overflow-x: hidden !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
   }
   .dmos-grid-responsive {
     grid-template-columns: 1fr !important;

@@ -307,22 +307,28 @@ h1, h2, h3, h4 {
   width: 100%;
   position: relative;
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  justify-content: flex-start;
   box-sizing: border-box;
 }
 
 .scene-inner {
   width: 100%;
   max-width: 1200px;
-  margin: 0 auto;
-  padding: 120px 32px;
+  margin: auto auto;
+  padding: 120px 32px 80px;
   box-sizing: border-box;
   word-break: break-word;
   overflow-wrap: break-word;
 }
 
 @media (max-width: 768px) {
-  .scene-inner { padding: 80px 16px; }
+  .scene {
+    min-height: auto;
+  }
+  .scene-inner {
+    padding: 96px 16px 48px;
+  }
 }
 
 /* ── Section heading marker ───────────────────────────────────── */
@@ -369,8 +375,8 @@ h1, h2, h3, h4 {
 }
 
 /* ── Grid layouts ────────────────────────────────────────────── */
-.grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; width: 100%; }
-.grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; width: 100%; }
+.grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 40px; width: 100%; box-sizing: border-box; }
+.grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 24px; width: 100%; box-sizing: border-box; }
 
 @media (max-width: 768px) {
   .grid-2, .grid-3 {

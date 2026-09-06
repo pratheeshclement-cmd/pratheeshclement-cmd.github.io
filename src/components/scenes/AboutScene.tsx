@@ -235,20 +235,21 @@ const AboutScene: React.FC<{ id: string }> = ({ id }) => {
         </div>
 
         {/* Bottom 2-Column Equal-Height Cards: Career Origins vs. Mission */}
+        {/* Bottom 2-Column Equal-Height Cards: Career Origins vs. Mission */}
         <div className="grid-2" style={{ gap: 24, alignItems: 'stretch' }}>
 
           {/* Career Origins Card */}
           <GlassCard
             style={{
-              padding: 28,
+              padding: 'clamp(20px, 3vw, 28px)',
               borderLeft: '4px solid var(--accent-primary)',
               background: 'var(--glass-bg)',
               wordBreak: 'break-word',
               overflowWrap: 'break-word',
               display: 'flex',
               flexDirection: 'column',
-              justifyContent: 'space-between',
-              height: '100%',
+              justifyContent: 'flex-start',
+              minHeight: '100%',
               boxSizing: 'border-box',
             }}
           >
@@ -272,13 +273,13 @@ const AboutScene: React.FC<{ id: string }> = ({ id }) => {
                   <div style={{ fontSize: '0.75rem', color: 'var(--text-tertiary)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
                     Career Origins
                   </div>
-                  <div style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+                  <div style={{ fontSize: 'clamp(0.92rem, 2.2vw, 1.05rem)', fontWeight: 700, color: 'var(--text-primary)', wordBreak: 'break-word' }}>
                     Nexteer Automotive → Digital Marketing Lead
                   </div>
                 </div>
               </div>
 
-              <p style={{ fontSize: '0.94rem', color: 'var(--text-secondary)', lineHeight: 1.7, fontStyle: 'italic', margin: 0 }}>
+              <p style={{ fontSize: 'clamp(0.88rem, 2vw, 0.94rem)', color: 'var(--text-secondary)', lineHeight: 1.7, fontStyle: 'italic', margin: 0, wordBreak: 'break-word' }}>
                 "{IDENTITY.bio.career}"
               </p>
             </div>
@@ -287,15 +288,15 @@ const AboutScene: React.FC<{ id: string }> = ({ id }) => {
           {/* Mission & Positioning Card */}
           <GlassCard
             style={{
-              padding: 28,
+              padding: 'clamp(20px, 3vw, 28px)',
               borderLeft: '4px solid var(--accent-mint)',
               background: 'var(--glass-bg)',
               wordBreak: 'break-word',
               overflowWrap: 'break-word',
               display: 'flex',
               flexDirection: 'column',
-              justifyContent: 'space-between',
-              height: '100%',
+              justifyContent: 'flex-start',
+              minHeight: '100%',
               boxSizing: 'border-box',
             }}
           >
@@ -319,13 +320,13 @@ const AboutScene: React.FC<{ id: string }> = ({ id }) => {
                   <div style={{ fontSize: '0.75rem', color: 'var(--accent-mint)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
                     Strategic Positioning
                   </div>
-                  <div style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+                  <div style={{ fontSize: 'clamp(0.92rem, 2.2vw, 1.05rem)', fontWeight: 700, color: 'var(--text-primary)', wordBreak: 'break-word' }}>
                     Mission & Digital Ecosystems
                   </div>
                 </div>
               </div>
 
-              <p style={{ fontSize: '0.94rem', color: 'var(--text-secondary)', lineHeight: 1.7, margin: 0 }}>
+              <p style={{ fontSize: 'clamp(0.88rem, 2vw, 0.94rem)', color: 'var(--text-secondary)', lineHeight: 1.7, margin: 0, wordBreak: 'break-word' }}>
                 {IDENTITY.mission}
               </p>
             </div>
