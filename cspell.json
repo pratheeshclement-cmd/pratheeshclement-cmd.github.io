@@ -1,0 +1,38 @@
+{
+  "$schema": "https://raw.githubusercontent.com/streetsidesoftware/cspell/main/cspell.schema.json",
+  "version": "0.2",
+  "ignorePaths": [
+    "node_modules/**",
+    "dist/**",
+    "build/**",
+    ".git/**",
+    "package-lock.json"
+  ],
+  "words": [
+    "BMNWD",
+    "DMOS",
+    "Firestore",
+    "GSAP",
+    "LECTF",
+    "PRATHEESH",
+    "Pratheesh",
+    "Prerender",
+    "VITE",
+    "changefreq",
+    "djtn",
+    "firebaseapp",
+    "firebasestorage",
+    "firestore",
+    "focusables",
+    "googleusercontent",
+    "gsap",
+    "lastmod",
+    "normalise",
+    "pratheesh",
+    "pratheeshclement",
+    "prerender",
+    "prerendered",
+    "qecc",
+    "urlset"
+  ]
+}
