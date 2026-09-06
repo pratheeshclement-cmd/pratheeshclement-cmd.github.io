@@ -50,6 +50,7 @@ jobs:
           VITE_FIREBASE_APP_ID: ${{ secrets.VITE_FIREBASE_APP_ID || vars.VITE_FIREBASE_APP_ID || '1:880640506228:web:66ffacc18deebf3c729421' }}
           VITE_FIREBASE_MEASUREMENT_ID: ${{ secrets.VITE_FIREBASE_MEASUREMENT_ID || vars.VITE_FIREBASE_MEASUREMENT_ID || 'G-NF0P9LECTF' }}
           VITE_GOOGLE_CLIENT_ID: ${{ secrets.VITE_GOOGLE_CLIENT_ID || vars.VITE_GOOGLE_CLIENT_ID || '1023264006959-7nhf77b0djtn79g8htu322pu9e2qecc7.apps.googleusercontent.com' }}
+          VITE_AI_API_URL: ${{ secrets.VITE_AI_API_URL || vars.VITE_AI_API_URL || '' }}
         run: npm run build
 
       - name: Verify Admin Build Entry Point Safety Gate

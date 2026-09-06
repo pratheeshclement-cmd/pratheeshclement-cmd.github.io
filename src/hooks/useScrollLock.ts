@@ -46,18 +46,37 @@ export function useScrollLock(isLocked: boolean, modalRef?: React.RefObject<HTML
         return;
       }
 
-      // Check if inside modal and at scroll boundaries
-      if (modalRef && modalRef.current) {
-        const el = modalRef.current;
+      // Check if target is inside an element that can actually scroll
+      let scrollableEl: HTMLElement | null = null;
+      let curr = target as HTMLElement | null;
+      while (curr && curr !== document.body) {
+        const style = window.getComputedStyle(curr);
+        const canScrollY =
+          (style.overflowY === 'auto' || style.overflowY === 'scroll') &&
+          curr.scrollHeight > curr.clientHeight;
+        if (canScrollY) {
+          scrollableEl = curr;
+          break;
+        }
+        if (modalRef && curr === modalRef.current) break;
+        curr = curr.parentElement;
+      }
+
+      if (scrollableEl) {
         const isWheel = 'deltaY' in e;
         const deltaY = isWheel ? (e as WheelEvent).deltaY : 0;
 
-        const atTop = el.scrollTop <= 0 && deltaY < 0;
-        const atBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 1 && deltaY > 0;
+        const atTop = scrollableEl.scrollTop <= 0 && deltaY < 0;
+        const atBottom =
+          scrollableEl.scrollTop + scrollableEl.clientHeight >= scrollableEl.scrollHeight - 1 &&
+          deltaY > 0;
 
         if (atTop || atBottom) {
           e.preventDefault();
         }
+      } else {
+        // Target is non-scrollable area inside modal; prevent background scroll leak
+        e.preventDefault();
       }
     };
 
