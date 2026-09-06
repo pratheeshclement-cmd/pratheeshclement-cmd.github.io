@@ -26,34 +26,13 @@ export function useAnimeScene(
 
     const st = ScrollTrigger.create({
       trigger: section,
-      start: isMobile ? 'top 90%' : 'top 80%',
-      end: 'bottom 20%',
+      start: isMobile ? 'top 92%' : 'top 85%',
+      once: true,
       onEnter: () => {
         if (!hasAssembled) {
           animeEngine.assembleSection(section, style);
           options?.onAssemble?.();
           hasAssembled = true;
-        }
-      },
-      onLeave: () => {
-        if (!isMobile) {
-          animeEngine.disassembleSection(section, style);
-          options?.onDisassemble?.();
-          hasAssembled = false;
-        }
-      },
-      onEnterBack: () => {
-        if (!isMobile) {
-          animeEngine.assembleSection(section, style);
-          options?.onAssemble?.();
-          hasAssembled = true;
-        }
-      },
-      onLeaveBack: () => {
-        if (!isMobile) {
-          animeEngine.disassembleSection(section, style);
-          options?.onDisassemble?.();
-          hasAssembled = false;
         }
       },
     });

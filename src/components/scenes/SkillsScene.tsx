@@ -26,7 +26,7 @@ const SkillCard: React.FC<{ cat: SkillCategory; index: number }> = ({ cat, index
       { opacity: 0, y: 40 },
       {
         opacity: 1, y: 0, duration: 0.6, ease: 'power3.out', delay: index * 0.08,
-        scrollTrigger: { trigger: ref.current, start: 'top 85%', toggleActions: 'play none none reverse' },
+        scrollTrigger: { trigger: ref.current, start: 'top 85%', toggleActions: 'play none none none' },
       }
     );
   }, [index, reduced]);
@@ -34,7 +34,7 @@ const SkillCard: React.FC<{ cat: SkillCategory; index: number }> = ({ cat, index
   const IconEl = getDynamicIcon(cat.icon);
 
   return (
-    <div ref={ref} style={{ opacity: reduced ? 1 : 0 }}>
+    <div ref={ref}>
       <GlassCard style={{ padding: 28, height: '100%' }}>
         {/* Category header */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>

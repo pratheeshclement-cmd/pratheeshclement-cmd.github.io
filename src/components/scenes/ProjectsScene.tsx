@@ -19,7 +19,7 @@ const ProjectCard: React.FC<{ project: Project; index: number; onOpen: (p: Proje
       { opacity: 0, y: 50 },
       {
         opacity: 1, y: 0, duration: 0.65, ease: 'power3.out', delay: index * 0.1,
-        scrollTrigger: { trigger: ref.current, start: 'top 85%', toggleActions: 'play none none reverse' },
+        scrollTrigger: { trigger: ref.current, start: 'top 85%', toggleActions: 'play none none none' },
       }
     );
   }, [index, reduced]);
@@ -27,7 +27,7 @@ const ProjectCard: React.FC<{ project: Project; index: number; onOpen: (p: Proje
   const IconEl = getDynamicIcon(project.icon);
 
   return (
-    <div ref={ref} style={{ opacity: reduced ? 1 : 0 }}>
+    <div ref={ref}>
       <GlassCard
         tilt
         className="project-card-glow"

@@ -42,8 +42,8 @@ const ServiceCardItem: React.FC<{ service: Service; index: number }> = ({ servic
         delay: Math.min(index * 0.05, 0.3),
         scrollTrigger: {
           trigger: cardRef.current,
-          start: 'top 90%',
-          toggleActions: 'play none none reverse',
+          start: 'top 92%',
+          toggleActions: 'play none none none',
         },
       }
     );
@@ -55,7 +55,7 @@ const ServiceCardItem: React.FC<{ service: Service; index: number }> = ({ servic
   const accent = service.accentColor || 'var(--accent-primary)';
 
   return (
-    <div ref={cardRef} style={{ opacity: reduced ? 1 : 0, width: '100%', minWidth: 0 }}>
+    <div ref={cardRef} style={{ width: '100%', minWidth: 0 }}>
       <GlassCard
         style={{ cursor: 'pointer', width: '100%', overflow: 'hidden' }}
         onClick={() => navigateTo(targetRoute)}

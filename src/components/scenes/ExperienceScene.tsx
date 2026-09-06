@@ -20,7 +20,7 @@ const TimelineCard: React.FC<{ item: ExperienceItem; index: number }> = ({ item,
       { opacity: 0, x: dir },
       {
         opacity: 1, x: 0, duration: 0.6, ease: 'power3.out',
-        scrollTrigger: { trigger: ref.current, start: 'top 85%', toggleActions: 'play none none reverse' },
+        scrollTrigger: { trigger: ref.current, start: 'top 85%', toggleActions: 'play none none none' },
       }
     );
   }, [index, reduced]);
@@ -31,7 +31,7 @@ const TimelineCard: React.FC<{ item: ExperienceItem; index: number }> = ({ item,
     : item.type === 'education' ? 'var(--accent-secondary)' : 'var(--accent-primary)';
 
   return (
-    <div ref={ref} className="timeline-item" style={{ opacity: reduced ? 1 : 0 }}>
+    <div ref={ref} className="timeline-item">
       <div className="timeline-node" style={{ background: typeColor, boxShadow: `0 0 16px ${typeColor}` }}>
         <IconEl size={18} color="#fff" />
       </div>

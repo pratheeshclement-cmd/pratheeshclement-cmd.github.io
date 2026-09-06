@@ -310,6 +310,11 @@ h1, h2, h3, h4 {
   flex-direction: column;
   justify-content: flex-start;
   box-sizing: border-box;
+  scroll-margin-top: calc(84px + env(safe-area-inset-top, 0px));
+}
+
+section[id] {
+  scroll-margin-top: calc(84px + env(safe-area-inset-top, 0px));
 }
 
 .scene-inner {

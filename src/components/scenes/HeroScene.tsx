@@ -21,7 +21,10 @@ const HeroScene: React.FC<{ id: string }> = ({ id }) => {
   const reduced      = useReducedMotion();
 
   useEffect(() => {
-    if (reduced) return;
+    if (reduced) {
+      if (heroImageRef.current) heroImageRef.current.style.opacity = '1';
+      return;
+    }
 
     const isMobile = window.innerWidth <= 768;
 
@@ -30,28 +33,27 @@ const HeroScene: React.FC<{ id: string }> = ({ id }) => {
       if (isMobile) {
         anime({
           targets: heroImageRef.current,
-          opacity: [0, 1],
+          opacity: [0.3, 1],
           translateY: [20, 0],
-          duration: 800,
-          delay: 200,
+          duration: 600,
+          delay: 100,
           easing: 'easeOutQuart',
         });
       } else {
         anime.timeline({ easing: 'easeOutQuart' })
           .add({
             targets: heroImageRef.current,
-            scale: [0.85, 1],
-            rotateY: [-20, 0],
-            opacity: [0, 1],
-            filter: ['blur(15px)', 'blur(0px)'],
-            duration: 1200,
-            delay: 300,
+            scale: [0.9, 1],
+            rotateY: [-15, 0],
+            opacity: [0.4, 1],
+            duration: 1000,
+            delay: 200,
           });
 
         // Floating ambient motion (Desktop only)
         anime({
           targets: heroImageRef.current,
-          translateY: ['-8px', '8px'],
+          translateY: ['-6px', '6px'],
           direction: 'alternate',
           loop: true,
           easing: 'easeInOutSine',
@@ -61,13 +63,13 @@ const HeroScene: React.FC<{ id: string }> = ({ id }) => {
     }
 
     // 2. Text entry stagger
-    const tl = gsap.timeline({ delay: 0.2 });
+    const tl = gsap.timeline({ delay: 0.1 });
     tl.fromTo(badgesRef.current,  { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' })
       .fromTo(mottoRef.current,   { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' }, '-=0.2')
       .fromTo(bodyRef.current,    { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' }, '-=0.2')
       .fromTo(ctaRef.current,     { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' }, '-=0.2');
 
-    // 3. Image scroll disassembly parallax (No blur filters on mobile)
+    // 3. Image scroll disassembly parallax (No opacity zeroing on mobile)
     const st = ScrollTrigger.create({
       trigger: sectionRef.current,
       start: 'top top',
@@ -75,15 +77,13 @@ const HeroScene: React.FC<{ id: string }> = ({ id }) => {
       scrub: 1,
       onUpdate: self => {
         if (globeRef.current) {
-          gsap.set(globeRef.current, { y: self.progress * 80, opacity: 1 - self.progress * 0.5 });
+          gsap.set(globeRef.current, { y: self.progress * 80, opacity: Math.max(0.4, 1 - self.progress * 0.5) });
         }
         if (heroImageRef.current) {
           gsap.set(heroImageRef.current, {
-            y: self.progress * (isMobile ? 40 : 120),
-            scale: isMobile ? 1 : 1 + self.progress * 0.08,
-            // ✅ BUG 5 FIX: filter:blur removed — was triggering GPU repaint on every scroll frame
-            // Using opacity falloff instead — GPU-composited, same visual effect
-            opacity: 1 - self.progress * 1.2,
+            y: self.progress * (isMobile ? 20 : 100),
+            scale: isMobile ? 1 : 1 + self.progress * 0.06,
+            opacity: isMobile ? 1 : Math.max(0.25, 1 - self.progress * 1.0),
           });
         }
       },
@@ -123,7 +123,7 @@ const HeroScene: React.FC<{ id: string }> = ({ id }) => {
           {/* Left Column — Text & CTAs */}
           <div style={{ textAlign: 'left' }}>
             {/* Badges */}
-            <div ref={badgesRef} style={{ display: 'flex', gap: 10, marginBottom: 20, opacity: 0, flexWrap: 'wrap' }}>
+            <div ref={badgesRef} style={{ display: 'flex', gap: 10, marginBottom: 20, flexWrap: 'wrap' }}>
               <span className="pill">
                 <Sparkles size={13} />
                 Digital Marketing Specialist
@@ -153,7 +153,7 @@ const HeroScene: React.FC<{ id: string }> = ({ id }) => {
             </h1>
 
             {/* Motto */}
-            <div ref={mottoRef} style={{ marginBottom: 24, opacity: 0 }}>
+            <div ref={mottoRef} style={{ marginBottom: 24 }}>
               <GlassCard style={{ padding: '12px 24px', display: 'inline-block' }}>
                 <p style={{ fontSize: '1rem', color: 'var(--text-secondary)', fontStyle: 'italic', fontFamily: 'var(--font-display)', margin: 0 }}>
                   "{IDENTITY.tagline}"
@@ -166,14 +166,14 @@ const HeroScene: React.FC<{ id: string }> = ({ id }) => {
               ref={bodyRef}
               style={{
                 fontSize: '1.05rem', color: 'var(--text-secondary)', lineHeight: 1.75,
-                maxWidth: 580, marginBottom: 36, opacity: 0,
+                maxWidth: 580, marginBottom: 36,
               }}
             >
               Pratheesh Clement, also known professionally as Pratheesh, works across SEO, digital marketing, UI/UX design, web development, paid advertising, and AI-assisted workflows.
             </p>
 
             {/* CTAs */}
-            <div ref={ctaRef} style={{ display: 'flex', gap: 16, flexWrap: 'wrap', opacity: 0 }}>
+            <div ref={ctaRef} style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
               <MagneticButton onClick={scrollToAbout}>
                 Explore Universe
                 <ArrowDown size={18} />
@@ -227,7 +227,7 @@ const HeroScene: React.FC<{ id: string }> = ({ id }) => {
           </div>
 
           {/* Right Column — Prominent 4K Hero Profile Portrait */}
-          <div ref={heroImageRef} style={{ opacity: 0, perspective: 1200 }}>
+          <div ref={heroImageRef} style={{ perspective: 1200 }}>
             <GlassCard tilt style={{ padding: 16, borderRadius: 28, position: 'relative' }}>
               <div
                 style={{
