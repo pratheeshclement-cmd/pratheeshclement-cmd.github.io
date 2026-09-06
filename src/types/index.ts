@@ -63,9 +63,25 @@ export interface AIMessage {
   role: 'user' | 'assistant';
   content: string;
   timestamp: number;
+  source?: 'api' | 'fallback';
+  suggestedQuestions?: string[];
+  topic?: string;
 }
 
 export type UserRole = 'recruiter' | 'founder' | 'client' | 'developer' | 'browsing';
+
+export interface ChatApiResponse {
+  answer: string;
+  suggestedQuestions: string[];
+  topic: string;
+}
+
+export interface AIConversationState {
+  persona: UserRole | null;
+  messages: AIMessage[];
+  currentTopic?: string;
+  suggestedQuestions: string[];
+}
 
 export interface ConsentState {
   necessary: true;

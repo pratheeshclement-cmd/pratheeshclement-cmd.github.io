@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import anime from 'animejs';
 import gsap from 'gsap';
@@ -114,13 +114,21 @@ export const Navbar: React.FC<NavbarProps> = ({ scrollProgress, theme, onToggleT
     return () => window.removeEventListener('popstate', handlePopState);
   }, [mobileOpen]);
 
+  const closeMobileDrawer = useCallback(() => {
+    setMobileOpen(false);
+    document.body.classList.remove('menu-open');
+    if (window.history.state?.mobileSettingsOpen) {
+      window.history.back();
+    }
+  }, []);
+
   // 6. Handle Escape key and focus trap inside Settings Modal Sheet
   useEffect(() => {
     if (!mobileOpen) return;
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
-        setMobileOpen(false);
+        closeMobileDrawer();
         return;
       }
 
@@ -191,11 +199,12 @@ export const Navbar: React.FC<NavbarProps> = ({ scrollProgress, theme, onToggleT
     }
   };
 
-  // 5. Smooth theme toggle button icon spin
-  const handleThemeToggle = () => {
-    if (!reduced && themeBtnRef.current) {
+  // 5. Smooth theme toggle button icon spin (works for both desktop and mobile drawer buttons)
+  const handleThemeToggle = (e?: React.MouseEvent) => {
+    const target = (e?.currentTarget as HTMLElement) || themeBtnRef.current;
+    if (!reduced && target) {
       anime({
-        targets: themeBtnRef.current,
+        targets: target,
         rotate: 360,
         scale: [1, 1.2, 1],
         duration: 500,
@@ -203,6 +212,18 @@ export const Navbar: React.FC<NavbarProps> = ({ scrollProgress, theme, onToggleT
       });
     }
     onToggleTheme();
+  };
+
+  // Dedicated mobile navigation handler: always navigates to destination SPA route
+  const handleMobileNavClick = (link: { label: string; href: string; hash: string }) => {
+    setMobileOpen(false);
+    document.body.classList.remove('menu-open');
+    if (window.history.state?.mobileSettingsOpen) {
+      window.history.replaceState(null, '', normalisePath(link.href));
+      navigateTo(link.href);
+    } else {
+      navigateTo(link.href);
+    }
   };
 
   const handleNavClick = (link: { label: string; href: string; hash: string }) => {
@@ -478,7 +499,7 @@ export const Navbar: React.FC<NavbarProps> = ({ scrollProgress, theme, onToggleT
           {/* 1. Full-screen dimmed backdrop overlay */}
           <div
             ref={overlayRef}
-            onClick={() => setMobileOpen(false)}
+            onClick={closeMobileDrawer}
             aria-hidden="true"
             className="mobile-drawer-backdrop"
             style={{
@@ -560,7 +581,7 @@ export const Navbar: React.FC<NavbarProps> = ({ scrollProgress, theme, onToggleT
                   {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
                 </button>
                 <button
-                  onClick={() => setMobileOpen(false)}
+                  onClick={closeMobileDrawer}
                   aria-label="Close mobile settings menu"
                   className="nav-control-btn"
                   style={{
@@ -592,7 +613,7 @@ export const Navbar: React.FC<NavbarProps> = ({ scrollProgress, theme, onToggleT
                     href={link.href}
                     onClick={e => {
                       e.preventDefault();
-                      handleNavClick(link);
+                      handleMobileNavClick(link);
                     }}
                     className="mobile-nav-item"
                     style={{
@@ -647,7 +668,7 @@ export const Navbar: React.FC<NavbarProps> = ({ scrollProgress, theme, onToggleT
             <div style={{ paddingTop: 14, borderTop: '1px solid var(--bg-tertiary)', display: 'flex', flexDirection: 'column', gap: 10 }}>
               <button
                 onClick={() => {
-                  setMobileOpen(false);
+                  closeMobileDrawer();
                   window.dispatchEvent(new CustomEvent('open-ai-concierge'));
                 }}
                 style={{
