@@ -25,7 +25,7 @@ export const BlogArticlePage: React.FC<BlogArticlePageProps> = ({ slug }) => {
     description: article.excerpt,
     canonical: `/blog/${article.slug}/`,
     ogType: 'article',
-    ogImage: '/assets/pratheesh4k2.jpeg',
+    ogImage: '/assets/new4k3.jpeg',
     ogImageAlt: article.title,
     articlePublished: article.datePublished,
     articleModified: article.dateModified,

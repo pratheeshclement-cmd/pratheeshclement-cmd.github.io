@@ -49,7 +49,7 @@ export const PERSON_SCHEMA = {
   url: `${BASE_URL}/`,
   email: 'pratheesh.clement@gmail.com',
   telephone: '+918667876102',
-  image: `${BASE_URL}/assets/pratheesh4k2.jpeg`,
+  image: `${BASE_URL}/assets/new4k3.jpeg`,
   address: {
     '@type': 'PostalAddress',
     addressLocality: 'Vadalur',
@@ -178,7 +178,7 @@ export function articleSchema(opts: {
     dateModified,
     author: { '@id': PERSON_ID, name: 'Pratheesh Clement', url: `${BASE_URL}/about/` },
     publisher: { '@id': PERSON_ID },
-    image: image ? (image.startsWith('http') ? image : `${BASE_URL}${image}`) : `${BASE_URL}/assets/pratheesh4k2.jpeg`,
+    image: image ? (image.startsWith('http') ? image : `${BASE_URL}${image}`) : `${BASE_URL}/assets/new4k3.jpeg`,
     keywords: keywords ? keywords.join(', ') : undefined,
     isPartOf: { '@id': `${BASE_URL}/blog/#webpage` },
     mainEntityOfPage: { '@type': 'WebPage', '@id': fullUrl },

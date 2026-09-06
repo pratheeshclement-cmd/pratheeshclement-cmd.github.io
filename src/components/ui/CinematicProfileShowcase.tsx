@@ -12,7 +12,7 @@ interface CinematicProfileShowcaseProps {
 }
 
 export const CinematicProfileShowcase: React.FC<CinematicProfileShowcaseProps> = ({
-  imageSrc = '/assets/pratheesh4k2.jpeg',
+  imageSrc = '/assets/new4k3.jpeg',
   altText = 'Pratheesh Clement — Digital Marketing Specialist & Architect of Digital Ecosystems',
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -247,9 +247,9 @@ export const CinematicProfileShowcase: React.FC<CinematicProfileShowcaseProps> =
         {/* Image Display Box */}
         <div className="showcase-img-box">
           <picture style={{ display: 'block', width: '100%', height: '100%' }}>
-            <source media="(max-width: 480px)" srcSet="/assets/pratheesh-mobile.jpg 480w" sizes="100vw" />
-            <source media="(max-width: 800px)" srcSet="/assets/pratheesh-tablet.jpg 800w" sizes="(max-width: 800px) 100vw, 800px" />
-            <source srcSet="/assets/pratheesh-desktop.jpg 1200w" sizes="1200px" />
+            <source media="(max-width: 480px)" srcSet="/assets/new4k3-mobile.jpg 640w, /assets/new4k3.jpeg 1103w" sizes="100vw" />
+            <source media="(max-width: 800px)" srcSet="/assets/new4k3-tablet.jpg 900w, /assets/new4k3.jpeg 1103w" sizes="(max-width: 800px) 100vw, 800px" />
+            <source srcSet="/assets/new4k3.jpeg 1103w" sizes="400px" />
             <img
               ref={imgRef}
               src={imageSrc}

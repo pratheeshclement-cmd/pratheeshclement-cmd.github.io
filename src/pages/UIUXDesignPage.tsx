@@ -11,7 +11,7 @@ export const UIUXDesignPage: React.FC = () => {
     title: 'UI/UX Design & Interface Architecture Guide',
     description: 'Explore UI/UX design principles, responsive layouts, glassmorphism systems, component accessibility, WCAG compliance, and micro-interactions by Pratheesh Clement.',
     canonical: '/ui-ux-design/',
-    ogImage: '/assets/pratheesh-desktop.jpg',
+    ogImage: '/assets/new4k3.jpeg',
     ogImageAlt: 'Pratheesh Clement — UI/UX Design',
   });
 

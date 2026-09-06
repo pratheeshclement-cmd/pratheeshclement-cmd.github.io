@@ -12,7 +12,7 @@ export const FreelancingPage: React.FC = () => {
     title: 'Freelance Digital Marketing & Web Development Services',
     description: 'Professional freelance consulting in Technical SEO, React web development, Meta & Google Ads campaigns, and AI automation by Pratheesh Clement.',
     canonical: '/freelancing/',
-    ogImage: '/assets/pratheesh4k2.jpeg',
+    ogImage: '/assets/new4k3.jpeg',
     ogImageAlt: 'Pratheesh Clement — Freelance Digital Marketing & Development',
   });
 

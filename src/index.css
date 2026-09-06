@@ -121,11 +121,8 @@ body.menu-open #main-world {
   pointer-events: none !important;
 }
 
-/* Sharp Crisp Mobile Image Rendering System (Prevents Chrome Android Raster Blur) */
+/* Sharp Crisp Image Rendering */
 img {
-  transform: translate3d(0, 0, 0);
-  backface-visibility: hidden;
-  /* ✅ FIX 8: will-change:transform removed — was GPU-promoting every image sitewide */
   image-rendering: auto;
 }
 

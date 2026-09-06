@@ -160,7 +160,7 @@ const AboutScene: React.FC<{ id: string }> = ({ id }) => {
                     display: 'block',
                   }}
                   onError={(e) => {
-                    (e.currentTarget as HTMLImageElement).src = '/assets/pratheesh4k2.jpeg';
+                    (e.currentTarget as HTMLImageElement).src = '/assets/new4k3.jpeg';
                   }}
                 />
 

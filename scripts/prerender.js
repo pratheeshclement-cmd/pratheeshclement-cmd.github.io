@@ -11,6 +11,13 @@ const BASE_URL = 'https://pratheeshclement-cmd.github.io';
 
 const ROUTES = [
   {
+    path: '/',
+    title: 'Pratheesh Clement | SEO, Digital Marketing & Web Development',
+    description: 'Official Portfolio of Pratheesh Clement (also known as Pratheesh) — Digital Marketing Specialist, Technical SEO Expert, UI/UX Designer, Frontend Developer, and AI Enthusiast based in Vadalur, Tamil Nadu, India.',
+    h1: 'Pratheesh Clement | Technical SEO, Digital Marketing & Web Development',
+    content: 'Pratheesh Clement, also known professionally by his short brand Pratheesh, is a Digital Marketing Specialist, Technical SEO Expert, UI/UX Designer, Frontend Developer, and AI Enthusiast based in Vadalur, Tamil Nadu, India. He architects search-optimized digital ecosystems combining technical search strategy, full-funnel paid advertising, modern React/TypeScript engineering, and AI automation.',
+  },
+  {
     path: '/about/',
     title: 'About Pratheesh Clement | Technical SEO & Digital Marketing Specialist',
     description: 'Learn about Pratheesh Clement (Pratheesh) — creator of Pratheesh OS, Digital Marketing Specialist, Technical SEO Expert, Frontend Developer, and AI Enthusiast based in Vadalur, Tamil Nadu.',
@@ -282,7 +289,49 @@ ROUTES.forEach(route => {
     .replace(/<meta name="twitter:description" content=".*?" \/>/, `<meta name="twitter:description" content="${route.description}" />`);
 
   // Inject pre-rendered semantic HTML content inside <div id="root"> for search engines
-  const preRenderedBody = `
+  const isHomepage = route.path === '/';
+  const preRenderedBody = isHomepage ? `
+    <div id="root">
+      <main style="max-width: 960px; margin: 0 auto; padding: 100px 24px; font-family: system-ui, -apple-system, sans-serif; line-height: 1.6; color: #1e293b;">
+        <header>
+          <p style="font-size: 0.88rem; color: #2563eb; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px;">Official Personal Portfolio &amp; Authority Hub</p>
+          <h1 style="font-size: 2.2rem; font-weight: 800; line-height: 1.25; margin: 0 0 16px 0; color: #0f172a;">Pratheesh Clement | SEO, Digital Marketing &amp; Web Development</h1>
+          <p style="font-size: 1.15rem; line-height: 1.65; color: #334155; margin-bottom: 24px;">
+            <strong>Pratheesh Clement</strong> (also known professionally as <strong>Pratheesh</strong>) is a Digital Marketing Specialist, Technical SEO Expert, UI/UX Designer, Frontend Developer, and AI Enthusiast based in Vadalur, Tamil Nadu, India.
+          </p>
+        </header>
+
+        <section style="margin-top: 32px; border-top: 1px solid #e2e8f0; padding-top: 24px;">
+          <h2 style="font-size: 1.4rem; font-weight: 700; color: #0f172a; margin-bottom: 12px;">Core Professional Disciplines</h2>
+          <p style="color: #475569; margin-bottom: 16px;">Pratheesh combines search strategy, paid acquisition, modern web development, and artificial intelligence:</p>
+          <ul style="line-height: 1.9; color: #334155; padding-left: 20px;">
+            <li><a href="/seo/" style="color: #2563eb; font-weight: 600; text-decoration: none;">Technical SEO &amp; Search Optimization</a> — On-page optimization, JSON-LD schema graphs, crawlability audits, Core Web Vitals, and indexation strategy.</li>
+            <li><a href="/digital-marketing/" style="color: #2563eb; font-weight: 600; text-decoration: none;">Digital Marketing Strategy &amp; Growth</a> — Full-funnel acquisition planning, conversion rate optimization (CRO), and analytics tracking.</li>
+            <li><a href="/ui-ux-design/" style="color: #2563eb; font-weight: 600; text-decoration: none;">UI/UX Design &amp; Interface Architecture</a> — Modern interface systems, glassmorphism tokens, component accessibility, and responsive layouts.</li>
+            <li><a href="/web-development/" style="color: #2563eb; font-weight: 600; text-decoration: none;">Modern Web Development</a> — React, TypeScript, Vite, performance engineering, and search-friendly web applications.</li>
+            <li><a href="/google-ads/" style="color: #2563eb; font-weight: 600; text-decoration: none;">Google Ads &amp; Search Advertising</a> — High-intent query capture, campaign bidding strategy, and conversion tracking.</li>
+            <li><a href="/meta-ads/" style="color: #2563eb; font-weight: 600; text-decoration: none;">Meta Ads &amp; Paid Social Marketing</a> — Facebook and Instagram custom audiences, Meta Pixel tracking, and CPL reduction.</li>
+            <li><a href="/google-search-console/" style="color: #2563eb; font-weight: 600; text-decoration: none;">Google Search Console &amp; Indexing</a> — URL inspection, XML sitemap validation, canonical resolution, and search appearance monitoring.</li>
+            <li><a href="/ai-automation/" style="color: #2563eb; font-weight: 600; text-decoration: none;">AI Automation &amp; Workflow Systems</a> — Prompt engineering, conversational agents, API integrations, and marketing automation pipelines.</li>
+          </ul>
+        </section>
+
+        <section style="margin-top: 32px; border-top: 1px solid #e2e8f0; padding-top: 24px;">
+          <h2 style="font-size: 1.4rem; font-weight: 700; color: #0f172a; margin-bottom: 12px;">Authority Portfolio Navigation</h2>
+          <p style="line-height: 2; color: #475569;">
+            <a href="/about/" style="color: #2563eb; text-decoration: none; font-weight: 500;">About Pratheesh Clement</a> &bull; 
+            <a href="/services/" style="color: #2563eb; text-decoration: none; font-weight: 500;">Services</a> &bull; 
+            <a href="/projects/" style="color: #2563eb; text-decoration: none; font-weight: 500;">Case Studies &amp; Projects</a> &bull; 
+            <a href="/certifications/" style="color: #2563eb; text-decoration: none; font-weight: 500;">Certifications &amp; Credentials</a> &bull; 
+            <a href="/freelancing/" style="color: #2563eb; text-decoration: none; font-weight: 500;">Freelance Consulting</a> &bull; 
+            <a href="/blog/" style="color: #2563eb; text-decoration: none; font-weight: 500;">Technical Blog &amp; Insights</a> &bull; 
+            <a href="/resources/" style="color: #2563eb; text-decoration: none; font-weight: 500;">Digital Resources</a> &bull; 
+            <a href="/contact/" style="color: #2563eb; text-decoration: none; font-weight: 500;">Contact Pratheesh</a>
+          </p>
+        </section>
+      </main>
+    </div>
+  ` : `
     <div id="root">
       <main style="max-width: 900px; margin: 0 auto; padding: 100px 24px;">
         <nav aria-label="Breadcrumb">
@@ -300,7 +349,7 @@ ROUTES.forEach(route => {
 
   const destPath = path.join(routeDir, 'index.html');
   fs.writeFileSync(destPath, pageHtml, 'utf8');
-  console.log(`  ✓ Pre-rendered: ${route.path} -> dist${route.path}index.html`);
+  console.log(`  ✓ Pre-rendered: ${route.path} -> dist${route.path === '/' ? '/' : route.path}index.html`);
 });
 
 console.log(`\n✅ Prerendered ${ROUTES.length} static HTML portfolio route entry points!`);
@@ -393,43 +442,43 @@ console.log('\n🗺️ Running Standard-Compliant XML Sitemap Generator...');
 
 const SITEMAP_METADATA = [
   // Homepage
-  { path: '/', lastmod: '2026-08-16', changefreq: 'weekly', priority: '1.0', image: { loc: `${BASE_URL}/assets/pratheesh4k2.jpeg`, title: 'Pratheesh Clement — Digital Marketing Specialist & AI Enthusiast', caption: 'Pratheesh Clement official portrait, Digital Marketing Specialist, SEO Expert, and Frontend Developer in Vadalur, Tamil Nadu, India.' } },
+  { path: '/', lastmod: '2026-09-06', changefreq: 'weekly', priority: '1.0' },
   // Core Pages
-  { path: '/about/', lastmod: '2026-08-16', changefreq: 'monthly', priority: '0.9' },
-  { path: '/services/', lastmod: '2026-08-16', changefreq: 'monthly', priority: '0.9' },
-  { path: '/projects/', lastmod: '2026-08-16', changefreq: 'weekly', priority: '0.9' },
-  { path: '/certifications/', lastmod: '2026-07-31', changefreq: 'monthly', priority: '0.8' },
-  { path: '/contact/', lastmod: '2026-08-16', changefreq: 'monthly', priority: '0.9' },
-  { path: '/resources/', lastmod: '2026-08-16', changefreq: 'monthly', priority: '0.8' },
+  { path: '/about/', lastmod: '2026-09-06', changefreq: 'monthly', priority: '0.9' },
+  { path: '/services/', lastmod: '2026-09-06', changefreq: 'monthly', priority: '0.9' },
+  { path: '/projects/', lastmod: '2026-09-06', changefreq: 'weekly', priority: '0.9' },
+  { path: '/certifications/', lastmod: '2026-09-06', changefreq: 'monthly', priority: '0.8' },
+  { path: '/contact/', lastmod: '2026-09-06', changefreq: 'monthly', priority: '0.9' },
+  { path: '/resources/', lastmod: '2026-09-06', changefreq: 'monthly', priority: '0.8' },
   // Pillar Guides
-  { path: '/seo/', lastmod: '2026-07-31', changefreq: 'monthly', priority: '0.95' },
-  { path: '/digital-marketing/', lastmod: '2026-07-31', changefreq: 'monthly', priority: '0.9' },
-  { path: '/ui-ux-design/', lastmod: '2026-07-31', changefreq: 'monthly', priority: '0.9' },
-  { path: '/web-development/', lastmod: '2026-07-31', changefreq: 'monthly', priority: '0.9' },
-  { path: '/google-search-console/', lastmod: '2026-07-31', changefreq: 'monthly', priority: '0.9' },
-  { path: '/meta-ads/', lastmod: '2026-07-31', changefreq: 'monthly', priority: '0.9' },
-  { path: '/google-ads/', lastmod: '2026-07-31', changefreq: 'monthly', priority: '0.9' },
-  { path: '/ai-automation/', lastmod: '2026-07-31', changefreq: 'monthly', priority: '0.85' },
-  { path: '/freelancing/', lastmod: '2026-07-31', changefreq: 'monthly', priority: '0.9' },
+  { path: '/seo/', lastmod: '2026-09-06', changefreq: 'monthly', priority: '0.95' },
+  { path: '/digital-marketing/', lastmod: '2026-09-06', changefreq: 'monthly', priority: '0.9' },
+  { path: '/ui-ux-design/', lastmod: '2026-09-06', changefreq: 'monthly', priority: '0.9' },
+  { path: '/web-development/', lastmod: '2026-09-06', changefreq: 'monthly', priority: '0.9' },
+  { path: '/google-search-console/', lastmod: '2026-09-06', changefreq: 'monthly', priority: '0.9' },
+  { path: '/meta-ads/', lastmod: '2026-09-06', changefreq: 'monthly', priority: '0.9' },
+  { path: '/google-ads/', lastmod: '2026-09-06', changefreq: 'monthly', priority: '0.9' },
+  { path: '/ai-automation/', lastmod: '2026-09-06', changefreq: 'monthly', priority: '0.85' },
+  { path: '/freelancing/', lastmod: '2026-09-06', changefreq: 'monthly', priority: '0.9' },
   // Project Case Studies
-  { path: '/projects/pratheesh-os/', lastmod: '2026-07-31', changefreq: 'monthly', priority: '0.9' },
-  { path: '/projects/seo-growth-campaign/', lastmod: '2026-07-31', changefreq: 'monthly', priority: '0.85' },
-  { path: '/projects/restaurant-branding-web/', lastmod: '2026-07-31', changefreq: 'monthly', priority: '0.85' },
-  { path: '/projects/b2b-conversion-funnel/', lastmod: '2026-07-31', changefreq: 'monthly', priority: '0.85' },
-  { path: '/projects/portfolio-redesign/', lastmod: '2026-07-31', changefreq: 'monthly', priority: '0.85' },
+  { path: '/projects/pratheesh-os/', lastmod: '2026-09-06', changefreq: 'monthly', priority: '0.9' },
+  { path: '/projects/seo-growth-campaign/', lastmod: '2026-09-06', changefreq: 'monthly', priority: '0.85' },
+  { path: '/projects/restaurant-branding-web/', lastmod: '2026-09-06', changefreq: 'monthly', priority: '0.85' },
+  { path: '/projects/b2b-conversion-funnel/', lastmod: '2026-09-06', changefreq: 'monthly', priority: '0.85' },
+  { path: '/projects/portfolio-redesign/', lastmod: '2026-09-06', changefreq: 'monthly', priority: '0.85' },
   // Blog Index & Articles
-  { path: '/blog/', lastmod: '2026-08-16', changefreq: 'weekly', priority: '0.9' },
-  { path: '/blog/how-i-approach-technical-seo/', lastmod: '2026-08-16', changefreq: 'monthly', priority: '0.85' },
-  { path: '/blog/building-search-friendly-react-portfolios/', lastmod: '2026-07-31', changefreq: 'monthly', priority: '0.85' },
-  { path: '/blog/how-meta-pixel-and-conversion-tracking-work/', lastmod: '2026-07-31', changefreq: 'monthly', priority: '0.85' },
-  { path: '/blog/core-web-vitals-explained/', lastmod: '2026-08-16', changefreq: 'monthly', priority: '0.85' },
-  { path: '/blog/meta-ads-campaign-structure/', lastmod: '2026-08-16', changefreq: 'monthly', priority: '0.85' },
-  { path: '/blog/website-performance-optimization/', lastmod: '2026-08-16', changefreq: 'monthly', priority: '0.85' },
+  { path: '/blog/', lastmod: '2026-09-06', changefreq: 'weekly', priority: '0.9' },
+  { path: '/blog/how-i-approach-technical-seo/', lastmod: '2026-09-06', changefreq: 'monthly', priority: '0.85' },
+  { path: '/blog/building-search-friendly-react-portfolios/', lastmod: '2026-09-06', changefreq: 'monthly', priority: '0.85' },
+  { path: '/blog/how-meta-pixel-and-conversion-tracking-work/', lastmod: '2026-09-06', changefreq: 'monthly', priority: '0.85' },
+  { path: '/blog/core-web-vitals-explained/', lastmod: '2026-09-06', changefreq: 'monthly', priority: '0.85' },
+  { path: '/blog/meta-ads-campaign-structure/', lastmod: '2026-09-06', changefreq: 'monthly', priority: '0.85' },
+  { path: '/blog/website-performance-optimization/', lastmod: '2026-09-06', changefreq: 'monthly', priority: '0.85' },
   // Trust & Policy Pages
-  { path: '/privacy-policy/', lastmod: '2026-07-31', changefreq: 'yearly', priority: '0.5' },
-  { path: '/terms/', lastmod: '2026-08-16', changefreq: 'yearly', priority: '0.5' },
-  { path: '/cookie-policy/', lastmod: '2026-07-31', changefreq: 'yearly', priority: '0.5' },
-  { path: '/disclaimer/', lastmod: '2026-08-16', changefreq: 'yearly', priority: '0.5' },
+  { path: '/privacy-policy/', lastmod: '2026-09-06', changefreq: 'yearly', priority: '0.5' },
+  { path: '/terms/', lastmod: '2026-09-06', changefreq: 'yearly', priority: '0.5' },
+  { path: '/cookie-policy/', lastmod: '2026-09-06', changefreq: 'yearly', priority: '0.5' },
+  { path: '/disclaimer/', lastmod: '2026-09-06', changefreq: 'yearly', priority: '0.5' },
 ];
 
 function escapeXml(unsafe) {
@@ -442,12 +491,9 @@ function escapeXml(unsafe) {
 }
 
 function generateSitemapXmlString(entries) {
-  const hasImages = entries.some(e => e.image && e.image.loc && e.image.loc.trim().length > 0);
   const lines = [
     '<?xml version="1.0" encoding="UTF-8"?>',
-    hasImages
-      ? '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"\n        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">'
-      : '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+    '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
   ];
 
   entries.forEach((entry) => {
@@ -465,18 +511,6 @@ function generateSitemapXmlString(entries) {
 
     if (entry.priority) {
       lines.push(`    <priority>${entry.priority}</priority>`);
-    }
-
-    if (entry.image && entry.image.loc && entry.image.loc.trim().length > 0) {
-      lines.push('    <image:image>');
-      lines.push(`      <image:loc>${escapeXml(entry.image.loc)}</image:loc>`);
-      if (entry.image.title) {
-        lines.push(`      <image:title>${escapeXml(entry.image.title)}</image:title>`);
-      }
-      if (entry.image.caption) {
-        lines.push(`      <image:caption>${escapeXml(entry.image.caption)}</image:caption>`);
-      }
-      lines.push('    </image:image>');
     }
 
     lines.push('  </url>');

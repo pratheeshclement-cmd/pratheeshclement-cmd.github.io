@@ -90,7 +90,7 @@ const ContactScene: React.FC<{ id: string }> = ({ id }) => {
           {/* Right Column — Large Cinematic Profile Showcase (Occupies ~45–50% of section) */}
           <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 20 }}>
             <CinematicProfileShowcase
-              imageSrc="/assets/pratheesh4k2.jpeg"
+              imageSrc="/assets/new4k3.jpeg"
               altText="Pratheesh Clement — Digital Marketing Specialist & Freelance SEO Consultant Vadalur"
             />
 

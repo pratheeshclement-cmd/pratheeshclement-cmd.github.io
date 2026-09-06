@@ -23,7 +23,7 @@ export const ProjectDetailPage: React.FC<ProjectDetailPageProps> = ({ slug }) =>
     title: `${project.title} — Case Study`,
     description: `${project.summary} Problem: ${project.problem} Solution: ${project.solution}`,
     canonical: `/projects/${project.id}/`,
-    ogImage: '/assets/pratheesh4k2.jpeg',
+    ogImage: '/assets/new4k3.jpeg',
     ogImageAlt: project.title,
   });
 

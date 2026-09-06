@@ -166,26 +166,28 @@ export const Navbar: React.FC<NavbarProps> = ({ scrollProgress, theme, onToggleT
     }
 
     if (nextState) {
-      setTimeout(() => {
-        if (overlayRef.current) {
-          anime({
-            targets: overlayRef.current,
-            opacity: [0, 1],
-            duration: 250,
-            easing: 'easeOutQuad',
-          });
+      requestAnimationFrame(() => {
+        if (!reduced) {
+          if (overlayRef.current) {
+            anime({
+              targets: overlayRef.current,
+              opacity: [0, 1],
+              duration: 250,
+              easing: 'easeOutQuad',
+            });
+          }
+          if (mobileMenuRef.current) {
+            anime({
+              targets: mobileMenuRef.current,
+              opacity: [0, 1],
+              scale: [0.96, 1],
+              translateY: [15, 0],
+              duration: 300,
+              easing: 'easeOutCubic',
+            });
+          }
         }
-        if (mobileMenuRef.current) {
-          anime({
-            targets: mobileMenuRef.current,
-            opacity: [0, 1],
-            scale: [0.96, 1],
-            translateY: [15, 0],
-            duration: 300,
-            easing: 'easeOutCubic',
-          });
-        }
-      }, 10);
+      });
     }
   };
 
@@ -278,7 +280,7 @@ export const Navbar: React.FC<NavbarProps> = ({ scrollProgress, theme, onToggleT
           aria-label="Pratheesh Clement — go to homepage"
         >
           <img
-            src="/assets/pratheesh4k1.jpeg"
+            src="/assets/new4k3.jpeg"
             alt="Pratheesh Clement"
             title="Pratheesh Clement Portfolio"
             width={40}
@@ -486,7 +488,7 @@ export const Navbar: React.FC<NavbarProps> = ({ scrollProgress, theme, onToggleT
               background: 'rgba(4, 8, 18, 0.82)',
               backdropFilter: 'blur(14px)',
               WebkitBackdropFilter: 'blur(14px)',
-              opacity: 0,
+              opacity: 1,
               pointerEvents: 'auto',
               touchAction: 'auto',
               transition: 'opacity 0.22s ease',
@@ -508,8 +510,9 @@ export const Navbar: React.FC<NavbarProps> = ({ scrollProgress, theme, onToggleT
               width: 'min(calc(100vw - 32px), 440px)',
               maxWidth: 440,
               marginInline: 'auto',
-              maxHeight: 'calc(100vh - 32px)',
+              maxHeight: 'calc(100dvh - 32px)',
               overflowY: 'auto',
+              WebkitOverflowScrolling: 'touch',
               background: 'var(--glass-bg)',
               backdropFilter: 'blur(28px) saturate(180%)',
               WebkitBackdropFilter: 'blur(28px) saturate(180%)',
@@ -522,7 +525,7 @@ export const Navbar: React.FC<NavbarProps> = ({ scrollProgress, theme, onToggleT
               border: '1px solid var(--glass-border)',
               boxShadow: '0 25px 60px rgba(0, 0, 0, 0.45)',
               transform: 'translate3d(0, 0, 0)',
-              opacity: 0,
+              opacity: 1,
               pointerEvents: 'auto',
               touchAction: 'pan-y',
               willChange: 'transform, opacity',

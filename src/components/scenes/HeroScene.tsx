@@ -241,15 +241,15 @@ const HeroScene: React.FC<{ id: string }> = ({ id }) => {
                 }}
               >
                 <picture style={{ display: 'block', width: '100%', height: '100%' }}>
-                  <source media="(max-width: 480px)" srcSet="/assets/pratheesh-mobile.jpg 480w" sizes="100vw" />
-                  <source media="(max-width: 800px)" srcSet="/assets/pratheesh-tablet.jpg 800w" sizes="(max-width: 800px) 100vw, 800px" />
-                  <source srcSet="/assets/pratheesh-desktop.jpg 1200w" sizes="1200px" />
+                  <source media="(max-width: 480px)" srcSet="/assets/new4k3-mobile.jpg 640w, /assets/new4k3.jpeg 1103w" sizes="100vw" />
+                  <source media="(max-width: 800px)" srcSet="/assets/new4k3-tablet.jpg 900w, /assets/new4k3.jpeg 1103w" sizes="(max-width: 800px) 100vw, 900px" />
+                  <source srcSet="/assets/new4k3.jpeg 1103w" sizes="600px" />
                   <img
-                    src="/assets/pratheesh-desktop.jpg"
+                    src="/assets/new4k3.jpeg"
                     alt="Pratheesh Clement — Digital Marketing Specialist, Technical SEO Expert & AI Enthusiast based in Vadalur, Tamil Nadu"
                     title="Pratheesh Clement — Architect of Digital Ecosystems"
                     width={600}
-                    height={800}
+                    height={776}
                     loading="eager"
                     decoding="async"
                     fetchPriority="high"
@@ -261,7 +261,7 @@ const HeroScene: React.FC<{ id: string }> = ({ id }) => {
                       display: 'block',
                     }}
                     onError={(e) => {
-                      (e.currentTarget as HTMLImageElement).src = '/assets/pratheesh4k1.jpeg';
+                      (e.currentTarget as HTMLImageElement).src = '/assets/new4k3.jpeg';
                     }}
                   />
                 </picture>

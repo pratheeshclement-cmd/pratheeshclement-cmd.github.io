@@ -18,13 +18,15 @@ export class CameraController {
     this.perspectiveEl = document.getElementById(perspectiveId);
     this.worldEl = document.getElementById(worldId);
 
+    const isMobile = typeof window !== 'undefined' && (window.innerWidth <= 768 || 'ontouchstart' in window || navigator.maxTouchPoints > 0);
+
     if (this.perspectiveEl) {
-      this.perspectiveEl.style.perspective = '1200px';
+      this.perspectiveEl.style.perspective = isMobile ? 'none' : '1200px';
       this.perspectiveEl.style.perspectiveOrigin = '50% 50%';
     }
 
     if (this.worldEl) {
-      this.worldEl.style.willChange = 'transform';
+      this.worldEl.style.willChange = isMobile ? 'auto' : 'transform';
     }
   }
 
@@ -34,7 +36,13 @@ export class CameraController {
   public updateCamera(_progress: number, velocity = 0) {
     if (!this.worldEl) return;
 
-    // Velocity-based depth push (no rotation)
+    // Mobile check: skip 3D translateZ on touch / small screens to prevent GPU texture blur
+    const isMobile = typeof window !== 'undefined' && (window.innerWidth <= 768 || 'ontouchstart' in window || navigator.maxTouchPoints > 0);
+    if (isMobile) {
+      return;
+    }
+
+    // Velocity-based depth push (desktop only)
     const velocityPush = Math.min(12, Math.max(-12, velocity * 0.2));
 
     gsap.to(this.worldEl, {

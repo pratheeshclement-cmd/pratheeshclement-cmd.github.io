@@ -11,7 +11,7 @@ export const GoogleSearchConsolePage: React.FC = () => {
     title: 'Google Search Console & Indexing Architecture Guide',
     description: 'Master Google Search Console, URL inspection, index coverage diagnostics, XML sitemap auditing, canonical URL resolution, and Core Web Vitals telemetry.',
     canonical: '/google-search-console/',
-    ogImage: '/assets/pratheesh-desktop.jpg',
+    ogImage: '/assets/new4k3.jpeg',
     ogImageAlt: 'Pratheesh Clement — Google Search Console Guide',
   });
 
